@@ -1,0 +1,12 @@
+# IDE data
+.vscode/
+.idea/
+
+# python cache
+__pycache__/
+*.pyc
+
+# important files
+.env
+application.yml
+application.properties
