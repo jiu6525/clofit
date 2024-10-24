@@ -4,7 +4,7 @@ workflow:
   # auto_cancel:
   #   on_job_failure: all
   rules:
-    #Merge Request가 OPEN 될 때만 실행
+    #Merge Request 이벤트일때에만 실행
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
 
 
