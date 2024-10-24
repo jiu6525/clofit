@@ -1,3 +1,13 @@
+workflow:
+  # 한 작업이 실패하면 다른 모든 작업 중지
+  # 디버깅을 위해 주석처리
+  # auto_cancel:
+  #   on_job_failure: all
+  rules:
+    #Merge Request가 OPEN 될 때만 실행
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" && $CI_OPEN_MERGE_REQUESTS == "1"
+
+
 build-job:
   stage: build
   script:
