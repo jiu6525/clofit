@@ -11,7 +11,7 @@ workflow:
 build-job:
   stage: build
   script:
-    - ls
+    - echo "$(ls)"
     - echo "Hello, $GITLAB_USER_LOGIN!"
 
 test-job1:
