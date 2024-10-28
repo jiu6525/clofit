@@ -13,7 +13,9 @@ pipeline {
 //
 //                      checkout scm
 //                 }
-                git branch: 'develop/be', credentialsId: 'GITLAB', url: 'https://lab.ssafy.com/s11-final/S11P31B307.git'
+                withCredentials([string(credentialsId: 'GITLAB', variable: 'GITLAB_TOKEN')]) {
+                    sh 'git clone https://$GITLAB_TOKEN@lab.ssafy.com/s11-final/S11P31B307.git'
+                }
             }
         }
         stage('Build') {
