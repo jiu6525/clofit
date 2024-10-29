@@ -1,17 +1,18 @@
 FROM node:20 AS build
 
-RUN mkdir /react
+RUN mkdir /next
 
-WORKDIR /react
+WORKDIR /next
 
 COPY . .
 
 # RUN npm install --legacy-peer-deps
 RUN npm install
 
+RUN npm run build
 RUN npm run start
 
-RUN ls
+# RUN ls
 
 # FROM nginx:latest
 
