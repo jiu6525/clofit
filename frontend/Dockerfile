@@ -10,7 +10,9 @@ COPY . .
 RUN npm install
 
 RUN npm run build
-RUN npm run start
+
+# 컨테이너 실행 시 서버 시작, RUN으로 실행 시 빌드 무한루프 발생
+CMD [ "npm", "run", "start" ]
 
 # RUN ls
 
