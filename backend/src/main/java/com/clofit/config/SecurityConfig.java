@@ -4,6 +4,7 @@ import com.clofit.jwt.JWTFilter;
 import com.clofit.jwt.JWTUtil;
 import com.clofit.oauth2.hadler.CustomSuccessHandler;
 import com.clofit.oauth2.service.CustomOAuth2UserService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -20,6 +21,9 @@ import java.util.List;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
+    @Value("${front.react-server}")
+    private String reactServer;
 
     private final CustomOAuth2UserService customOAuth2UserService;
     private final CustomSuccessHandler customSuccessHandler;
@@ -39,7 +43,7 @@ public class SecurityConfig {
 
                     // 허용할 Origin 설정
                     configuration.setAllowedOrigins(Arrays.asList(
-                            "http://localhost:3000"
+                            reactServer
                     ));
 
                     // 허용할 HTTP 메소드 설정

@@ -26,8 +26,8 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
     private final MemberRepository memberRepository;
 
-    @Value("${custom.redirect-url}")
-    private String redirectUrl;
+    @Value("${front.react-server}")
+    private String reactServer;
 
     private final JWTUtil jwtUtil;
 
@@ -65,7 +65,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         userCookie.setPath("/");
         response.addCookie(userCookie);
 
-        response.sendRedirect(redirectUrl + "/");
+        response.sendRedirect(reactServer + "/");
     }
 
     private Cookie createCookie(String key, String value) {
