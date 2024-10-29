@@ -11,7 +11,7 @@ import java.util.List;
 
 @Configuration
 public class CorsConfig {
-    @Value("${custom.redirect-url}")
+    @Value("${front.react-server}")
     private String REACT_SERVER_URL;
 
     @Bean
