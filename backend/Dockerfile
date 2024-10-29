@@ -6,7 +6,6 @@ WORKDIR /app
 COPY build.gradle settings.gradle gradlew ./
 COPY gradle ./gradle
 COPY src ./src
-RUN ./gradlew test -i
 RUN ./gradlew build --no-daemon
 
 # 빌드 결과물을 실행 이미지로 복사
