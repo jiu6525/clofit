@@ -4,27 +4,25 @@ RUN mkdir /react
 
 WORKDIR /react
 
-COPY package.json .
+COPY . .
 
 # RUN npm install --legacy-peer-deps
 RUN npm install
 
-COPY . .
-
-RUN npm run build
+RUN npm run start
 
 RUN ls
 
-FROM nginx:latest
+# FROM nginx:latest
 
-WORKDIR /
+# WORKDIR /
 
-COPY --from=build /react/build /usr/share/nginx/html
+# COPY --from=build /react/build /usr/share/nginx/html
 
-RUN rm /etc/nginx/conf.d/default.conf
+# RUN rm /etc/nginx/conf.d/default.conf
 
-COPY nginx/nginx.conf /etc/nginx/conf.d
+# COPY nginx/nginx.conf /etc/nginx/conf.d
 
-# EXPOSE 80
+# # EXPOSE 80
 
-CMD ["nginx", "-g", "daemon off;"]
+# CMD ["nginx", "-g", "daemon off;"]
