@@ -100,7 +100,8 @@ public class SecurityConfig {
         return web -> web.ignoring().requestMatchers(
                 "/error",
                 "/swagger-ui/**",
-                "/swagger-resources/**"
+                "/swagger-resources/**",
+                "/v3/api-docs/**"
         );
     }
 }
