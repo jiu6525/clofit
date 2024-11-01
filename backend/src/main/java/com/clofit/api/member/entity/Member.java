@@ -1,6 +1,8 @@
 package com.clofit.api.member.entity;
 
+import com.clofit.api.closet.entity.Closet;
 import jakarta.persistence.*;
+import lombok.CustomLog;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -19,18 +21,30 @@ public class Member {
     @Column(name = "member_id", nullable = false)
     private Long id;
 
-    @Column(name = "member_name")
-    private String memberName;
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "closet_id")
+    private Closet closet;
 
+    @Column(name = "email")
     private String email;
 
-    private String role;
+    @Column(name = "password")
+    private String password;
+
+    @Column(name = "member_name")
+    private String memberName;
 
     @Column(name = "age")
     private Integer age;
 
+    @Column(name = "role")
+    private String role;
+
     @Column(name = "del_user_yn")
     private char delMemberYn;
+
+    @Column(name = "del_member_dttm")
+    private LocalDateTime delMemberDttm;
 
     @CreationTimestamp
     @Column(name = "reg_member_dttm", nullable = false)
@@ -44,6 +58,4 @@ public class Member {
 
     @Column(name = "profile_file_name")
     private String profileFileName;
-
-
 }
