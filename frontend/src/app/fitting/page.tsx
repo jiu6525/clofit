@@ -1,9 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-
 import LeftTitleTopbar from '@/components/LeftTitleTopbar';
 import CenteredTitleTopbar from '@/components/CenteredTitleTopbar';
+import FittingContent from './components/FittingContent';
 
 export default function FittingPage() {
   const [step, setStep] = useState(1); // 단계 관리
