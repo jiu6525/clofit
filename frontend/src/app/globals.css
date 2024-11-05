@@ -23,36 +23,26 @@ body {
   justify-content: center;
   margin: 0;
   padding: 0;
+  min-width: 360px;
 }
 
-/* #app {
-  width: 480px; 
-  min-height: 100vh;
-  padding-bottom: var(--navbar-height); 
-  box-sizing: border-box;
-  background-color: var(--background);
-} */
-
+/* #app 스타일 */
 #app {
   width: 100%;
   min-width: 360px;
-  max-width: 480px;
+  max-width: 600px; /* 최대 너비를 600px로 제한 */
   min-height: 100vh;
-  padding-bottom: var(--navbar-height);
+  padding: 16px; /* Tailwind의 p-4와 동일한 16px 패딩 추가 */
+  padding-bottom: calc(
+    var(--navbar-height) + 16px
+  ); /* 내비게이션 바 아래 패딩 포함 */
   box-sizing: border-box;
   background-color: var(--background);
-}
-
-@media (min-width: 480px) {
-  #app {
-    max-width: 480px; /* 큰 화면에서는 최대 480px로 제한 */
-  }
 }
 
 /* 하단 고정 네비게이션 바 스타일 */
 nav.navbar {
   width: 100%;
-  max-width: 480px;
   height: var(--navbar-height);
   background-color: white;
   border-top: 1px solid #ddd;
@@ -64,6 +54,7 @@ nav.navbar {
   justify-content: space-around;
   align-items: center;
   z-index: 10;
+  max-width: 600px; /* 네비게이션 바의 최대 너비 */
 }
 
 /* 공통 topbar 스타일 */
@@ -74,10 +65,11 @@ nav.navbar {
   align-items: center;
   padding: 0 16px;
   box-sizing: border-box;
-  border-bottom: 1px solid #e0e0e0; /* 하단 테두리 */
+  border-bottom: 1px solid #e0e0e0;
   background-color: white;
   font-size: 18px;
   font-weight: 500;
+  max-width: 600px; /* 탑바의 최대 너비 */
 }
 
 /* 공통 button 스타일 */
