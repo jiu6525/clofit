@@ -25,12 +25,26 @@ body {
   padding: 0;
 }
 
+/* #app {
+  width: 480px; 
+  min-height: 100vh;
+  padding-bottom: var(--navbar-height); 
+  box-sizing: border-box;
+  background-color: var(--background);
+} */
+
 #app {
-  width: 480px; /* 고정된 너비 */
+  max-width: 100%; /* 너비를 뷰포트에 맞게 설정 */
   min-height: 100vh;
   padding-bottom: var(--navbar-height); /* 네비게이션 바 높이만큼 여백 추가 */
   box-sizing: border-box;
   background-color: var(--background);
+}
+
+@media (min-width: 480px) {
+  #app {
+    max-width: 480px; /* 큰 화면에서는 최대 480px로 제한 */
+  }
 }
 
 /* 하단 고정 네비게이션 바 스타일 */
