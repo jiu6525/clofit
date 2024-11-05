@@ -7,7 +7,7 @@ interface LeftTitleTopbarProps {
 export default function LeftTitleTopbar({ title }: LeftTitleTopbarProps) {
   return (
     <div className='topbar'>
-      <h1 className='text-xl font-bold'>{title}</h1>
+      <h1 className='text-2xl font-semibold'>{title}</h1>
     </div>
   );
 }

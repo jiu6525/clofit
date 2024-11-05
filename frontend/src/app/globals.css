@@ -34,9 +34,11 @@ body {
 } */
 
 #app {
-  max-width: 100%; /* 너비를 뷰포트에 맞게 설정 */
+  width: 100%;
+  min-width: 360px;
+  max-width: 480px;
   min-height: 100vh;
-  padding-bottom: var(--navbar-height); /* 네비게이션 바 높이만큼 여백 추가 */
+  padding-bottom: var(--navbar-height);
   box-sizing: border-box;
   background-color: var(--background);
 }
