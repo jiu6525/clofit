@@ -1,5 +1,13 @@
-<div className='topbar'>
-  <h1 className='page-title' style={{ fontWeight: 'bold' }}>
-    페이지 이름
-  </h1>
-</div>;
+'use client';
+
+interface LeftTitleTopbarProps {
+  title: string;
+}
+
+export default function LeftTitleTopbar({ title }: LeftTitleTopbarProps) {
+  return (
+    <div className='topbar'>
+      <h1 className='text-xl font-bold'>{title}</h1>
+    </div>
+  );
+}
