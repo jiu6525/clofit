@@ -1,0 +1,80 @@
+pipeline {
+    agent any
+
+    environment {
+        TARGET_BRANCH='develop/fe'
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                script {
+                    // def branch = env.gitlabSourceBranch ?: 'develop/fe'
+                    // if(branch != env.TARGET_BRANCH) {
+                    //     error "This build is only for the '${env.TARGET_BRANCH}' branch, but was run on '${branch}'"
+                    // }
+
+                    checkout scm
+                }
+            }
+        }
+
+        stage('Set .ENV File') {
+            steps {
+                dir('frontend') {
+                    withCredentials([file(credentialsId: 'ENV', variable: 'env_file')]) {
+                        sh 'cp $env_file ./.env'
+                    }
+                }
+            }
+        }
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    sh 'docker build --no-cache -t clofit-dev-frontend:latest ./frontend'
+                    // sh 'docker build -t ptpt-dev-frontend:latest ./frontend'
+                }
+            }
+        }
+
+        stage('Depoly') {
+            steps {
+                dir('frontend') {
+                    sh 'docker-compose up -d'
+                }
+            }
+        }
+
+        stage('Remove old image') {
+            steps {
+                script {
+                    sh 'docker image prune -f'
+                }
+            }
+        }
+    }
+    post {
+        success {
+            script {
+                def Author_ID = sh(script: "git show -s --pretty=%an", returnStdout: true).trim()
+                def Author_Name = sh(script: "git show -s --pretty=%ae", returnStdout: true).trim()
+                mattermostSend (color: 'good',
+                message: "**빌드 성공** \n _Frontend_ \n ${env.JOB_NAME} #${env.BUILD_NUMBER} by ${Author_ID}(${Author_Name})\n(<${env.BUILD_URL}|Details>)\n :white_check_mark: ",
+                endpoint: 'https://meeting.ssafy.com/hooks/stt1fc57q7rdubgcy9ursfrxbo',
+                channel: 'B307_Build'
+                )
+            }
+        }
+        failure {
+            script {
+                def Author_ID = sh(script: "git show -s --pretty=%an", returnStdout: true).trim()
+                def Author_Name = sh(script: "git show -s --pretty=%ae", returnStdout: true).trim()
+                mattermostSend (color: 'danger',
+                message: "**빌드 실패** \n _Frontend_ \n ${env.JOB_NAME} #${env.BUILD_NUMBER} by ${Author_ID}(${Author_Name})\n(<${env.BUILD_URL}|Details>)\n :no_entry_sign: ",
+                endpoint: 'https://meeting.ssafy.com/hooks/stt1fc57q7rdubgcy9ursfrxbo',
+                channel: 'B307_Build'
+                )
+            }
+        }
+    }
+}
