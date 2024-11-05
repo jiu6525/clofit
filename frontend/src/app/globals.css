@@ -77,3 +77,21 @@ nav.navbar {
   font-size: 18px;
   font-weight: 500;
 }
+
+/* 공통 button 스타일 */
+.button-common {
+  height: 48px;
+  padding: 0 16px;
+  background-color: #333; /* 버튼의 기본 배경색 (검정색) */
+  color: white;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
+}
+
+.button-common:hover {
+  background-color: #444; /* hover 시 배경색 */
+}
