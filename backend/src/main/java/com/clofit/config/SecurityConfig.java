@@ -1,5 +1,6 @@
 package com.clofit.config;
 
+import com.clofit.gpu.GPUFilter;
 import com.clofit.jwt.JWTFilter;
 import com.clofit.jwt.JWTUtil;
 import com.clofit.oauth2.hadler.CustomSuccessHandler;
@@ -7,6 +8,7 @@ import com.clofit.oauth2.service.CustomOAuth2UserService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
@@ -35,10 +37,9 @@ public class SecurityConfig {
         this.customSuccessHandler = customSuccessHandler;
         this.jwtUtil = jwtUtil;
     }
-
+    @Order(1)
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        System.out.println("ME");
         http
                 .cors(corsCustomizer -> corsCustomizer.configurationSource(request -> {
                     CorsConfiguration configuration = new CorsConfiguration();
@@ -83,7 +84,7 @@ public class SecurityConfig {
         );
 
         // 모든 요청을 허용
-        http.authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
+//        http.authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
 
         // 세션 설정: STATELESS
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
