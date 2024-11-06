@@ -1,11 +1,18 @@
-import React from 'react';
+import { useRouter } from 'next/navigation';
 import ButtonRounded from '@/components/ButtonRounded';
 
 interface FittingStartProps {
-  onStartFitting: () => void;
+  onStartFitting?: () => void;
 }
 
 function FittingStart({ onStartFitting }: FittingStartProps) {
+  const router = useRouter();
+
+  const handleStartFitting = () => {
+    router.push('/fitting/fullbody');
+    if (onStartFitting) onStartFitting(); // 필요 시 추가 기능 실행
+  };
+
   return (
     <div className='flex flex-col items-center text-center p-8 bg-white rounded-2xl'>
       {/* 아이콘 */}
@@ -23,7 +30,7 @@ function FittingStart({ onStartFitting }: FittingStartProps) {
       </p>
 
       {/* 둥근 버튼 */}
-      <ButtonRounded text='피팅 하러 가기' onClick={onStartFitting} />
+      <ButtonRounded text='피팅 하러 가기' onClick={handleStartFitting} />
     </div>
   );
 }

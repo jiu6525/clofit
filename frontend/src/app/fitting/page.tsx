@@ -1,31 +1,13 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import FittingThumbnails from './components/FittingThumbnails';
+import FittingStart from './components/FittingStart';
 
-// 피팅 데이터가 없을 때 표시할 컴포넌트
-function FittingStart({ onStartFitting }: { onStartFitting: () => void }) {
-  return (
-    <div className='flex flex-col items-center text-center p-8 bg-white rounded-2xl'>
-      <img
-        src='/images/fitting-inactive.svg'
-        alt='피팅 아이템 없음'
-        className='w-20 h-20 mb-5'
-      />
-      <p className='text-lg mb-5 leading-relaxed'>
-        추가한 옷장 아이템으로
-        <br />
-        가상피팅을 시작해 보세요.
-      </p>
-      <button onClick={onStartFitting} className='button-common rounded-lg'>
-        피팅 하러 가기
-      </button>
-    </div>
-  );
-}
-
-// 메인 피팅 페이지 컴포넌트
 export default function FittingPage() {
   const [hasFittingData, setHasFittingData] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     fetchFittingData();
@@ -40,11 +22,15 @@ export default function FittingPage() {
       // setHasFittingData(data.length > 0); // 데이터가 있을 경우 true, 없을 경우 false로 설정
 
       // 임시로 피팅 데이터가 있다고 설정
-      setHasFittingData(false);
+      setHasFittingData(true);
     } catch (error) {
       console.error('피팅 데이터 로딩 중 에러 발생:', error);
     }
   }
+
+  const handleStartFitting = () => {
+    router.push('/fitting/fullbody');
+  };
 
   return (
     <div className='flex flex-col items-center w-full min-h-screen bg-white'>
@@ -56,25 +42,17 @@ export default function FittingPage() {
       {/* Main Content */}
       <div className='flex flex-col items-center w-full max-w-[1024px] p-4'>
         {hasFittingData ? (
-          <div className='grid grid-cols-2 gap-4'>
-            {/* 피팅 데이터 썸네일 예시 - 추후 API 데이터를 맵핑하여 구현 */}
-            {Array.from({ length: 6 }).map((_, index) => (
-              <div key={index} className='w-full aspect-square'>
-                <img
-                  src='/path-to-thumbnail-image.jpg'
-                  alt={`피팅 데이터 ${index + 1}`}
-                  className='w-full h-full object-cover rounded-lg'
-                />
-              </div>
-            ))}
-          </div>
+          <FittingThumbnails />
         ) : (
-          <FittingStart onStartFitting={() => console.log('피팅 시작')} />
+          <FittingStart onStartFitting={handleStartFitting} />
         )}
       </div>
 
       {/* Floating Action Button */}
-      <div className='fixed bottom-16 right-8 bg-black text-white rounded-full p-4 shadow-lg'>
+      <div
+        className='fixed bottom-28 right-8 bg-black text-white rounded-full shadow-lg cursor-pointer flex items-center justify-center w-12 h-12' // w-12와 h-12로 가로와 세로를 같게 설정
+        onClick={handleStartFitting}
+      >
         <span className='text-2xl'>+</span>
       </div>
     </div>
