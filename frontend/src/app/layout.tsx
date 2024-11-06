@@ -2,17 +2,6 @@ import './globals.css';
 import localFont from 'next/font/local';
 import ClientLayout from '../components/ClientLayout';
 
-// const geistSans = localFont({
-//   src: './fonts/GeistVF.woff',
-//   variable: '--font-geist-sans',
-//   weight: '100 900',
-// });
-// const geistMono = localFont({
-//   src: './fonts/GeistMonoVF.woff',
-//   variable: '--font-geist-mono',
-//   weight: '100 900',
-// });
-
 const pretendard = localFont({
   src: './fonts/PretendardVariable.woff2',
   display: 'swap',
@@ -38,12 +27,12 @@ export default function RootLayout({
         <link rel='icon' href='/favicon.ico' />
         <title>{metadata.title}</title>
         <meta name='description' content={metadata.description} />
+        <meta
+          name='viewport'
+          content='width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0'
+        />
       </head>
-      {/* <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-       
-      </body> */}
+
       <body className={pretendard.className}>
         {' '}
         <ClientLayout>{children}</ClientLayout>

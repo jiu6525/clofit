@@ -13,11 +13,14 @@ export default function ClientLayout({
   const showNavbar = !hideNavbarRoutes.includes(pathname);
 
   return (
-    <div className='relative min-h-screen flex flex-col'>
-      <div id='app' className='flex-grow'>
+    <div className='flex justify-center w-full min-h-screen bg-gray-100'>
+      <div
+        id='app'
+        className='w-full min-w-[360px] max-w-[600px] p-4 flex flex-col items-center'
+      >
         {children}
       </div>
-      {showNavbar && <Navbar />} {/* 조건부로 Navbar 표시 */}
+      {showNavbar && <Navbar />}
     </div>
   );
 }
