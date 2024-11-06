@@ -38,6 +38,10 @@ public class JWTUtil {
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().getExpiration().before(new Date());
     }
 
+//    public Boolean isModified(String token) {
+//        Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getDigest();
+//    }
+
     public String createJwt(String username, String name, String role, Long expiredMs) {
 
         return Jwts.builder()
