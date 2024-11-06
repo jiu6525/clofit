@@ -29,7 +29,7 @@ export default function FittingPage() {
   }
 
   const handleStartFitting = () => {
-    router.push('/fitting/fullbody'); // fullbody 선택 페이지로 이동
+    router.push('/fitting/fullbody');
   };
 
   return (
