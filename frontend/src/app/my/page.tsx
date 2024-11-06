@@ -26,19 +26,19 @@ export default function MyPage() {
     },
     {
       id: 4,
-      title: 'Snap 1',
+      title: 'Snap 4',
       location: '용인시, 수지구 | 카페',
       imageUrl: '/snap1.webp',
     },
     {
       id: 5,
-      title: 'Snap 2',
+      title: 'Snap 5',
       location: '용인시, 수지구 | 카페',
       imageUrl: '/snap2.webp',
     },
     {
       id: 6,
-      title: 'Snap 3',
+      title: 'Snap 6',
       location: '용인시, 수지구 | 카페',
       imageUrl: '/snap3.webp',
     },
@@ -47,37 +47,32 @@ export default function MyPage() {
   return (
     <div className='my-page p-4 bg-white text-black min-h-screen'>
       {/* Profile section */}
-      <div className='flex items-start justify-between mb-4 px-4'>
-        <div>
-          <h1 className='text-lg font-semibold mb-1'>{nickname}</h1>
-          <p className='text-sm text-gray-500'>{email}</p>{' '}
-          {/* Displaying hardcoded email */}
-        </div>
-        <div className='relative'>
+      <div className='flex flex-col items-center mb-6'>
+        <div className='relative mb-4'>
           <img
             src={profileImageUrl}
             alt='프로필 이미지'
-            className='w-16 h-16 rounded-full border border-gray-300'
+            className='w-24 h-24 rounded-full border border-gray-300'
           />
         </div>
+        <h1 className='text-lg font-semibold'>{nickname}</h1>
+        <p className='text-sm text-gray-500'>{email}</p>
       </div>
 
       {/* Divider */}
       <hr className='border-gray-300 my-4' />
 
-      {/* Thumbnail grid section with three items per row */}
-      <div className='px-4'>
-        <div className='grid grid-cols-3 gap-4'>
-          {items.map((item) => (
-            <div key={item.id} className='rounded-lg overflow-hidden'>
-              <img
-                src={item.imageUrl}
-                alt={item.title}
-                className='w-full h-48 object-cover' // Adjusted height for 3-item layout
-              />
-            </div>
-          ))}
-        </div>
+      {/* Thumbnail grid section */}
+      <div className='grid grid-cols-3 gap-1 px-2'>
+        {items.map((item) => (
+          <div key={item.id} className='w-full aspect-square overflow-hidden'>
+            <img
+              src={item.imageUrl}
+              alt={item.title}
+              className='w-full h-full object-cover'
+            />
+          </div>
+        ))}
       </div>
     </div>
   );

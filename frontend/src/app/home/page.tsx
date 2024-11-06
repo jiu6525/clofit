@@ -65,13 +65,17 @@ export default function MainPage() {
             ))}
           </div>
         </section>
-
         {/* 가상 피팅 추천 배너 */}
-        <div className='w-full bg-[#E6F0FF] text-center p-4 rounded mt-6 mb-16'>
-          <p className='text-lg font-semibold text-[#373A3F]'>
-            나와 어울리는 아이템은?
-          </p>
-          <p className='text-blue-600 font-semibold'>가상피팅 하러가기</p>
+        <div className='w-full bg-[#E6F0FF] p-4 rounded mt-6 mb-16 flex items-center justify-between gap-4'>
+          <div className='flex flex-col items-center text-center'>
+            <p className='text-lg font-semibold text-[#373A3F]'>
+              나와 어울리는 아이템은?
+            </p>
+            <p className='text-blue-600 font-semibold'>가상피팅 하러가기</p>
+          </div>
+          <div>
+            <Image src='/closet.svg' alt='Closet Icon' width={60} height={60} />
+          </div>
         </div>
 
         {/* 하단 네비게이션 */}
