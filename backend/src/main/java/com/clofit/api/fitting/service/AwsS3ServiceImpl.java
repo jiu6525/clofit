@@ -6,6 +6,8 @@ import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -22,6 +24,8 @@ public class AwsS3ServiceImpl implements AwsS3Service {
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
+
+    private static final Logger logger = LoggerFactory.getLogger(AwsS3ServiceImpl.class);
 
     private final AmazonS3 amazonS3;
 
@@ -55,7 +59,7 @@ public class AwsS3ServiceImpl implements AwsS3Service {
     @Override
     public String uploadFile(MultipartFile multipartFile){
         if (multipartFile == null || multipartFile.isEmpty()) {
-            System.out.println("파일 없음");
+            logger.info("업로드 파일이 없거나 비어 있습니다.");
             return null;
         }
 
@@ -67,7 +71,7 @@ public class AwsS3ServiceImpl implements AwsS3Service {
         try(InputStream inputStream = multipartFile.getInputStream()){
             amazonS3.putObject(new PutObjectRequest(bucket, fileName, inputStream, objectMetadata)
                     .withCannedAcl(CannedAccessControlList.PublicRead));
-            System.out.println("파일 업로드 성공");
+            logger.info("파일 업로드가 완료되었습니다.");
         } catch (IOException e){
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "파일 업로드에 실패했습니다.");
         }
@@ -92,7 +96,7 @@ public class AwsS3ServiceImpl implements AwsS3Service {
     @Override
     public void deleteFile(String fileName){
         amazonS3.deleteObject(new DeleteObjectRequest(bucket, fileName));
-        System.out.println(bucket);
+        logger.info("파일 삭제 성공");
     }
 
     @Override
