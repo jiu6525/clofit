@@ -90,7 +90,7 @@ public class SecurityConfig {
         
         //ignore를 제외한 모든 경로에 대해 인증 요구
         //ORDER로 인해 GPU 설정이 우선된다.
-        http.authorizeHttpRequests(auth -> auth.anyRequest().authenticated());
+        http.authorizeHttpRequests(auth -> auth.requestMatchers("/api/oauth2/authorization/kakao").permitAll().anyRequest().authenticated());
 //        http.authorizeHttpRequests(auth -> auth.requestMatchers("/**").authenticated().anyRequest().permitAll());
 
         return http.build();
@@ -125,8 +125,8 @@ public class SecurityConfig {
                 "/swagger-ui/**",
                 "/swagger-resources/**",
                 "/v3/api-docs/**",
-                "/test/**",
-                "/oauth2/authorization/kakao"
+                "/test/**"
+//                "/oauth2/authorization/kakao"
 //                ,"/**"
         );
     }
