@@ -39,7 +39,7 @@ public class SecurityConfig {
         this.jwtUtil = jwtUtil;
         this.ACCESS_KEY = ACCESS_KEY;
     }
-    @Order(1)
+    @Order(2)
     @Bean
     public SecurityFilterChain filterChainJWT(HttpSecurity http) throws Exception {
         http
@@ -90,13 +90,13 @@ public class SecurityConfig {
         
         //ignore를 제외한 모든 경로에 대해 인증 요구
         //ORDER로 인해 GPU 설정이 우선된다.
-        http.authorizeHttpRequests(auth -> auth.requestMatchers("/gpu/**").permitAll().anyRequest().authenticated());
+        http.authorizeHttpRequests(auth -> auth.anyRequest().authenticated());
 //        http.authorizeHttpRequests(auth -> auth.requestMatchers("/**").authenticated().anyRequest().permitAll());
 
         return http.build();
     }
 
-    @Order(2)
+    @Order(1)
     @Bean
     public SecurityFilterChain filterChainGPU(HttpSecurity http) throws Exception {
 
@@ -106,7 +106,7 @@ public class SecurityConfig {
         // 세션 설정: STATELESS
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
-        http.authorizeHttpRequests(auth -> auth.requestMatchers("/gpu/**").hasRole("GPU_SERVER").anyRequest().permitAll());
+        http.authorizeHttpRequests(auth -> auth.requestMatchers("/gpu/**").hasRole("GPU_SERVER"));
 //        http.authorizeHttpRequests(auth -> auth.requestMatchers("/gpu").hasRole("GPU_SERVER").anyRequest().authenticated());
 
         return http.build();
