@@ -1,13 +1,14 @@
 package com.clofit.api.fitting.controller;
 
 import com.clofit.api.fitting.request.FittingRequest;
+import com.clofit.api.fitting.service.AwsS3Service;
 import com.clofit.api.fitting.service.AwsS3ServiceImpl;
+import com.clofit.api.fitting.service.FittingService;
 import com.clofit.api.fitting.service.FittingServiceImpl;
+import com.clofit.db.redis.service.RedisSingleDataService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /**
  * 현재는 s3를 통해 사진의 읽기, 등록, 삭제 기능이 여기에 구현되어 있지만
@@ -19,8 +20,10 @@ import java.util.List;
 @RequestMapping("/fitting")
 @RequiredArgsConstructor
 public class FittingController {
-    private final AwsS3ServiceImpl awsS3ServiceImpl;
-    private final FittingServiceImpl fittingServiceImpl;
+
+    private final AwsS3Service awsS3Service;
+    private final FittingService fittingService;
+    private final RedisSingleDataService redisSingleDataService;
 
     /**
      * @param multipartFile
@@ -39,7 +42,7 @@ public class FittingController {
      */
     @DeleteMapping
     public ResponseEntity<String> deleteFile(@RequestParam String fileName) {
-        awsS3ServiceImpl.deleteFile(fileName);
+        awsS3Service.deleteFile(fileName);
         return ResponseEntity.ok(fileName);
     }
 
@@ -50,7 +53,7 @@ public class FittingController {
      */
     @GetMapping
     public ResponseEntity<String> getFile(@RequestParam String fileName) {
-        return ResponseEntity.ok(awsS3ServiceImpl.getFile(fileName));
+        return ResponseEntity.ok(awsS3Service.getFile(fileName));
     }
 
 
@@ -64,11 +67,13 @@ public class FittingController {
     public ResponseEntity<byte[]> fitting(@RequestBody FittingRequest fittingRequest) {
         try {
             // 서비스에서 비즈니스 로직 처리 후 이미지 파일 반환
-            byte[] imageBytes = fittingServiceImpl.fitting(fittingRequest);
+            byte[] imageBytes = fittingService.fitting(fittingRequest);
+
+            // 이미지 저장 redis
 
             // 이미지 파일을 응답으로 반환
             HttpHeaders responseHeaders = new HttpHeaders();
-            responseHeaders.setContentType(MediaType.IMAGE_JPEG);  // JPEG 이미지 파일일 경우
+            responseHeaders.setContentType(MediaType.IMAGE_JPEG);
             responseHeaders.setContentDisposition(ContentDisposition.builder("inline")
                     .filename("fitting_result.jpg")
                     .build());
@@ -76,7 +81,7 @@ public class FittingController {
             return new ResponseEntity<>(imageBytes, responseHeaders, HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();  // 예외 디버깅용 출력
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null); // 예외 발생 시 500 응답
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 }
