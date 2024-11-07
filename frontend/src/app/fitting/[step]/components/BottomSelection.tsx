@@ -9,6 +9,7 @@ export default function BottomSelection() {
   const [selectedItemIndex, setSelectedItemIndex] = useState<number | null>(
     null
   );
+  const [isRequestPending, setIsRequestPending] = useState(false); // 요청 상태
   const router = useRouter();
 
   const handleItemClick = (index: number) => {
@@ -16,25 +17,32 @@ export default function BottomSelection() {
   };
 
   const handleCompleteClick = async () => {
-    if (selectedItemIndex === null) return;
+    if (selectedItemIndex === null || isRequestPending) return;
 
-    // AWS S3 이미지 URL
-    const modelUrl = 'https://clofit.s3.ap-southeast-2.amazonaws.com/10.jpg';
-    const clothUrl = `https://clofit.s3.ap-southeast-2.amazonaws.com/${selectedItemIndex + 1}.jpg`;
+    setIsRequestPending(true); // 요청 중으로 상태 설정
+    console.log('API 요청 전송 중...'); // 요청 전송 상태 표시
 
-    // API 요청 및 에러 핸들링
-    await axiosInstance
-      .post('/api/fitting', {
-        modelName: modelUrl,
-        clothName: clothUrl,
-      })
-      .then((response) => {
-        console.log('피팅 데이터 전송 성공:', response.data);
-        router.push('/fitting/complete');
-      })
-      .catch((error) => {
-        console.error('피팅 데이터 전송 중 에러:', error.message || error);
-      });
+    try {
+      const response = await axiosInstance.post<Blob>(
+        '/fitting',
+        {
+          modelName: '10.jpg',
+          clothName: '1.jpg',
+        },
+        { responseType: 'blob' }
+      );
+
+      console.log('API 요청 완료');
+      const imageUrl = URL.createObjectURL(new Blob([response.data]));
+      router.push(`/fitting/complete?imageUrl=${encodeURIComponent(imageUrl)}`);
+    } catch (error) {
+      console.error(
+        '피팅 데이터 전송 중 에러:',
+        (error as any).message || error
+      );
+    } finally {
+      setIsRequestPending(false); // 요청 완료 후 버튼 활성화
+    }
   };
 
   return (
@@ -65,9 +73,9 @@ export default function BottomSelection() {
       </div>
 
       <ButtonRectangular
-        text='완료'
+        text={isRequestPending ? '합성 중...' : '완료'}
         onClick={handleCompleteClick}
-        disabled={selectedItemIndex === null} // 선택되지 않았을 때 비활성화
+        disabled={selectedItemIndex === null || isRequestPending}
       />
     </div>
   );
