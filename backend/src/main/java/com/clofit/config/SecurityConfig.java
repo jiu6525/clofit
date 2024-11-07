@@ -90,7 +90,8 @@ public class SecurityConfig {
         
         //ignore를 제외한 모든 경로에 대해 인증 요구
         //ORDER로 인해 GPU 설정이 우선된다.
-        http.authorizeHttpRequests(auth -> auth.requestMatchers("/**").authenticated().anyRequest().permitAll());
+        http.authorizeHttpRequests(auth -> auth.requestMatchers("/**").authenticated().requestMatchers("/gpu/**").permitAll());
+//        http.authorizeHttpRequests(auth -> auth.requestMatchers("/**").authenticated().anyRequest().permitAll());
 
         return http.build();
     }
@@ -105,7 +106,7 @@ public class SecurityConfig {
         // 세션 설정: STATELESS
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
-        http.authorizeHttpRequests(auth -> auth.requestMatchers("/gpu").hasRole("GPU_SERVER").anyRequest().permitAll());
+        http.authorizeHttpRequests(auth -> auth.requestMatchers("/gpu/**").hasRole("GPU_SERVER").anyRequest().permitAll());
 //        http.authorizeHttpRequests(auth -> auth.requestMatchers("/gpu").hasRole("GPU_SERVER").anyRequest().authenticated());
 
         return http.build();

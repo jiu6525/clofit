@@ -39,7 +39,6 @@ public class GPUFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
         } else {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Wrong Access Key");
-            filterChain.doFilter(request, response);
         }
     }
 }
