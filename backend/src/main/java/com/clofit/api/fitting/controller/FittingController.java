@@ -3,6 +3,7 @@ package com.clofit.api.fitting.controller;
 import com.clofit.api.fitting.request.FittingRequest;
 import com.clofit.api.fitting.request.FittingSearchRequest;
 import com.clofit.api.fitting.request.FittingStoreRequest;
+import com.clofit.api.fitting.response.FittingSearchResponse;
 import com.clofit.api.fitting.service.AwsS3Service;
 import com.clofit.api.fitting.service.FittingService;
 import com.clofit.db.redis.service.RedisService;
@@ -111,7 +112,7 @@ public class FittingController {
      * List<url>
      */
     @PostMapping("/search")
-    public ResponseEntity<List<String>> getFittingImages(@RequestBody FittingSearchRequest fittingSearchRequest) {
+    public ResponseEntity<List<FittingSearchResponse>> getFittingImages(@RequestBody FittingSearchRequest fittingSearchRequest) {
         return ResponseEntity.ok(awsS3Service.getFittingImages(fittingSearchRequest));
     }
 }

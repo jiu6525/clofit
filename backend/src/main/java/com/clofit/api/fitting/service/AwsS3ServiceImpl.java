@@ -4,6 +4,7 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.*;
 import com.clofit.api.fitting.request.FittingSearchRequest;
 import com.clofit.api.fitting.request.FittingStoreRequest;
+import com.clofit.api.fitting.response.FittingSearchResponse;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -107,7 +108,7 @@ public class AwsS3ServiceImpl implements AwsS3Service {
     }
 
     @Override
-    public List<String> getFittingImages(FittingSearchRequest fittingSearchRequest) {
+    public List<FittingSearchResponse> getFittingImages(FittingSearchRequest fittingSearchRequest) {
         Long memberId = fittingSearchRequest.getMemberId();
         String folderPath = "fitting/" + memberId + "/";
 
@@ -116,11 +117,11 @@ public class AwsS3ServiceImpl implements AwsS3Service {
                 .withPrefix(folderPath)
                 .withDelimiter("/");
 
-        List<String> fileUrls = new ArrayList<>();
+        List<FittingSearchResponse> fileUrls = new ArrayList<>();
         amazonS3.listObjectsV2(listObjectsV2Request).getObjectSummaries()
                 .forEach(s3ObjectSummary -> {
                     String fileUrl = amazonS3.getUrl(bucket, s3ObjectSummary.getKey()).toString();
-                    fileUrls.add(fileUrl);
+                    fileUrls.add(new FittingSearchResponse(fileUrl));
                 });
 
         return fileUrls;
