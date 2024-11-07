@@ -1,5 +1,6 @@
 package com.clofit.oauth2.service;
 
+import com.clofit.api.fitting.service.AwsS3ServiceImpl;
 import com.clofit.api.member.entity.Member;
 import com.clofit.api.member.repository.MemberRepository;
 import com.clofit.oauth2.dto.CustomOAuth2User;
@@ -29,33 +30,33 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
 
         OAuth2User oAuth2User = super.loadUser(userRequest);
-        logger.info("oAuth2User = " + oAuth2User);
+        logger.info("oAuth2User = {}", oAuth2User);
 
         String registrationId = userRequest.getClientRegistration().getRegistrationId();
-        logger.info("registrationId = " + registrationId);
+        logger.info("registrationId = {}", registrationId);
+
         OAuth2Response oAuth2Response;
-        Map<String, String> profile = Map.of();
+        Map<String, String> profile;
         if (registrationId.equals("kakao")) {
             logger.info("카카오 로그인 요청");
             profile = new KakaoResponse(oAuth2User.getAttributes()).getProfile();
             oAuth2Response = new KakaoResponse(oAuth2User.getAttributes());
 
-            logger.info("oAuth2Response = " + oAuth2Response);
-            logger.info("oAuth2Response = " + oAuth2Response);
+            logger.info("profile = {}", profile);
+            logger.info("oAuth2Response = {}", oAuth2Response);
         }
         else {
             return null;
         }
 
-        String provider, providerId, name;
+        String name;
 
-        provider = "kakao";
-        providerId = oAuth2User.getName();
+        oAuth2User.getName();
         name = profile.get("nickname");
 
         String memberName = name;
         String email = oAuth2Response.getEmail();
-        logger.info("이메일 - " + email);
+
         Member existData = memberRepository.findByEmail(email);
         if (existData == null) {
 
@@ -73,7 +74,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             memberDTO.setEmail(email);
             memberDTO.setRole("ROLE_USER");
 
-            System.out.println(memberDTO);
 
             return new CustomOAuth2User(memberDTO);
         }

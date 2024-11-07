@@ -21,13 +21,15 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Iterator;
 
 @Component
 public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
-    private final Logger logger = LoggerFactory.getLogger(CustomSuccessHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(CustomSuccessHandler.class);
+
     private final MemberRepository memberRepository;
 
     @Value("${front.react-server}")
@@ -50,7 +52,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         String memberName = customUserDetails.getUsername();
         String name = customUserDetails.getName();
         Member isExistingUser = memberRepository.findByEmail(email);
-        logger.info("isExistingUser" + isExistingUser);
+        logger.info("isExistingUser{}", isExistingUser);
 
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
@@ -64,7 +66,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         objectMapper.registerModule(new JavaTimeModule());
 
         String customUserDetailsJson = objectMapper.writeValueAsString(isExistingUser);
-        Cookie userCookie = new Cookie("customUserDetails", URLEncoder.encode(customUserDetailsJson, "UTF-8"));
+        Cookie userCookie = new Cookie("customUserDetails", URLEncoder.encode(customUserDetailsJson, StandardCharsets.UTF_8));
         userCookie.setMaxAge(60 * 60 * 24);
         userCookie.setPath("/");
         response.addCookie(userCookie);
