@@ -105,7 +105,8 @@ public class SecurityConfig {
         // 세션 설정: STATELESS
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
-        http.authorizeHttpRequests(auth -> auth.requestMatchers("/gpu").hasRole("GPU_SERVER").anyRequest().authenticated());
+        http.authorizeHttpRequests(auth -> auth.requestMatchers("/gpu").hasRole("GPU_SERVER").anyRequest().permitAll());
+//        http.authorizeHttpRequests(auth -> auth.requestMatchers("/gpu").hasRole("GPU_SERVER").anyRequest().authenticated());
 
         return http.build();
     }
