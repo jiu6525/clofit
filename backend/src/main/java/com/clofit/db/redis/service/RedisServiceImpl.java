@@ -3,8 +3,12 @@ package com.clofit.db.redis.service;
 import com.clofit.config.RedisConfig;
 import com.clofit.db.redis.RedisHandler;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.Duration;
 
 /**
@@ -12,11 +16,11 @@ import java.time.Duration;
  */
 @Service
 @RequiredArgsConstructor
-public class RedisSingleDataServiceImpl implements RedisSingleDataService {
+public class RedisServiceImpl implements RedisService {
 
     private final RedisHandler redisHandler;
     private final RedisConfig redisConfig;
-
+    private final RedisTemplate<String, Object> redisTemplate;
 
     /**
      * Redis 단일 데이터 값을 등록/수정합니다.
@@ -55,14 +59,30 @@ public class RedisSingleDataServiceImpl implements RedisSingleDataService {
         return String.valueOf(redisHandler.getValueOperations().get(key));
     }
 
-    /**
-     * Redis 키를 기반으로 단일 데이터의 값을 삭제합니다.
-     *
-     * @param key : redis key
-     * @return {int} 성공(1), 실패(0)
-     */
     @Override
     public int deleteSingleData(String key) {
-        return redisHandler.executeOperation(() -> redisConfig.redisTemplate().delete(key));
+        return 0;
+    }
+
+    // memberId와 이미지를 Redis에 저장하는 메서드
+    public void storeFitting(String key, String memberId, String imagePath) throws IOException {
+        // 이미지 파일을 byte[]로 읽어오기
+        byte[] imageBytes = Files.readAllBytes(Paths.get(imagePath));
+
+        // Redis에 memberId 저장
+        redisTemplate.opsForValue().set(key + ":memberId", memberId);
+
+        // Redis에 이미지 저장
+        redisTemplate.opsForValue().set(key + ":image", imageBytes);
+    }
+
+    // Redis에서 memberId 조회
+    public String getMemberId(String key) {
+        return (String) redisTemplate.opsForValue().get(key + ":memberId");
+    }
+
+    // Redis에서 이미지 조회
+    public byte[] getImage(String key) {
+        return (byte[]) redisTemplate.opsForValue().get(key + ":image");
     }
 }

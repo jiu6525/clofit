@@ -1,5 +1,8 @@
 package com.clofit.config;
 
+import com.clofit.api.fitting.service.AwsS3ServiceImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,6 +15,8 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
 public class RedisConfig {
+
+    private static final Logger logger = LoggerFactory.getLogger(RedisConfig.class);
 
     @Value("${spring.data.redis.host}")
     private String host;
@@ -73,7 +78,7 @@ public class RedisConfig {
             operation.run();
             return 1;
         } catch (Exception e) {
-            System.out.println("Redis 작업 오류 발생 :: " + e.getMessage());
+            logger.error("Redis 작업 오류 발생 :: {}", e.getMessage());
             return 0;
         }
     }

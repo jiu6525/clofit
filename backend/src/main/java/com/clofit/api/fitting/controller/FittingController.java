@@ -2,10 +2,8 @@ package com.clofit.api.fitting.controller;
 
 import com.clofit.api.fitting.request.FittingRequest;
 import com.clofit.api.fitting.service.AwsS3Service;
-import com.clofit.api.fitting.service.AwsS3ServiceImpl;
 import com.clofit.api.fitting.service.FittingService;
-import com.clofit.api.fitting.service.FittingServiceImpl;
-import com.clofit.db.redis.service.RedisSingleDataService;
+import com.clofit.db.redis.service.RedisService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +21,7 @@ public class FittingController {
 
     private final AwsS3Service awsS3Service;
     private final FittingService fittingService;
-    private final RedisSingleDataService redisSingleDataService;
+    private final RedisService redisService;
 
     /**
      * @param multipartFile
