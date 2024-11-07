@@ -7,6 +7,7 @@ import com.clofit.oauth2.dto.CustomOAuth2User;
 import com.clofit.oauth2.dto.KakaoResponse;
 import com.clofit.oauth2.dto.OAuth2Response;
 import com.clofit.oauth2.dto.MemberDTO;
+import com.clofit.oauth2.hadler.CustomSuccessHandler;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,8 +23,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
-    private static final Logger logger = LoggerFactory.getLogger(CustomOAuth2UserService.class);
-
+    private final Logger logger = LoggerFactory.getLogger(CustomOAuth2UserService.class);
     private final MemberRepository memberRepository;
 
     @Override

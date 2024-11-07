@@ -2,6 +2,7 @@ package com.clofit.jwt;
 
 import com.clofit.oauth2.dto.CustomOAuth2User;
 import com.clofit.oauth2.dto.MemberDTO;
+import com.clofit.test.GPUConnectionTestController;
 import com.clofit.oauth2.hadler.CustomSuccessHandler;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -19,6 +20,7 @@ import java.io.IOException;
 
 public class JWTFilter extends OncePerRequestFilter {
 
+    private final Logger logger = LoggerFactory.getLogger(JWTFilter.class);
     private final JWTUtil jwtUtil;
 
     public JWTFilter(JWTUtil jwtUtil) {
@@ -46,7 +48,7 @@ public class JWTFilter extends OncePerRequestFilter {
         //Authorization 헤더 검증
         if (authorization == null) {
 
-            System.out.println("token null");
+            logger.warn("token null");
             filterChain.doFilter(request, response);
 
             //조건이 해당되면 메소드 종료 (필수)
@@ -58,8 +60,7 @@ public class JWTFilter extends OncePerRequestFilter {
 
         //토큰 소멸 시간 검증
         if (jwtUtil.isExpired(token)) {
-
-            System.out.println("token expired");
+            logger.warn("token expired");
             filterChain.doFilter(request, response);
 
             //조건이 해당되면 메소드 종료 (필수)
@@ -71,8 +72,8 @@ public class JWTFilter extends OncePerRequestFilter {
         String name = jwtUtil.getName(token);
         String role = jwtUtil.getRole(token);
 
-        System.out.println("현재 등록한 유저의 정보\n");
-        System.out.println("username : " + username + "\nname : " + name + "\nrole : " + role);
+        logger.info("현재 등록한 유저의 정보\n");
+        logger.info("username : " + username + "\nname : " + name + "\nrole : " + role);
 
         //userDTO를 생성하여 값 set
         MemberDTO memberDTO = new MemberDTO();
@@ -88,7 +89,7 @@ public class JWTFilter extends OncePerRequestFilter {
         //세션에 사용자 등록
         SecurityContextHolder.getContext().setAuthentication(authToken);
 
-        System.out.println("세션 사용자 등록 완료");
+        logger.info("세션 사용자 등록 완료");
 
         filterChain.doFilter(request, response);
     }

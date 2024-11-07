@@ -1,5 +1,6 @@
 package com.clofit.config;
 
+import com.clofit.gpu.GPUFilter;
 import com.clofit.jwt.JWTFilter;
 import com.clofit.jwt.JWTUtil;
 import com.clofit.oauth2.hadler.CustomSuccessHandler;
@@ -7,8 +8,10 @@ import com.clofit.oauth2.service.CustomOAuth2UserService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
@@ -28,15 +31,17 @@ public class SecurityConfig {
     private final CustomOAuth2UserService customOAuth2UserService;
     private final CustomSuccessHandler customSuccessHandler;
     private final JWTUtil jwtUtil;
+    private final String ACCESS_KEY;
 
-    public SecurityConfig(CustomOAuth2UserService customOAuth2UserService, CustomSuccessHandler customSuccessHandler, JWTUtil jwtUtil) {
+    public SecurityConfig(CustomOAuth2UserService customOAuth2UserService, CustomSuccessHandler customSuccessHandler, JWTUtil jwtUtil, @Value("${gpu.access-key}") String ACCESS_KEY) {
         this.customOAuth2UserService = customOAuth2UserService;
         this.customSuccessHandler = customSuccessHandler;
         this.jwtUtil = jwtUtil;
+        this.ACCESS_KEY = ACCESS_KEY;
     }
-
+    @Order(2)
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChainJWT(HttpSecurity http) throws Exception {
         http
                 .cors(corsCustomizer -> corsCustomizer.configurationSource(request -> {
                     CorsConfiguration configuration = new CorsConfiguration();
@@ -80,12 +85,44 @@ public class SecurityConfig {
                 .successHandler(customSuccessHandler)
         );
 
-        // 모든 요청을 허용
-        http.authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
+        // 세션 설정: STATELESS
+        http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+        
+        //ignore를 제외한 모든 경로에 대해 인증 요구
+        //ORDER로 인해 GPU 설정이 우선된다.
+        http.authorizeHttpRequests(auth -> auth.requestMatchers("/**").authenticated().anyRequest().permitAll());
+
+        return http.build();
+    }
+
+    @Order(1)
+    @Bean
+    public SecurityFilterChain filterChainGPU(HttpSecurity http) throws Exception {
+
+        // GPU 필터 추가
+        http.addFilterBefore(new GPUFilter(ACCESS_KEY), UsernamePasswordAuthenticationFilter.class);
 
         // 세션 설정: STATELESS
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
+        http.authorizeHttpRequests(auth -> auth.requestMatchers("/gpu").hasRole("GPU_SERVER").anyRequest().authenticated());
+
         return http.build();
+    }
+    /**
+     * Security 예외 PATH
+     * 개발 단계에서는 모든 경로 허용
+     * 추후 /** 제거로 시큐리티 적용바랍니다
+     */
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return web -> web.ignoring().requestMatchers(
+                "/error",
+                "/swagger-ui/**",
+                "/swagger-resources/**",
+                "/v3/api-docs/**",
+                "/test/**"
+                ,"/**"
+        );
     }
 }

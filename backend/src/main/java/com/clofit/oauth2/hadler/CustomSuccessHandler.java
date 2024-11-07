@@ -2,6 +2,7 @@ package com.clofit.oauth2.hadler;
 
 import com.clofit.api.member.entity.Member;
 import com.clofit.api.member.repository.MemberRepository;
+import com.clofit.jwt.JWTFilter;
 import com.clofit.jwt.JWTUtil;
 import com.clofit.oauth2.dto.CustomOAuth2User;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -60,7 +61,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         String token = jwtUtil.createJwt(memberName,name, role, 60*60*60L);
 
-        response.addCookie(createCookie(token));
+        response.addCookie(createCookie("Authorization", token));
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
 
@@ -73,9 +74,9 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         response.sendRedirect(reactServer + "/");
     }
 
-    private Cookie createCookie(String value) {
+    private Cookie createCookie(String key, String value) {
 
-        Cookie cookie = new Cookie("Authorization", value);
+        Cookie cookie = new Cookie(key, value);
         cookie.setMaxAge(60*60*60);
         cookie.setSecure(true);
         cookie.setPath("/");
