@@ -1,10 +1,14 @@
 package com.clofit.api.fitting.service;
 
-import org.springframework.web.multipart.MultipartFile;
+import com.clofit.api.fitting.request.FittingSearchRequest;
+import com.clofit.api.fitting.request.FittingStoreRequest;
+
+import java.util.List;
 
 public interface AwsS3Service {
 
-    String uploadFile(MultipartFile multipartFile);
+    void uploadFile(FittingStoreRequest fittingStoreRequest);
     void deleteFile(String fileName);
     String getFile(String fileName);
+    List<String> getFittingImages(FittingSearchRequest fittingSearchRequest);
 }
