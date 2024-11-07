@@ -38,8 +38,8 @@ export default function FeedPage() {
       </div>
 
       {/* Image Grid */}
-      <div className='grid grid-cols-2 gap-1 p-2 w-full max-w-[1024px] mx-auto'>
-        {Array.from({ length: 12 }).map((_, index) => (
+      <div className='grid grid-cols-3 gap-0  w-full max-w-[1024px] mx-auto'>
+        {Array.from({ length: 18 }).map((_, index) => (
           <div key={index} className='w-full aspect-square relative'>
             <Image
               src={placeholderImage}

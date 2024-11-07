@@ -16,7 +16,7 @@ export default function ClientLayout({
     <div className='flex justify-center w-full min-h-screen bg-gray-100'>
       <div
         id='app'
-        className='w-full min-w-[360px] max-w-[600px] p-4 flex flex-col items-center'
+        className='w-full min-w-[360px] max-w-[600px] flex flex-col items-center'
       >
         {children}
       </div>
