@@ -39,7 +39,7 @@ public class SecurityConfig {
         this.jwtUtil = jwtUtil;
         this.ACCESS_KEY = ACCESS_KEY;
     }
-    @Order(2)
+//    @Order(2)
     @Bean
     public SecurityFilterChain filterChainJWT(HttpSecurity http) throws Exception {
         http
@@ -95,20 +95,20 @@ public class SecurityConfig {
         return http.build();
     }
 
-    @Order(1)
-    @Bean
-    public SecurityFilterChain filterChainGPU(HttpSecurity http) throws Exception {
-
-        // GPU 필터 추가
-        http.addFilterBefore(new GPUFilter(ACCESS_KEY), UsernamePasswordAuthenticationFilter.class);
-
-        // 세션 설정: STATELESS
-        http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-
-        http.authorizeHttpRequests(auth -> auth.requestMatchers("/gpu").hasRole("GPU_SERVER").anyRequest().authenticated());
-
-        return http.build();
-    }
+//    @Order(1)
+//    @Bean
+//    public SecurityFilterChain filterChainGPU(HttpSecurity http) throws Exception {
+//
+//        // GPU 필터 추가
+//        http.addFilterBefore(new GPUFilter(ACCESS_KEY), UsernamePasswordAuthenticationFilter.class);
+//
+//        // 세션 설정: STATELESS
+//        http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+//
+//        http.authorizeHttpRequests(auth -> auth.requestMatchers("/gpu").hasRole("GPU_SERVER").anyRequest().authenticated());
+//
+//        return http.build();
+//    }
     /**
      * Security 예외 PATH
      * 개발 단계에서는 모든 경로 허용
