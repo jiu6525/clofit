@@ -100,6 +100,8 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChainGPU(HttpSecurity http) throws Exception {
 
+        http.csrf(AbstractHttpConfigurer::disable);
+
         // GPU 필터 추가
         http.addFilterBefore(new GPUFilter(ACCESS_KEY), UsernamePasswordAuthenticationFilter.class);
 
