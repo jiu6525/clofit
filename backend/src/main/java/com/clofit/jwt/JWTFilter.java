@@ -3,6 +3,7 @@ package com.clofit.jwt;
 import com.clofit.oauth2.dto.CustomOAuth2User;
 import com.clofit.oauth2.dto.MemberDTO;
 import com.clofit.test.GPUConnectionTestController;
+import com.clofit.oauth2.hadler.CustomSuccessHandler;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
