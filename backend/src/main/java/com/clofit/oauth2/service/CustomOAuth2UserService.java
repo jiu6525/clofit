@@ -6,7 +6,10 @@ import com.clofit.oauth2.dto.CustomOAuth2User;
 import com.clofit.oauth2.dto.KakaoResponse;
 import com.clofit.oauth2.dto.OAuth2Response;
 import com.clofit.oauth2.dto.MemberDTO;
+import com.clofit.oauth2.hadler.CustomSuccessHandler;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
@@ -19,25 +22,26 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
+    private final Logger logger = LoggerFactory.getLogger(CustomOAuth2UserService.class);
     private final MemberRepository memberRepository;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
 
         OAuth2User oAuth2User = super.loadUser(userRequest);
-        System.out.println("oAuth2User = " + oAuth2User);
+        logger.info("oAuth2User = " + oAuth2User);
 
         String registrationId = userRequest.getClientRegistration().getRegistrationId();
-        System.out.println("registrationId = " + registrationId);
+        logger.info("registrationId = " + registrationId);
         OAuth2Response oAuth2Response;
         Map<String, String> profile = Map.of();
         if (registrationId.equals("kakao")) {
-            System.out.println("카카오 로그인 요청");
+            logger.info("카카오 로그인 요청");
             profile = new KakaoResponse(oAuth2User.getAttributes()).getProfile();
             oAuth2Response = new KakaoResponse(oAuth2User.getAttributes());
 
-            System.out.println("profile = " + profile);
-            System.out.println("oAuth2Response = " + oAuth2Response);
+            logger.info("oAuth2Response = " + oAuth2Response);
+            logger.info("oAuth2Response = " + oAuth2Response);
         }
         else {
             return null;
@@ -51,7 +55,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
         String memberName = name;
         String email = oAuth2Response.getEmail();
-        System.out.println("여기 이메일" + email);
+        logger.info("이메일 - " + email);
         Member existData = memberRepository.findByEmail(email);
         if (existData == null) {
 
