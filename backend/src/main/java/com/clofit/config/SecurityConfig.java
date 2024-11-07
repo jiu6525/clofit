@@ -39,7 +39,7 @@ public class SecurityConfig {
         this.jwtUtil = jwtUtil;
         this.ACCESS_KEY = ACCESS_KEY;
     }
-//    @Order(2)
+    @Order(1)
     @Bean
     public SecurityFilterChain filterChainJWT(HttpSecurity http) throws Exception {
         http
@@ -95,7 +95,7 @@ public class SecurityConfig {
         return http.build();
     }
 
-    @Order(1)
+    @Order(2)
     @Bean
     public SecurityFilterChain filterChainGPU(HttpSecurity http) throws Exception {
 
