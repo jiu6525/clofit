@@ -1,14 +1,29 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
+import { useRouter } from 'next/navigation';
+import { FaCamera } from 'react-icons/fa';
+import { SlPicture } from 'react-icons/sl';
+import { IoSearch } from 'react-icons/io5';
+
+interface Item {
+  id: number;
+  name: string;
+  type: string;
+  category: string;
+}
 
 export default function Closet() {
-  const [hasItems, setHasItems] = useState(true);
+  const [hasItems, setHasItems] = useState(false);
   const [selectedSource, setSelectedSource] = useState('전체');
   const [selectedCategory, setSelectedCategory] = useState('전체');
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const fileInputRef = useRef<HTMLInputElement | null>(null); // 파일 입력 요소의 참조 생성
+  const router = useRouter();
 
   // 아이템 목록 (예시 데이터)
-  const allItems = [
+  const allItems: Item[] = [
     { id: 1, name: '티셔츠', type: '내 옷', category: '티셔츠' },
     { id: 2, name: '청바지', type: '내 옷', category: '청바지' },
     { id: 3, name: '셔츠', type: '상품', category: '셔츠' },
@@ -23,7 +38,7 @@ export default function Closet() {
 
   async function fetchItems() {
     try {
-      setHasItems(true); // 임시로 아이템이 있다고 설정
+      setHasItems(false); // 임시로 아이템이 있다고 설정
     } catch (error) {
       console.error('아이템 로딩 중 에러 발생:', error);
     }
@@ -37,6 +52,24 @@ export default function Closet() {
       selectedCategory === '전체' || item.category === selectedCategory;
     return sourceMatch && categoryMatch;
   });
+
+  // 모달 열기 및 닫기 핸들러
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
+  // 파일 선택 이벤트 핸들러
+  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      console.log('Selected file:', file);
+      // 여기에서 파일을 업로드하거나 필요한 처리를 할 수 있습니다.
+    }
+  };
 
   return (
     <div className='flex flex-col items-center w-full min-h-screen bg-white'>
@@ -103,16 +136,70 @@ export default function Closet() {
               alt='Empty Closet Icon'
               className='w-16 h-16 mb-4'
             />
-            <p className='text-lg font-semibold mb-2'>옷장이 비어있어요.</p>
-            <p className='text-sm text-gray-500 mb-4'>
+            <p className='text-lg text-[#4A4A4A] font-medium mb-2'>
+              옷장이 비어있어요.
+            </p>
+            <p className=' text-[#717171] mb-4'>
               옷장을 아이템으로 채워보세요.
             </p>
-            <button className='bg-black text-white rounded-md px-4 py-2'>
+            <button
+              className='bg-[#171A1F] text-white rounded-md mt-4 mb-16 px-10 py-3'
+              onClick={handleOpenModal}
+            >
               아이템 추가 하러 가기
             </button>
           </div>
         )}
       </div>
+
+      {/* 모달 */}
+      {isModalOpen && (
+        <div className='fixed inset-0 bg-black bg-opacity-50 flex justify-center items-end'>
+          <div className='bg-white rounded-t-lg w-full max-w-md p-4 h-80'>
+            <div className='flex justify-between items-center mb-8'>
+              <h2 className='text-lg font-semibold flex-1 text-center'>
+                아이템 추가하기
+              </h2>
+              <button onClick={handleCloseModal}>✕</button>
+            </div>
+            <div className='flex flex-col gap-4'>
+              <button
+                className='flex items-center gap-6 p-2 text-left font-medium'
+                onClick={() => {
+                  handleCloseModal();
+                  router.push('/closet/camera'); // 카메라 페이지로 이동
+                }}
+              >
+                <FaCamera size={24} /> 사진 찍기
+              </button>
+              <button
+                className='flex items-center gap-6 p-2 text-left font-medium'
+                onClick={() => fileInputRef.current?.click()}
+              >
+                <SlPicture size={24} /> 갤러리에서 선택하기
+              </button>
+              <button
+                className='flex items-center gap-6 p-2 text-left font-medium'
+                onClick={() => {
+                  handleCloseModal();
+                  router.push('/feed'); // 추천 아이템 둘러보기 클릭 시 /feed로 이동
+                }}
+              >
+                <IoSearch size={24} /> 추천 아이템 둘러보기
+              </button>
+
+              {/* 숨겨진 파일 입력 요소 */}
+              <input
+                type='file'
+                accept='image/*'
+                ref={fileInputRef}
+                className='hidden'
+                onChange={handleFileSelect}
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
