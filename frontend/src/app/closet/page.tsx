@@ -14,7 +14,7 @@ interface Item {
 }
 
 export default function Closet() {
-  const [hasItems, setHasItems] = useState(false);
+  const [hasItems, setHasItems] = useState(true);
   const [selectedSource, setSelectedSource] = useState('전체');
   const [selectedCategory, setSelectedCategory] = useState('전체');
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -38,7 +38,7 @@ export default function Closet() {
 
   async function fetchItems() {
     try {
-      setHasItems(false); // 임시로 아이템이 있다고 설정
+      setHasItems(true); // 임시로 아이템이 있다고 설정
     } catch (error) {
       console.error('아이템 로딩 중 에러 발생:', error);
     }
@@ -82,19 +82,19 @@ export default function Closet() {
         {hasItems ? (
           <div className='w-full'>
             {/* 출처 필터 탭 */}
-            <div className='flex justify-around border-b text-sm sm:text-sm'>
+            <div className='w-full flex justify-around text-base font-medium my-2'>
               {['전체', '내 옷', '상품'].map((source) => (
-                <button
+                <span
                   key={source}
-                  className={`py-2 px-3 ${
-                    selectedSource === source
-                      ? 'text-black border-b-2 border-black'
-                      : 'text-gray-400'
-                  }`}
                   onClick={() => setSelectedSource(source)}
+                  className={`pb-1 border-b-2 cursor-pointer ${
+                    selectedSource === source
+                      ? 'text-[#373A3F] border-black'
+                      : 'text-[#9095A1] border-transparent'
+                  }`}
                 >
                   {source}
-                </button>
+                </span>
               ))}
             </div>
 
@@ -155,7 +155,7 @@ export default function Closet() {
       {/* 모달 */}
       {isModalOpen && (
         <div className='fixed inset-0 bg-black bg-opacity-50 flex justify-center items-end'>
-          <div className='bg-white rounded-t-lg w-full max-w-md p-4 h-80'>
+          <div className='bg-white rounded-t-lg w-full max-w-[600px] p-4 h-80'>
             <div className='flex justify-between items-center mb-8'>
               <h2 className='text-lg font-semibold flex-1 text-center'>
                 아이템 추가하기
