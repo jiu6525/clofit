@@ -129,6 +129,8 @@ public class AwsS3ServiceImpl implements AwsS3Service {
 
     @Override
     public String getFile(String fileName) {
-        return amazonS3.getUrl(bucket, fileName).toString();
+        Long memberId = 3L;
+        String folderPath = "fitting/" + memberId + "/" + fileName;
+        return amazonS3.getUrl(bucket, folderPath).toString();
     }
 }
