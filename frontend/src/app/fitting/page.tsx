@@ -1,4 +1,3 @@
-// FittingPage.tsx
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -10,7 +9,7 @@ import FloatingButton from '@/components/FloatingButton';
 
 export default function FittingPage() {
   const [images, setImages] = useState<string[]>([]);
-  const [hasFittingData, setHasFittingData] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
 
   useEffect(() => {
@@ -23,20 +22,21 @@ export default function FittingPage() {
       imgUrl: string;
     };
 
+    // 실제 회원 ID로 변경 필요
     try {
       const response = await axiosInstance.post<FittingImageResponse[]>(
         '/fitting/search',
         {
-          member_id: 1, // 실제 회원 ID로 변경 필요
+          member_id: 1,
         }
       );
 
-      const imgUrls = response.data.map((item) => item.imgUrl); // 이미지 URL만 추출
-
+      const imgUrls = response.data.map((item) => item.imgUrl); // 이미지 URL 추출
       setImages(imgUrls);
-      setHasFittingData(imgUrls.length > 0); // 이미지 데이터가 있으면 true로 설정
     } catch (error) {
       console.error('피팅 데이터 로딩 중 에러 발생:', error);
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -51,14 +51,14 @@ export default function FittingPage() {
         <header className='w-full py-4 px-6 text-left'>
           <h1 className='text-2xl font-semibold'>피팅</h1>
         </header>
-        {hasFittingData ? (
-          <FittingThumbnails images={images} /> // 데이터를 FittingThumbnails에 전달
+        {isLoading ? null : images.length > 0 ? (
+          <FittingThumbnails images={images} />
         ) : (
           <FittingStart onStartFitting={handleStartFitting} />
         )}
 
         {/* Floating Button */}
-        <FloatingButton onClick={handleStartFitting} />
+        {!isLoading && <FloatingButton onClick={handleStartFitting} />}
       </div>
     </div>
   );
