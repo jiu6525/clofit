@@ -15,6 +15,11 @@ public class GPUController {
     @Autowired
     private GPUService s3Service;
 
+    /**
+     * 배경 제거 이미지 업로드
+     * @param brd 배경화면 제거된 이미지 및 경로
+     * @return 저장한 url 경로를 응답한다.
+     */
     @PostMapping("/backgroundless")
     ResponseEntity<BackgroundlessResponse> saveBackgroundless(@ModelAttribute BackgroundlessRequestDto brd) {
         int index = brd.getFilePath().lastIndexOf('.');
