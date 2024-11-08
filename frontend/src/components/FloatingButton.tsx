@@ -12,7 +12,7 @@ export default function FloatingButton({
   return (
     <div
       className='absolute flex items-center justify-center w-14 h-14 rounded-full bg-black text-white cursor-pointer shadow-lg'
-      style={{ bottom: '3vh', right: '5vw' }}
+      style={{ bottom: '10vh', right: '20vw' }}
       onClick={onClick}
     >
       <span className='text-2xl'>{icon}</span>
