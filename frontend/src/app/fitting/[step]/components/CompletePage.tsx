@@ -2,6 +2,7 @@
 
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import axiosInstance from '@/api/axiosInstance';
 import ButtonRectangular from '@/components/ButtonRectangular';
 
 export default function CompletePage() {
@@ -18,9 +19,41 @@ export default function CompletePage() {
     }
   }, [imageUrl]);
 
-  const handleSave = () => {
-    console.log('이미지 저장');
-    router.push('/fitting');
+  const handleSave = async () => {
+    try {
+      if (!imageUrl) return;
+
+      console.log('이미지 저장 요청 시작'); // 요청 시작 표시
+
+      // 이미지를 blob으로 변환
+      const response = await fetch(imageUrl);
+      const blob = await response.blob();
+
+      // FormData를 생성하고 이미지와 member_id 추가
+      const formData = new FormData();
+      formData.append('fittingImg', blob, 'fitting_result.jpg');
+      formData.append('member_id', '1'); // 실제 member_id로 변경
+
+      // API 요청
+      const saveResponse = await axiosInstance.post(
+        '/fitting/store',
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        }
+      );
+
+      if (saveResponse.status === 200) {
+        console.log('이미지 저장 성공'); // 요청 성공 표시
+        router.push('/fitting');
+      } else {
+        console.log('이미지 저장 응답 상태 코드:', saveResponse.status); // 응답 상태 코드 표시
+      }
+    } catch (error) {
+      console.error('이미지 저장 중 에러 발생:', error); // 요청 실패 표시
+    }
   };
 
   const handleCancel = () => {
