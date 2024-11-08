@@ -20,7 +20,7 @@ export default function BottomSelection() {
     if (selectedItemIndex === null || isRequestPending) return;
 
     setIsRequestPending(true); // 요청 중으로 상태 설정
-    console.log('API 요청 전송 중...'); // 요청 전송 상태 표시
+    console.log('fitting API 요청 전송'); // 요청 전송 상태 표시
 
     try {
       const response = await axiosInstance.post<Blob>(
