@@ -1,11 +1,17 @@
 package com.clofit.api.fitting.controller;
 
 import com.clofit.api.fitting.request.FittingRequest;
-import com.clofit.api.fitting.service.AwsS3ServiceImpl;
-import com.clofit.api.fitting.service.FittingServiceImpl;
+import com.clofit.api.fitting.request.FittingSearchRequest;
+import com.clofit.api.fitting.request.FittingStoreRequest;
+import com.clofit.api.fitting.response.FittingSearchResponse;
+import com.clofit.api.fitting.service.AwsS3Service;
+import com.clofit.api.fitting.service.FittingService;
+import com.clofit.db.redis.service.RedisService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -19,8 +25,12 @@ import java.util.List;
 @RequestMapping("/fitting")
 @RequiredArgsConstructor
 public class FittingController {
-    private final AwsS3ServiceImpl awsS3ServiceImpl;
-    private final FittingServiceImpl fittingServiceImpl;
+
+
+
+    private final AwsS3Service awsS3Service;
+    private final FittingService fittingService;
+    private final RedisService redisService;
 
     /**
      * @param multipartFile
@@ -39,7 +49,7 @@ public class FittingController {
      */
     @DeleteMapping
     public ResponseEntity<String> deleteFile(@RequestParam String fileName) {
-        awsS3ServiceImpl.deleteFile(fileName);
+        awsS3Service.deleteFile(fileName);
         return ResponseEntity.ok(fileName);
     }
 
@@ -50,7 +60,7 @@ public class FittingController {
      */
     @GetMapping
     public ResponseEntity<String> getFile(@RequestParam String fileName) {
-        return ResponseEntity.ok(awsS3ServiceImpl.getFile(fileName));
+        return ResponseEntity.ok(awsS3Service.getFile(fileName));
     }
 
 
@@ -64,11 +74,15 @@ public class FittingController {
     public ResponseEntity<byte[]> fitting(@RequestBody FittingRequest fittingRequest) {
         try {
             // 서비스에서 비즈니스 로직 처리 후 이미지 파일 반환
-            byte[] imageBytes = fittingServiceImpl.fitting(fittingRequest);
+            byte[] imageBytes = fittingService.fitting(fittingRequest);
+
+            /**
+             * 이미지를 redis에 저장하는 로직 구현 에정
+             */
 
             // 이미지 파일을 응답으로 반환
             HttpHeaders responseHeaders = new HttpHeaders();
-            responseHeaders.setContentType(MediaType.IMAGE_JPEG);  // JPEG 이미지 파일일 경우
+            responseHeaders.setContentType(MediaType.IMAGE_JPEG);
             responseHeaders.setContentDisposition(ContentDisposition.builder("inline")
                     .filename("fitting_result.jpg")
                     .build());
@@ -76,7 +90,32 @@ public class FittingController {
             return new ResponseEntity<>(imageBytes, responseHeaders, HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();  // 예외 디버깅용 출력
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null); // 예외 발생 시 500 응답
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
+
+    /**
+     * @param fittingStoreRequest
+     * 생성된 피팅 이미지 화면에서 출력된 img 파일과 memberId 값을 받음
+     */
+    @PostMapping("/store")
+    public ResponseEntity<String> storeFile(@ModelAttribute FittingStoreRequest fittingStoreRequest) {
+        awsS3Service.uploadFile(fittingStoreRequest);
+        return ResponseEntity.ok("File uploaded successfully");
+    }
+
+    /**
+     * 
+     * @param fittingSearchRequest
+     * memberId 값을 통해 s3에 경로에 저장되어있는 사진들을 불러와서 리스트 형식으로 뿌려줌
+     * @return
+     * List<url>
+     */
+    @PostMapping("/search")
+    public ResponseEntity<List<FittingSearchResponse>> getFittingImages(@RequestBody FittingSearchRequest fittingSearchRequest) {
+        return ResponseEntity.ok(awsS3Service.getFittingImages(fittingSearchRequest));
+    }
 }
+//    public ResponseEntity<String> uploadFile(MultipartFile multipartFile){
+//        return ResponseEntity.ok(awsS3ServiceImpl.uploadFile(multipartFile));
+//    }

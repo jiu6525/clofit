@@ -1,10 +1,10 @@
 package com.clofit.api.fitting.service;
 
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.CannedAccessControlList;
-import com.amazonaws.services.s3.model.DeleteObjectRequest;
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.services.s3.model.*;
+import com.clofit.api.fitting.request.FittingSearchRequest;
+import com.clofit.api.fitting.request.FittingStoreRequest;
+import com.clofit.api.fitting.response.FittingSearchResponse;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +16,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -57,30 +59,36 @@ public class AwsS3ServiceImpl implements AwsS3Service {
 //    }
 
     @Override
-    public String uploadFile(MultipartFile multipartFile){
-        if (multipartFile == null || multipartFile.isEmpty()) {
+    public void uploadFile(FittingStoreRequest fittingStoreRequest){
+        MultipartFile fittingImg = fittingStoreRequest.getFittingImg();
+        Long memberId = fittingStoreRequest.getMemberId();
+
+
+        if (fittingImg == null || fittingImg.isEmpty()) {
             logger.info("업로드 파일이 없거나 비어 있습니다.");
-            return null;
+            return;
         }
+        String name = createFileName();
+        // memberId를 경로에 포함시키고, 파일명에 UUID를 추가
+        String fileName = "fitting/" + memberId + "/" + name; // 경로 지정
 
-        String fileName = createFileName(multipartFile.getOriginalFilename());
         ObjectMetadata objectMetadata = new ObjectMetadata();
-        objectMetadata.setContentLength(multipartFile.getSize());
-        objectMetadata.setContentType(multipartFile.getContentType());
+        objectMetadata.setContentLength(fittingImg.getSize());
+        objectMetadata.setContentType(fittingImg.getContentType());
+        objectMetadata.setContentDisposition("inline; filename=\"" + name + "\"");
 
-        try(InputStream inputStream = multipartFile.getInputStream()){
+        try(InputStream inputStream = fittingImg.getInputStream()){
             amazonS3.putObject(new PutObjectRequest(bucket, fileName, inputStream, objectMetadata)
                     .withCannedAcl(CannedAccessControlList.PublicRead));
-            logger.info("파일 업로드가 완료되었습니다.");
+            logger.info("파일 업로드가 완료되었습니다.{}", fileName);
         } catch (IOException e){
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "파일 업로드에 실패했습니다.");
         }
 
-        return fileName;
     }
 
     // 파일명을 난수화하기 위해 UUID 를 활용하여 난수를 돌린다.
-    public String createFileName(String fileName){
+    public String createFileName(){
         return UUID.randomUUID().toString().concat(".jpg");
     }
 
@@ -97,6 +105,26 @@ public class AwsS3ServiceImpl implements AwsS3Service {
     public void deleteFile(String fileName){
         amazonS3.deleteObject(new DeleteObjectRequest(bucket, fileName));
         logger.info("파일 삭제 성공");
+    }
+
+    @Override
+    public List<FittingSearchResponse> getFittingImages(FittingSearchRequest fittingSearchRequest) {
+        Long memberId = fittingSearchRequest.getMemberId();
+        String folderPath = "fitting/" + memberId + "/";
+
+        ListObjectsV2Request listObjectsV2Request = new ListObjectsV2Request()
+                .withBucketName(bucket)
+                .withPrefix(folderPath)
+                .withDelimiter("/");
+
+        List<FittingSearchResponse> fileUrls = new ArrayList<>();
+        amazonS3.listObjectsV2(listObjectsV2Request).getObjectSummaries()
+                .forEach(s3ObjectSummary -> {
+                    String fileUrl = amazonS3.getUrl(bucket, s3ObjectSummary.getKey()).toString();
+                    fileUrls.add(new FittingSearchResponse(fileUrl));
+                });
+
+        return fileUrls;
     }
 
     @Override

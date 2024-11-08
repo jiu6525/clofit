@@ -29,7 +29,7 @@ public class FittingServiceImpl implements FittingService {
     private final RestTemplate restTemplate;
     private static final Logger logger = LoggerFactory.getLogger(FittingServiceImpl.class);
 
-
+    @Override
     public byte[] fitting(FittingRequest fittingRequest) {
         // S3에서 모델 파일과 의류 파일을 가져옴
         String modelFile = awsS3ServiceImpl.getFile(fittingRequest.getModelName());
