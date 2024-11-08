@@ -13,6 +13,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.zip.ZipEntry;
@@ -30,17 +31,39 @@ public class FittingServiceImpl implements FittingService {
     private static final Logger logger = LoggerFactory.getLogger(FittingServiceImpl.class);
 
     @Override
-    public byte[] fitting(FittingRequest fittingRequest) {
-        // S3에서 모델 파일과 의류 파일을 가져옴
+    public byte[] fitting(FittingRequest fittingRequest) throws Exception {
+        int category = fittingRequest.getCategory();
         String modelFile = awsS3ServiceImpl.getFile(fittingRequest.getModelName());
-        String clothFile = awsS3ServiceImpl.getFile(fittingRequest.getClothName());
+        List<String> clothes;
+        // S3에서 모델 파일과 의류 파일을 가져옴
+        if(category == 2){
+            List<String> clothList = fittingRequest.getClothName();
+            String top = awsS3ServiceImpl.getFile(clothList.getFirst());
+            String bottom = awsS3ServiceImpl.getFile(clothList.getLast());
+            clothes = Arrays.asList(top, bottom);
+            return fitting(modelFile, clothes, category);
+        }else if(category == 0 || category == 1){
+            // 상의 이거나 하의 단일 카테고리만 선택한 경우
+            String clothFile = awsS3ServiceImpl.getFile(fittingRequest.getClothName().getFirst());
+            clothes = Collections.singletonList(clothFile);
+            return fitting(modelFile, clothes, category);
+        }else{
+            throw new Exception("잘못된 요청 입니다.");
+        }
+    }
 
+    private byte[] fitting(String modelFile, List<String> clothFile, int category) {
         // 외부 API의 URL 설정
         String url = gpuServer + "run-ootd";
         String jsonPayload = "{"
                 + "\"model_file_path\": \"" + modelFile + "\","
-                + "\"cloth_file_path\": \"" + clothFile + "\""
-                + "}";
+                + "\"top_file_path\": \"" + clothFile.getFirst() + "\""
+                + "\"category\": \"" + category + "\"";
+        if(category == 2){
+            jsonPayload += "\"bottom_file_path\": \"" + clothFile.getLast() + "\"";
+        }
+
+        jsonPayload += "}";
 
         // HTTP 헤더 설정
         HttpHeaders headers = new HttpHeaders();
@@ -59,7 +82,7 @@ public class FittingServiceImpl implements FittingService {
                 List<byte[]> imageFiles = unzipFile(zipFileBytes);
 
                 if (!imageFiles.isEmpty()) {
-                    // 여러 이미지 파일을 반환
+                    // 첫번째 이미지 파일을 반환
                     return imageFiles.getFirst();
                 } else {
                     logger.error("압축 해제 오류: 이미지 파일이 없습니다.");
@@ -83,7 +106,7 @@ public class FittingServiceImpl implements FittingService {
         ZipEntry entry;
 
         while ((entry = zipInputStream.getNextEntry()) != null) {
-            if (!entry.isDirectory() && entry.getName().endsWith(".jpg")) { // 이미지 파일만 처리 (예: JPG)
+            if (!entry.isDirectory() && entry.getName().endsWith(".png")) { // 이미지 파일만 처리 (예: PNG)
                 ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
                 byte[] buffer = new byte[1024];
                 int length;
@@ -98,5 +121,4 @@ public class FittingServiceImpl implements FittingService {
         zipInputStream.close();
         return imageFiles;
     }
-
 }

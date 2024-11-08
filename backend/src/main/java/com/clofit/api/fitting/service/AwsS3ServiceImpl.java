@@ -89,7 +89,7 @@ public class AwsS3ServiceImpl implements AwsS3Service {
 
     // 파일명을 난수화하기 위해 UUID 를 활용하여 난수를 돌린다.
     public String createFileName(){
-        return UUID.randomUUID().toString().concat(".jpg");
+        return UUID.randomUUID().toString().concat(".png");
     }
 
     //  "."의 존재 유무만 판단
@@ -129,6 +129,7 @@ public class AwsS3ServiceImpl implements AwsS3Service {
 
     @Override
     public String getFile(String fileName) {
-        return amazonS3.getUrl(bucket, fileName).toString();
+        String folderPath = "cloth/" + fileName;
+        return amazonS3.getUrl(bucket, folderPath).toString();
     }
 }

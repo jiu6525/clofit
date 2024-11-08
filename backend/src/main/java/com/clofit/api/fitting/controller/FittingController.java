@@ -34,7 +34,7 @@ public class FittingController {
 
     /**
      * @param multipartFile
-     * 사용자에게 입력받은 이미지 파일을 jpg 형식으로 s3에 저장
+     * 사용자에게 입력받은 이미지 파일을 png 형식으로 s3에 저장
      * @return
      * 등록 성공, 실패 반환
      */
@@ -84,7 +84,7 @@ public class FittingController {
             HttpHeaders responseHeaders = new HttpHeaders();
             responseHeaders.setContentType(MediaType.IMAGE_JPEG);
             responseHeaders.setContentDisposition(ContentDisposition.builder("inline")
-                    .filename("fitting_result.jpg")
+                    .filename("fitting_result.png")
                     .build());
 
             return new ResponseEntity<>(imageBytes, responseHeaders, HttpStatus.OK);
