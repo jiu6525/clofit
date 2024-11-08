@@ -9,7 +9,7 @@ import FloatingButton from '@/components/FloatingButton';
 
 export default function FittingPage() {
   const [images, setImages] = useState<string[]>([]);
-  const [isLoading, setIsLoading] = useState(true); // 로딩 상태 추가
+  const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
 
   useEffect(() => {
@@ -22,20 +22,21 @@ export default function FittingPage() {
       imgUrl: string;
     };
 
+    // 실제 회원 ID로 변경 필요
     try {
       const response = await axiosInstance.post<FittingImageResponse[]>(
         '/fitting/search',
         {
-          member_id: 1, // 실제 회원 ID로 변경 필요
+          member_id: 1,
         }
       );
 
-      const imgUrls = response.data.map((item) => item.imgUrl); // 이미지 URL만 추출
+      const imgUrls = response.data.map((item) => item.imgUrl); // 이미지 URL 추출
       setImages(imgUrls);
     } catch (error) {
       console.error('피팅 데이터 로딩 중 에러 발생:', error);
     } finally {
-      setIsLoading(false); // 로딩이 끝나면 로딩 상태를 false로 설정
+      setIsLoading(false);
     }
   }
 
