@@ -152,7 +152,6 @@ public class AwsS3ServiceImpl implements AwsS3Service {
     public List<FittingSearchResponse> getFittingImages(FittingSearchRequest fittingSearchRequest) {
         Long memberId = fittingSearchRequest.getMemberId();
         String folderPath = "fitting/" + memberId + "/";
-        System.out.println("folderPath" + folderPath);
 
         ListObjectsV2Request listObjectsV2Request = new ListObjectsV2Request()
                 .withBucketName(bucket)
