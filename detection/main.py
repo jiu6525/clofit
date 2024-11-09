@@ -4,13 +4,17 @@ import numpy as np
 from PIL import Image
 import cloth_detection
 from cloth_detection import ClothesFinder
+from human_detection import HumanFinder
 
-img = "./images/test.jpg"
+# img = "./images/test.jpg"
+#
+# cf = ClothesFinder()
+# pred = cf.predict(img)
+# cf.show(pred)
 
-cf = ClothesFinder()
-pred = cf.predict(img)
-cf.show(pred)
-
+hf = HumanFinder()
+img = hf.find("https://clofit-s3-bucket.s3.ap-southeast-2.amazonaws.com/fitting/3/10.jpg")
+img.show()
 
 
 
