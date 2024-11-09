@@ -135,6 +135,3 @@ public class FittingController {
         return ResponseEntity.ok(awsS3Service.getFittingImages(fittingSearchRequest));
     }
 }
-//    public ResponseEntity<String> uploadFile(MultipartFile multipartFile){
-//        return ResponseEntity.ok(awsS3ServiceImpl.uploadFile(multipartFile));
-//    }
