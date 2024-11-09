@@ -45,7 +45,7 @@ public class FittingServiceImpl implements FittingService {
         if(category == 2){
             List<String> clothList = fittingRequest.getClothName();
             String top = awsS3ServiceImpl.getClothFile(new ClothRequest(0, clothList.getFirst()));
-            String bottom = awsS3ServiceImpl.getClothFile(new ClothRequest(1, clothList.getFirst()));
+            String bottom = awsS3ServiceImpl.getClothFile(new ClothRequest(1, clothList.getLast()));
             clothes = Arrays.asList(top, bottom);
             return fitting(modelFile, clothes, category);
         }else if(category == 0 || category == 1){
@@ -66,7 +66,7 @@ public class FittingServiceImpl implements FittingService {
                 + "\"top_file_path\": \"" + clothFile.getFirst() + "\","
                 + "\"category\": \"" + category + "\"";
         if(category == 2){
-            jsonPayload += "\", bottom_file_path\": \"" + clothFile.getLast() + "\"";
+            jsonPayload += ","+ "\"bottom_file_path\": \"" + clothFile.getLast() + "\"";
         }
         System.out.println("test" + jsonPayload);
 

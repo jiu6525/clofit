@@ -170,7 +170,8 @@ public class AwsS3ServiceImpl implements AwsS3Service {
 
     @Override
     public String getClothFile(ClothRequest clothRequest) {
-        String folderPath = "cloth/" + (clothRequest.getCategory() == 0 ? "top" : "bottom") + "/" + clothRequest.getClothImg();
+        int category = clothRequest.getCategory();
+        String folderPath = "cloth/" + (category == 0 || category == 2 ? "top" : "bottom") + "/" + clothRequest.getClothImg();
         return amazonS3.getUrl(bucket, folderPath).toString();
     }
 
