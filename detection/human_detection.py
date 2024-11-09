@@ -19,6 +19,6 @@ class HumanFinder :
         if response.status_code == 200:
             # BytesIO 객체로 변환하여 PIL 이미지로 읽기
             img = Image.open(BytesIO(response.content))
-            return img
+            return remove(img)
         else:
             raise Exception(f"Failed to fetch image. Status code: {response.status_code}")

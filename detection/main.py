@@ -3,8 +3,10 @@ import cv2
 import numpy as np
 from PIL import Image
 import cloth_detection
-from cloth_detection import ClothesFinder
+from cloth_detection import *
 from human_detection import HumanFinder
+from S3 import S3
+import json
 
 # img = "./images/test.jpg"
 #
@@ -12,9 +14,48 @@ from human_detection import HumanFinder
 # pred = cf.predict(img)
 # cf.show(pred)
 
-hf = HumanFinder()
-img = hf.find("https://clofit-s3-bucket.s3.ap-southeast-2.amazonaws.com/fitting/3/10.jpg")
-img.show()
+url = "https://clofit-s3-bucket.s3.ap-southeast-2.amazonaws.com/fitting/3/10.jpg"
+cf = ClothesFinder()
+
+res = cf.run(url)
+
+
+#######clothes
+# s3 = S3()
+# cf = ClothesFinder()
+# original = s3.get(url)
+# pred = cf.predict(original)
+#
+# print(pred[0].tojson())
+#
+# json = json.loads(pred[0].tojson())
+#
+# print(json[0]["name"])
+#
+# cf.show(pred)
+#
+# points = np.array([[[int(x), int(y)] for x, y in zip(json[0]["segments"]["x"], json[0]["segments"]["y"])]], dtype=np.int32)
+#
+# mask = np.zeros(pred[0].plot().shape[:2], dtype=np.uint8)
+#
+# cv2.fillPoly(mask, points, 255)
+#
+# tmp = cv2.cvtColor(np.array(original), cv2.COLOR_RGB2BGRA)
+#
+# # masked_image = cv2.bitwise_and(tmp, tmp, mask=mask)
+# tmp[:,:,3] = mask
+#
+# cv2.imshow("test", tmp)
+#
+# cv2.waitKey(0)
+# cv2.destroyAllWindows()
+#
+# cv2.imwrite("./test.png", tmp)
+
+#### human detect
+# hf = HumanFinder()
+# img = hf.find("https://clofit-s3-bucket.s3.ap-southeast-2.amazonaws.com/fitting/3/10.jpg")
+# img.show()
 
 
 
