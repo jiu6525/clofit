@@ -5,15 +5,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
-
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
-public class FittingRequest {
+@NoArgsConstructor
+public class ModelRequest {
     private Long memberId;
-    private int category;
-    private String modelName;
-    private List<String> clothName;
+    private String modelImg;
 }

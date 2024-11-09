@@ -4,16 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.List;
+import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
-public class FittingRequest {
+@NoArgsConstructor
+public class ModelInsertRequest {
     private Long memberId;
-    private int category;
-    private String modelName;
-    private List<String> clothName;
+    private MultipartFile modelImg;
 }
