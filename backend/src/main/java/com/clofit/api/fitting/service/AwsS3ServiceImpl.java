@@ -2,8 +2,7 @@ package com.clofit.api.fitting.service;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.*;
-import com.clofit.api.fitting.request.FittingSearchRequest;
-import com.clofit.api.fitting.request.FittingStoreRequest;
+import com.clofit.api.fitting.request.*;
 import com.clofit.api.fitting.response.FittingSearchResponse;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -30,6 +29,48 @@ public class AwsS3ServiceImpl implements AwsS3Service {
     private static final Logger logger = LoggerFactory.getLogger(AwsS3ServiceImpl.class);
 
     private final AmazonS3 amazonS3;
+
+    // 공통된 파일 업로드 메서드
+    private void uploadFile(MultipartFile file, String filePath) {
+        if (file == null || file.isEmpty()) {
+            logger.info("업로드 파일이 없거나 비어 있습니다.");
+            return;
+        }
+
+        String name = createFileName(); // 파일명 생성
+        String fileName = filePath + "/" + name; // 경로 지정
+
+        ObjectMetadata objectMetadata = new ObjectMetadata();
+        objectMetadata.setContentLength(file.getSize());
+        objectMetadata.setContentType(file.getContentType());
+        objectMetadata.setContentDisposition("inline; filename=\"" + name + "\"");
+
+        try (InputStream inputStream = file.getInputStream()) {
+            amazonS3.putObject(new PutObjectRequest(bucket, fileName, inputStream, objectMetadata)
+                    .withCannedAcl(CannedAccessControlList.PublicRead));
+            logger.info("파일 업로드가 완료되었습니다.{}", fileName);
+        } catch (IOException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "파일 업로드에 실패했습니다.");
+        }
+    }
+
+    @Override
+    public void uploadClothFile(ClothInsertRequest clothInsertRequest) {
+        MultipartFile cloth = clothInsertRequest.getClothImg();
+        String category = clothInsertRequest.getCategory() == 0 ? "top" : "bottom";
+        String filePath = "cloth/" + category; // 경로 지정
+
+        uploadFile(cloth, filePath);  // 공통 메서드 호출
+    }
+
+    @Override
+    public void uploadModelFile(ModelInsertRequest modelInsertRequest) {
+        MultipartFile model = modelInsertRequest.getModelImg();
+        Long memberId = modelInsertRequest.getMemberId();
+        String filePath = "model/" + memberId; // 경로 지정
+
+        uploadFile(model, filePath);  // 공통 메서드 호출
+    }
 
     /**
      * 다중 파일 업로드 기능도 구현 하였으나
@@ -111,11 +152,11 @@ public class AwsS3ServiceImpl implements AwsS3Service {
     public List<FittingSearchResponse> getFittingImages(FittingSearchRequest fittingSearchRequest) {
         Long memberId = fittingSearchRequest.getMemberId();
         String folderPath = "fitting/" + memberId + "/";
+        System.out.println("folderPath" + folderPath);
 
         ListObjectsV2Request listObjectsV2Request = new ListObjectsV2Request()
                 .withBucketName(bucket)
-                .withPrefix(folderPath)
-                .withDelimiter("/");
+                .withPrefix(folderPath);
 
         List<FittingSearchResponse> fileUrls = new ArrayList<>();
         amazonS3.listObjectsV2(listObjectsV2Request).getObjectSummaries()
@@ -128,8 +169,14 @@ public class AwsS3ServiceImpl implements AwsS3Service {
     }
 
     @Override
-    public String getFile(String fileName) {
-        String folderPath = "cloth/" + fileName;
+    public String getClothFile(ClothRequest clothRequest) {
+        String folderPath = "cloth/" + (clothRequest.getCategory() == 0 ? "top" : "bottom") + "/" + clothRequest.getClothImg();
+        return amazonS3.getUrl(bucket, folderPath).toString();
+    }
+
+    @Override
+    public String getModelFile(ModelRequest modelRequest) {
+        String folderPath = "model/" + modelRequest.getMemberId() + "/" + modelRequest.getModelImg();
         return amazonS3.getUrl(bucket, folderPath).toString();
     }
 }
