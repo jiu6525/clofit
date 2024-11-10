@@ -1,14 +1,11 @@
 package com.clofit.api.fitting.controller;
 
-import com.clofit.api.fitting.request.FittingRequest;
-import com.clofit.api.fitting.request.FittingSearchRequest;
-import com.clofit.api.fitting.request.FittingStoreRequest;
+import com.clofit.api.fitting.request.*;
 import com.clofit.api.fitting.response.FittingSearchResponse;
 import com.clofit.api.fitting.service.AwsS3Service;
 import com.clofit.api.fitting.service.FittingService;
 import com.clofit.db.redis.service.RedisService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,23 +22,35 @@ import java.util.List;
 @RequestMapping("/fitting")
 @RequiredArgsConstructor
 public class FittingController {
-
-
-
     private final AwsS3Service awsS3Service;
     private final FittingService fittingService;
     private final RedisService redisService;
 
     /**
-     * @param multipartFile
-     * 사용자에게 입력받은 이미지 파일을 jpg 형식으로 s3에 저장
-     * @return
-     * 등록 성공, 실패 반환
+     * @param img 의류 이미지 파일을 png 형식으로 s3에 저장
+     * @return 등록 성공, 실패 반환
      */
-//    @PostMapping
-//    public ResponseEntity<String> uploadFile(MultipartFile multipartFile){
-//        return ResponseEntity.ok(awsS3ServiceImpl.uploadFile(multipartFile));
-//    }
+    @PostMapping("clothInsert")
+    public ResponseEntity<String> uploadClothFile(
+            @RequestParam("category") int category,
+            @RequestParam("img") MultipartFile img)
+    {
+        awsS3Service.uploadClothFile(new ClothInsertRequest(category, img));
+        return ResponseEntity.ok("등록완료");
+    }
+
+    /**
+     * @param img 전신 이미지 파일을 png 형식으로 s3에 저장
+     * @return 등록 성공, 실패 반환
+     */
+    @PostMapping("modelInsert")
+    public ResponseEntity<String> uploadModelFile(
+            @RequestParam("memberId") Long memberId,
+            @RequestParam("img") MultipartFile img)
+    {
+        awsS3Service.uploadModelFile(new ModelInsertRequest(memberId, img));
+        return ResponseEntity.ok("등록완료");
+    }
 
     /**
      * @param fileName s3에 등록된 파일의 주소를 통해 사진 삭제
@@ -54,13 +63,23 @@ public class FittingController {
     }
 
     /**
-     * @param fileName 프론트 서버에서 파일의 이름을 보내준다면 s3에 저장되어있는
-     *                 파일의 경로를 반환하는 메서드
+     * @param clothRequest 프론트 서버에서 파일의 이름을 보내준다면 s3에 저장되어있는
+     *                 의휴 파일의 경로를 반환하는 메서드
      * @return 파일경로 반환, 없을경우 NotFound 동작 추가하기
      */
-    @GetMapping
-    public ResponseEntity<String> getFile(@RequestParam String fileName) {
-        return ResponseEntity.ok(awsS3Service.getFile(fileName));
+    @PostMapping("/cloth")
+    public ResponseEntity<String> getClothFile(@RequestBody ClothRequest clothRequest) {
+        return ResponseEntity.ok(awsS3Service.getClothFile(clothRequest));
+    }
+
+    /**
+     * @param modelRequest 프론트 서버에서 파일의 이름을 보내준다면 s3에 저장되어있는
+     *                  모델 파일의 경로를 반환하는 메서드
+     * @return 파일경로 반환, 없을경우 NotFound 동작 추가하기
+     */
+    @PostMapping("/model")
+    public ResponseEntity<String> getModelFile(@RequestBody ModelRequest modelRequest) {
+        return ResponseEntity.ok(awsS3Service.getModelFile(modelRequest));
     }
 
 
@@ -84,7 +103,7 @@ public class FittingController {
             HttpHeaders responseHeaders = new HttpHeaders();
             responseHeaders.setContentType(MediaType.IMAGE_JPEG);
             responseHeaders.setContentDisposition(ContentDisposition.builder("inline")
-                    .filename("fitting_result.jpg")
+                    .filename("fitting_result.png")
                     .build());
 
             return new ResponseEntity<>(imageBytes, responseHeaders, HttpStatus.OK);
