@@ -83,7 +83,7 @@ public class FittingServiceImpl implements FittingService {
         ZipEntry entry;
 
         while ((entry = zipInputStream.getNextEntry()) != null) {
-            if (!entry.isDirectory() && entry.getName().endsWith(".jpg")) { // 이미지 파일만 처리 (예: JPG)
+            if (!entry.isDirectory() && (entry.getName().endsWith(".jpg") || entry.getName().endsWith(".png"))) { // 이미지 파일만 처리 (예: JPG)
                 ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
                 byte[] buffer = new byte[1024];
                 int length;
