@@ -21,9 +21,8 @@ public class Member {
     @Column(name = "member_id", nullable = false)
     private Long id;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "closet_id")
-    private Closet closet;
+//    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//    @JoinColumn(name = "closet_id")
 
     @Column(name = "email")
     private String email;
