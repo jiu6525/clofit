@@ -2,8 +2,12 @@ package com.clofit.api.clothes.entity;
 
 import com.clofit.api.brand.entity.Brand;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
+@Getter
+@Setter
 public class Clothes {
 
     @Id
