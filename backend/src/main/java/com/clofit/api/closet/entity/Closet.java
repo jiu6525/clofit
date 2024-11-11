@@ -1,9 +1,14 @@
 package com.clofit.api.closet.entity;
 
 import com.clofit.api.clothes.entity.Clothes;
+import com.clofit.api.member.entity.Member;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
+@Getter
+@Setter
 public class Closet {
 
     @Id
@@ -14,6 +19,10 @@ public class Closet {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "clothes_id")
     private Clothes clothes;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member")
+    private Member member;
 
     @Column(name = "reg_closet_dttm")
     private String reg_closet_dttm;
