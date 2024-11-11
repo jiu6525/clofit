@@ -50,23 +50,6 @@ export default function MainPage() {
               </div>
             ))}
           </div>
-
-          <h2 className='text-base font-medium text-[#373A3F] my-4'>
-            강현후님이 좋아요 한 코디
-          </h2>
-
-          <div className='grid grid-cols-3 gap-0'>
-            {Array.from({ length: 3 }).map((_, index) => (
-              <div key={index} className='relative w-full aspect-[3/4]'>
-                <Image
-                  src={placeholderImage}
-                  alt={`좋아요한 코디 ${index + 1}`}
-                  fill
-                  className='object-cover'
-                />
-              </div>
-            ))}
-          </div>
         </section>
 
         {/* 가상 피팅 추천 배너 */}

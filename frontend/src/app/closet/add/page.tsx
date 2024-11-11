@@ -62,7 +62,7 @@ export default function AddClothingPage() {
           alert('옷이 등록되었습니다!');
           router.push('/closet'); // /closet 경로로 이동
         }}
-        className='fixed bottom-0 left-0 right-0 w-full py-6 bg-black text-white text-lg font-semibold'
+        className='fixed bottom-0 w-full max-w-[600px] py-6 bg-black text-white text-lg font-semibold'
       >
         확인
       </button>

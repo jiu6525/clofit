@@ -14,7 +14,7 @@ interface Item {
 }
 
 export default function Closet() {
-  const [hasItems, setHasItems] = useState(true);
+  const [hasItems, setHasItems] = useState(false);
   const [selectedSource, setSelectedSource] = useState('전체');
   const [selectedCategory, setSelectedCategory] = useState('전체');
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -38,7 +38,7 @@ export default function Closet() {
 
   async function fetchItems() {
     try {
-      setHasItems(true); // 임시로 아이템이 있다고 설정
+      setHasItems(false); // 임시로 아이템이 있다고 설정
     } catch (error) {
       console.error('아이템 로딩 중 에러 발생:', error);
     }
