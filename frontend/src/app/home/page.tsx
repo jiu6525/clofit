@@ -1,79 +1,136 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import Navbar from '@/components/Navbar';
+import Slider from 'react-slick';
+import { IoNotificationsOutline } from 'react-icons/io5';
 
 export default function MainPage() {
   const router = useRouter();
-  const placeholderImage = '/snap1.webp';
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  const slides = [
+    {
+      id: 1,
+      src: '/images/mainslide1.png',
+      smallText: '간편한 아이템 등록으로',
+      largeText: '나만의 옷장 만들기',
+      buttonText: '지금 등록하기',
+      textColor: '#171A1F',
+    },
+    {
+      id: 2,
+      src: '/images/mainslide2.svg',
+      smallText: '텍스트 뭐라고 하냐',
+      largeText: '미정입니다',
+      buttonText: '지금 둘러보기',
+      textColor: '#FFFFFF',
+    },
+    {
+      id: 3,
+      src: '/images/mainslide3.png',
+      smallText: '추천 상품이 나와 어울릴지 궁금하다면',
+      largeText: 'AI 가상 피팅',
+      buttonText: '지금 피팅하기',
+      textColor: '#171A1F',
+    },
+  ];
+
+  const sliderSettings = {
+    dots: false,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    autoplay: true,
+    autoplaySpeed: 3000,
+    beforeChange: (_: number, next: number) => setCurrentSlide(next),
+  };
 
   return (
     <div className='w-full min-h-screen bg-white flex justify-center'>
-      {/* 최상위 컨테이너 설정 */}
-      <div className='w-full min-w-[360px] max-w-[600px] p-4 flex flex-col items-center'>
-        <header className='w-full py-4 px-2 mt-2 text-left'>
+      <div className='w-full max-w-[600px] flex flex-col items-center'>
+        <header className='w-full flex items-center justify-between py-4 px-6 mt-6'>
           <Image src='/logo.svg' alt='Clofit Logo' width={80} height={30} />
+          <IoNotificationsOutline
+            size={28}
+            className='text-gray-700 cursor-pointer'
+          />
         </header>
 
-        {/* 등록 배너 */}
-        <div className='w-full bg-[#464646] py-2 px-4 flex items-center justify-between rounded-md my-4'>
-          <div>
-            <p className='text-sm text-[#B7B7B7] ml-2 font-semibold'>
-              나만의 디지털 옷장을 만들고 싶다면
-            </p>
-            <p className='text-base text-white ml-2 font-semibold mt-1'>
-              간편하게 내 아이템 등록하기
-            </p>
-          </div>
-          <div>
-            <Image src='/closet.svg' alt='Closet Icon' width={60} height={60} />
+        {/* 슬라이드 섹션 */}
+        <div className='w-full max-w-[600px] relative'>
+          <Slider {...sliderSettings} className='overflow-hidden'>
+            {slides.map((slide) => (
+              <div key={slide.id} className='relative w-full'>
+                <Image
+                  src={slide.src}
+                  alt={`슬라이드 이미지 ${slide.id}`}
+                  layout='responsive'
+                  width={600}
+                  height={300}
+                  className='object-cover w-full'
+                />
+                <div className='absolute bottom-12 inset-x-0 flex flex-col items-center text-center'>
+                  <p className='text-sm' style={{ color: slide.textColor }}>
+                    {slide.smallText}
+                  </p>
+                  <p
+                    className='font-bold text-2xl mb-2'
+                    style={{ color: slide.textColor }}
+                  >
+                    {slide.largeText}
+                  </p>
+                  <button
+                    onClick={() => router.push('/closet')}
+                    className={`px-4 py-2 rounded-md text-sm font-regular ${
+                      slide.textColor === '#171A1F'
+                        ? 'bg-[#171A1F] text-white'
+                        : 'bg-white text-[#171A1F]'
+                    }`}
+                  >
+                    {slide.buttonText}
+                  </button>
+                </div>
+              </div>
+            ))}
+          </Slider>
+
+          {/* 개별 프로그레스 바 */}
+          <div className='absolute bottom-4 left-0 w-full h-1 flex justify-between px-4'>
+            {slides.map((_, index) => (
+              <div
+                key={index}
+                className={`h-full flex-1 ${
+                  currentSlide === index ? 'bg-white' : 'bg-[#B8B7AC]'
+                }`}
+              />
+            ))}
           </div>
         </div>
 
         {/* 추천 아이템 섹션 */}
         <section className='w-full'>
-          <h2 className='text-base font-medium text-[#373A3F] my-4'>
+          <h2 className='font-medium text-[#373A3F] ml-3 my-4'>
             강현후님을 위한 아이템 추천
           </h2>
           <div className='grid grid-cols-3 gap-0'>
             {Array.from({ length: 3 }).map((_, index) => (
               <div key={index} className='relative w-full aspect-[3/4]'>
                 <Image
-                  src={placeholderImage}
+                  src='/snap1.webp'
                   alt={`추천 아이템 ${index + 1}`}
                   fill
                   className='object-cover'
                 />
-                <p className='text-center text-sm mt-2'>무신사 스탠다드</p>
               </div>
             ))}
           </div>
         </section>
-
-        {/* 가상 피팅 추천 배너 */}
-        <div
-          className='w-full bg-[#E6F0FF] p-4 rounded mt-6 mb-16 flex items-center justify-between gap-4 cursor-pointer'
-          onClick={() => router.push('/fitting')}
-        >
-          <div className='flex flex-col items-center text-center'>
-            <p className='text-lg font-bold text-[#222222]'>
-              나와 어울리는 아이템은?
-            </p>
-            <p className='text-lg text-[#3376F6] font-bold'>
-              가상피팅 하러가기
-            </p>
-          </div>
-          <div>
-            <Image
-              src='/gofitting.svg'
-              alt='Closet Icon'
-              width={105}
-              height={60}
-            />
-          </div>
-        </div>
 
         {/* 하단 네비게이션 */}
         <Navbar />
