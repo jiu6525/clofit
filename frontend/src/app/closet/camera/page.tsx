@@ -11,30 +11,36 @@ export default function CameraPage() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const router = useRouter();
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
-  const [isPreviewVisible, setIsPreviewVisible] = useState(false); // 팝업 표시 여부
+  const [isPreviewVisible, setIsPreviewVisible] = useState(false);
+
+  // 카메라 시작 함수
+  const startCamera = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+      }
+    } catch (error) {
+      console.error('카메라를 열 수 없습니다:', error);
+    }
+  };
+
+  // 카메라 중지 함수
+  const stopCamera = () => {
+    if (videoRef.current && videoRef.current.srcObject) {
+      (videoRef.current.srcObject as MediaStream)
+        .getTracks()
+        .forEach((track) => track.stop());
+      videoRef.current.srcObject = null;
+    }
+  };
 
   useEffect(() => {
-    const startCamera = async () => {
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({
-          video: true,
-        });
-        if (videoRef.current) {
-          videoRef.current.srcObject = stream;
-        }
-      } catch (error) {
-        console.error('카메라를 열 수 없습니다:', error);
-      }
-    };
-
     startCamera();
 
+    // 페이지를 떠날 때 항상 카메라 중지
     return () => {
-      if (videoRef.current && videoRef.current.srcObject) {
-        (videoRef.current.srcObject as MediaStream)
-          .getTracks()
-          .forEach((track) => track.stop());
-      }
+      stopCamera();
     };
   }, []);
 
@@ -43,34 +49,41 @@ export default function CameraPage() {
       const canvas = canvasRef.current;
       const video = videoRef.current;
 
-      // 캔버스 크기를 비디오 크기로 설정
       canvas.width = video.videoWidth;
       canvas.height = video.videoHeight;
 
-      // 캔버스에 현재 비디오 프레임을 그리기
       const context = canvas.getContext('2d');
       if (context) {
         context.drawImage(video, 0, 0, canvas.width, canvas.height);
-        // 캡처된 이미지 URL 생성
         const imageDataUrl = canvas.toDataURL('image/png');
         setCapturedImage(imageDataUrl);
         setIsPreviewVisible(true); // 미리보기 팝업 열기
+        stopCamera(); // 사진 촬영 후 카메라 중지
       }
     }
   };
 
   const handleRetake = () => {
-    setIsPreviewVisible(false); // 팝업 닫기
+    setCapturedImage(null);
+    setIsPreviewVisible(false);
+    startCamera(); // 다시 찍기 시 카메라 재시작
   };
 
   const handleNext = () => {
-    router.push('/closet/add'); // 다음 화면으로 이동
+    stopCamera(); // "다음"을 누르면 카메라 중지
+    router.push('/closet/add');
   };
 
   return (
     <div className='flex flex-col items-center w-full min-h-screen bg-white'>
       <header className='w-full flex items-center justify-between p-4'>
-        <button onClick={() => router.back()} className='text-xl'>
+        <button
+          onClick={() => {
+            stopCamera();
+            router.push('/closet');
+          }}
+          className='text-xl'
+        >
           <IoChevronBack size={24} />
         </button>
         <h1 className='text-xl font-semibold'>내 옷 등록하기</h1>
