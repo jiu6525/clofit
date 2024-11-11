@@ -2,6 +2,7 @@ package com.clofit.oauth2.hadler;
 
 import com.clofit.api.member.entity.Member;
 import com.clofit.api.member.repository.MemberRepository;
+import com.clofit.jwt.JWTFilter;
 import com.clofit.jwt.JWTUtil;
 import com.clofit.oauth2.dto.CustomOAuth2User;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -10,6 +11,8 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -18,11 +21,14 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Iterator;
 
 @Component
 public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
+
+    private static final Logger logger = LoggerFactory.getLogger(CustomSuccessHandler.class);
 
     private final MemberRepository memberRepository;
 
@@ -46,7 +52,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         String memberName = customUserDetails.getUsername();
         String name = customUserDetails.getName();
         Member isExistingUser = memberRepository.findByEmail(email);
-        System.out.println("isExistingUser" + isExistingUser);
+        logger.info("isExistingUser{}", isExistingUser);
 
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
@@ -60,7 +66,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         objectMapper.registerModule(new JavaTimeModule());
 
         String customUserDetailsJson = objectMapper.writeValueAsString(isExistingUser);
-        Cookie userCookie = new Cookie("customUserDetails", URLEncoder.encode(customUserDetailsJson, "UTF-8"));
+        Cookie userCookie = new Cookie("customUserDetails", URLEncoder.encode(customUserDetailsJson, StandardCharsets.UTF_8));
         userCookie.setMaxAge(60 * 60 * 24);
         userCookie.setPath("/");
         response.addCookie(userCookie);
