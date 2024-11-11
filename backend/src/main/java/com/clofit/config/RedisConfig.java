@@ -1,5 +1,6 @@
 package com.clofit.config;
 
+import com.clofit.api.fitting.entity.FittingResult;
 import com.clofit.api.fitting.service.AwsS3ServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +34,26 @@ public class RedisConfig {
     public RedisTemplate<String, Object> redisTemplate() {
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
         
+        // 레디스 연결
+        redisTemplate.setConnectionFactory(redisConnectionFactory());
+
+        // 일반적인 key:value의 경우 시리얼라이저
+        redisTemplate.setKeySerializer(new StringRedisSerializer());
+        redisTemplate.setValueSerializer(new StringRedisSerializer());
+
+        // Hash를 사용할 경우 시리얼라이저
+        redisTemplate.setHashKeySerializer(new StringRedisSerializer());
+        redisTemplate.setHashValueSerializer(new StringRedisSerializer());
+
+        // 모든 경우
+        redisTemplate.setDefaultSerializer(new StringRedisSerializer());
+
+        return redisTemplate;
+    }
+    @Bean
+    public RedisTemplate<String, FittingResult> fittingResultRedisTemplate() {
+        RedisTemplate<String, FittingResult> redisTemplate = new RedisTemplate<>();
+
         // 레디스 연결
         redisTemplate.setConnectionFactory(redisConnectionFactory());
 

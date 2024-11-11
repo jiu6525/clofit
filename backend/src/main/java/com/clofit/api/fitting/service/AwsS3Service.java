@@ -9,6 +9,7 @@ import java.util.List;
 public interface AwsS3Service {
 
     void uploadFile(FittingStoreRequest fittingStoreRequest);
+    String uploadFile(FittingStoreRequest fittingStoreRequest, String redisId);
     void deleteFile(String fileName);
     String getFile(String fileName);
     List<FittingSearchResponse> getFittingImages(FittingSearchRequest fittingSearchRequest);

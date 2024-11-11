@@ -1,8 +1,10 @@
 package com.clofit.db.redis.service;
 
+import com.clofit.api.fitting.entity.FittingResult;
 import com.clofit.config.RedisConfig;
 import com.clofit.db.redis.RedisHandler;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +23,7 @@ public class RedisServiceImpl implements RedisService {
     private final RedisHandler redisHandler;
     private final RedisConfig redisConfig;
     private final RedisTemplate<String, Object> redisTemplate;
+    private final RedisTemplate<String, FittingResult> fittingResultRedisTemplate;
 
     /**
      * Redis 단일 데이터 값을 등록/수정합니다.
@@ -74,6 +77,12 @@ public class RedisServiceImpl implements RedisService {
 
         // Redis에 이미지 저장
         redisTemplate.opsForValue().set(key + ":image", imageBytes);
+    }
+
+    @Override
+    public void storeFitting(FittingResult fittingResult) {
+        ListOperations<String, FittingResult> list =  fittingResultRedisTemplate.opsForList();
+        list.rightPush("fitting:" + fittingResult.getMemberId(), fittingResult);
     }
 
     // Redis에서 memberId 조회

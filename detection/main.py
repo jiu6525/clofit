@@ -7,6 +7,7 @@ from cloth_detection import *
 from human_detection import HumanFinder
 from S3 import S3
 import json
+from color_detection import *
 
 # img = "./images/test.jpg"
 #
@@ -14,12 +15,14 @@ import json
 # pred = cf.predict(img)
 # cf.show(pred)
 
-url = "https://clofit-s3-bucket.s3.ap-southeast-2.amazonaws.com/fitting/3/10.jpg"
+url = "https://clofit-s3-bucket.s3.ap-southeast-2.amazonaws.com/fitting/3/1.jpg"
 cf = ClothesFinder()
 
 res = cf.run(url)
 
-
+colorFinder = ColorFinder()
+colorFinder.getColor(cv2.cvtColor(res.image, cv2.COLOR_RGBA2RGB), res.x1, res.y1, res.x2, res.y2)
+# colorFinder.getColor(res.image)
 #######clothes
 # s3 = S3()
 # cf = ClothesFinder()

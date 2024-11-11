@@ -87,9 +87,38 @@ public class AwsS3ServiceImpl implements AwsS3Service {
 
     }
 
+    @Override
+    public String uploadFile(FittingStoreRequest fittingStoreRequest, String redisId) {
+        MultipartFile fittingImg = fittingStoreRequest.getFittingImg();
+        Long memberId = fittingStoreRequest.getMemberId();
+
+
+        if (fittingImg == null || fittingImg.isEmpty()) {
+            logger.info("업로드 파일이 없거나 비어 있습니다.");
+            return redisId;
+        }
+        String name = redisId + ".png";  //redis id 기준으로 저장하기
+        // memberId를 경로에 포함시키고, 파일명에 RedisId를 넣어준다.
+        String fileName = "fitting/" + memberId + "/tmp/" + name; // 경로 지정
+
+        ObjectMetadata objectMetadata = new ObjectMetadata();
+        objectMetadata.setContentLength(fittingImg.getSize());
+        objectMetadata.setContentType(fittingImg.getContentType());
+        objectMetadata.setContentDisposition("inline; filename=\"" + name + "\"");
+
+        try(InputStream inputStream = fittingImg.getInputStream()){
+            amazonS3.putObject(new PutObjectRequest(bucket, fileName, inputStream, objectMetadata)
+                    .withCannedAcl(CannedAccessControlList.PublicRead));
+            logger.info("파일 업로드가 완료되었습니다.{}", fileName);
+        } catch (IOException e){
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "파일 업로드에 실패했습니다.");
+        }
+        return amazonS3.getUrl(bucket, fileName).toString();
+    }
+
     // 파일명을 난수화하기 위해 UUID 를 활용하여 난수를 돌린다.
     public String createFileName(){
-        return UUID.randomUUID().toString().concat(".jpg");
+        return UUID.randomUUID().toString().concat(".png");
     }
 
     //  "."의 존재 유무만 판단

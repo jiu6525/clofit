@@ -1,8 +1,10 @@
 package com.clofit.api.fitting.controller;
 
+import com.clofit.api.fitting.entity.FittingResult;
 import com.clofit.api.fitting.request.FittingRequest;
 import com.clofit.api.fitting.request.FittingSearchRequest;
 import com.clofit.api.fitting.request.FittingStoreRequest;
+import com.clofit.api.fitting.request.ThreadFittingRequest;
 import com.clofit.api.fitting.response.FittingSearchResponse;
 import com.clofit.api.fitting.service.AwsS3Service;
 import com.clofit.api.fitting.service.FittingService;
@@ -88,6 +90,33 @@ public class FittingController {
                     .build());
 
             return new ResponseEntity<>(imageBytes, responseHeaders, HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();  // 예외 디버깅용 출력
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
+    /**
+     * Virtual Thread를 사용한 피팅
+     * @param fittingRequest 프론트에게 모델 이미지의 이름과 의류 사진을 요청받아서
+     *                       s3에 저장된 이미지 파일의 경로를 얻어와서 gpu 서버에 전송한 뒤
+     *                       결과물인 zip 파일을 얻어와서 redis 에 등록 후 프론트에 응답해줌
+     * @return zip 파일을 응답받아서 압축 해제 후 프론트로 전송
+     */
+    @PostMapping("/thread")
+    public ResponseEntity<String> fitting2(@RequestBody ThreadFittingRequest fittingRequest) {
+        try {
+            // 서비스에서 비즈니스 로직 처리 후 이미지 파일 반환
+//            byte[] imageBytes = fittingService.fitting(fittingRequest);
+            FittingResult fittingResult = new FittingResult();
+            Thread.ofVirtual().start(() -> {
+                String res = fittingService.threadFitting(fittingRequest, fittingResult.getId().toString());
+                fittingResult.setDone(true);
+                fittingResult.setUrl(res);
+                System.out.println(res);
+            });
+
+            return new ResponseEntity<>(fittingResult.getId().toString(), HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();  // 예외 디버깅용 출력
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);

@@ -12,6 +12,11 @@ class Clothes:
     clothes_type: str
     clothes_type_id: int
     confidence: float
+    color_id: int
+    x1: float
+    x2: float
+    y1: float
+    y2: float
     image: cv2.Mat
 
 
@@ -40,6 +45,7 @@ class ClothesFinder:
         clothes_type = data[0]["name"]
         clothes_type_id = data[0]["class"]
         confidence = data[0]["confidence"]
+        # print(data)
 
         points = np.array([[[int(x), int(y)] for x, y in zip(data[0]["segments"]["x"], data[0]["segments"]["y"])]],
                           dtype=np.int32)
@@ -53,7 +59,18 @@ class ClothesFinder:
         # 투명 배경으로 바꾸기
         tmp[:, :, 3] = mask
 
-        return Clothes(clothes_type=clothes_type, clothes_type_id=clothes_type_id, confidence=confidence, image=tmp)
+        self.show(pred)
+
+        return Clothes(clothes_type=clothes_type,
+                       clothes_type_id=clothes_type_id,
+                       confidence=confidence,
+                       image=tmp,
+                       color_id=1,
+                       x1=data[0]["box"]["x1"],
+                       x2=data[0]["box"]["x2"],
+                       y1=data[0]["box"]["y1"],
+                       y2=data[0]["box"]["y2"]
+                       )
 
     # 이미지 보여주기
     def show(self, pred):

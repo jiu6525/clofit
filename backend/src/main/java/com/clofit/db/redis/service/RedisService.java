@@ -1,5 +1,6 @@
 package com.clofit.db.redis.service;
 
+import com.clofit.api.fitting.entity.FittingResult;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -24,4 +25,6 @@ public interface RedisService {
     int deleteSingleData(String key);
 
     void storeFitting(String key, String memberId, String imagePath) throws IOException;
+
+    void storeFitting(FittingResult fittingResult);
 }
