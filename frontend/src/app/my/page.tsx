@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import MyPhotos from './components/MyPhotos';
+import MyOriginPicture from './components/MyOriginPicture';
 import LikedSnaps from './components/LikedSnaps';
 
 export default function MyPage() {
@@ -99,7 +99,7 @@ export default function MyPage() {
         </button>
       </div>
       {/* 탭 콘텐츠 */}
-      {activeTab === 'myPhotos' && <MyPhotos />}
+      {activeTab === 'myPhotos' && <MyOriginPicture />}
       {activeTab === 'likedSnaps' && <LikedSnaps items={items} />}{' '}
     </div>
   );
