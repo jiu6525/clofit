@@ -6,6 +6,7 @@ from PIL import Image
 from S3 import S3
 import json
 from dataclasses import dataclass
+from color_detection import ColorFinder
 
 @dataclass
 class Clothes:
@@ -27,6 +28,7 @@ class ClothesFinder:
         self.yolo_pt_path = "./pt/deepfashion2_yolov8s-seg.pt"
         self.model = YOLO(self.yolo_pt_path)
         self.s3 = S3()
+        self.colorFinder = ColorFinder()
 
     # 옷 찾아내기
     def predict(self, img):
@@ -54,23 +56,33 @@ class ClothesFinder:
 
         tmp = cv2.cvtColor(np.array(original), cv2.COLOR_RGB2BGRA)
 
+
+        color = self.colorFinder.getAvgColor(original, mask)
+        print(color)
+        # color = self.colorFinder.colorFromList(color)
+        # color = self.colorFinder.colorFromListHSL(color) HSL이 그나마 가장 좋은듯?
+        color_id = self.colorFinder.colorFromListWeight(color)
+        print(color_id)
+
         # 검정 배경
         # masked_image = cv2.bitwise_and(tmp, tmp, mask=mask)
         # 투명 배경으로 바꾸기
         tmp[:, :, 3] = mask
 
-        self.show(pred)
+        # self.show(pred)
 
         return Clothes(clothes_type=clothes_type,
                        clothes_type_id=clothes_type_id,
                        confidence=confidence,
                        image=tmp,
-                       color_id=1,
+                       color_id=color_id,
                        x1=data[0]["box"]["x1"],
                        x2=data[0]["box"]["x2"],
                        y1=data[0]["box"]["y1"],
                        y2=data[0]["box"]["y2"]
                        )
+
+
 
     # 이미지 보여주기
     def show(self, pred):

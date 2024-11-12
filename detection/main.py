@@ -20,8 +20,8 @@ cf = ClothesFinder()
 
 res = cf.run(url)
 
-colorFinder = ColorFinder()
-colorFinder.getColor(cv2.cvtColor(res.image, cv2.COLOR_RGBA2RGB), res.x1, res.y1, res.x2, res.y2)
+# colorFinder = ColorFinder()
+# colorFinder.getColor(cv2.cvtColor(res.image, cv2.COLOR_RGBA2RGB), res.x1, res.y1, res.x2, res.y2)
 # colorFinder.getColor(res.image)
 #######clothes
 # s3 = S3()
