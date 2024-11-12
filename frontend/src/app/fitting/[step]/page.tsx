@@ -15,7 +15,7 @@ export default function FittingStep({ params }: { params: { step: string } }) {
     case 'top':
       return <TopSelection memberId={1} />;
     case 'bottom':
-      return <BottomSelection memberId={1} />;
+      return <BottomSelection memberId={1} hasSelectedTop={true} />;
     case 'complete':
       return <CompletePage />;
     default:
