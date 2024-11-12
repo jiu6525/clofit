@@ -1,3 +1,4 @@
+// [step]/page.tsx
 'use client';
 
 import FullBodySelection from './components/FullBodySelection';
@@ -10,11 +11,11 @@ export default function FittingStep({ params }: { params: { step: string } }) {
 
   switch (step) {
     case 'fullbody':
-      return <FullBodySelection />;
+      return <FullBodySelection memberId={1} />;
     case 'top':
-      return <TopSelection />;
+      return <TopSelection memberId={1} />;
     case 'bottom':
-      return <BottomSelection />;
+      return <BottomSelection memberId={1} />;
     case 'complete':
       return <CompletePage />;
     default:
