@@ -1,20 +1,66 @@
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
-import ButtonRectangular from '@/components/ButtonRectangular';
+'use client';
 
-export default function FullBodySelection() {
-  const router = useRouter(); // useRouter 훅을 사용하여 router를 초기화합니다.
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import ButtonRectangular from '@/components/ButtonRectangular';
+import axiosInstance from '@/api/axiosInstance';
+import useSelectionStore from '@/stores/useSelectionStore';
+
+interface FullBodySelectionProps {
+  memberId: number;
+}
+
+export default function FullBodySelection({
+  memberId,
+}: FullBodySelectionProps) {
+  const router = useRouter();
+  const [images, setImages] = useState<string[]>([]);
   const [selectedItemIndex, setSelectedItemIndex] = useState<number | null>(
     null
   );
 
-  // 아이템 클릭 핸들러
+  // 전역 상태의 setSelectedFullBodyImage 함수를 가져옵니다.
+  const setSelectedFullBodyImage = useSelectionStore(
+    (state) => state.setSelectedFullBodyImage
+  );
+
+  useEffect(() => {
+    const fetchModelImages = async () => {
+      try {
+        const response = await axiosInstance.get<string[]>(
+          '/fitting/model-images',
+          {
+            params: { memberId },
+          }
+        );
+
+        if (response.data && response.data.length > 0) {
+          setImages(response.data); // API 응답으로부터 이미지 목록을 설정
+        } else {
+          setImages([
+            'https://clofit-s3-bucket.s3.ap-southeast-2.amazonaws.com/model/1/772bb921-ddc3-4590-b961-594bd5bbd812.png',
+            'https://clofit-s3-bucket.s3.ap-southeast-2.amazonaws.com/model/1/cbe0809e-0e9d-4d90-8b64-3880c76afb02.png',
+          ]); // 하드코딩된 기본 이미지 목록 설정
+        }
+      } catch (error) {
+        console.error('전신 사진 로딩 실패:', error);
+        setImages([
+          'https://clofit-s3-bucket.s3.ap-southeast-2.amazonaws.com/model/1/772bb921-ddc3-4590-b961-594bd5bbd812.png',
+          'https://clofit-s3-bucket.s3.ap-southeast-2.amazonaws.com/model/1/cbe0809e-0e9d-4d90-8b64-3880c76afb02.png',
+        ]); // API 호출 실패 시 기본 이미지 설정
+      }
+    };
+
+    fetchModelImages();
+  }, [memberId]);
+
   const handleItemClick = (index: number) => {
     setSelectedItemIndex(index);
+    setSelectedFullBodyImage(images[index]); // 선택한 이미지를 전역 상태에 저장
   };
 
   const handleNextClick = () => {
-    router.push('/fitting/top');
+    router.push('/fitting/top'); // 상의 선택 페이지로 이동
   };
 
   return (
@@ -30,7 +76,7 @@ export default function FullBodySelection() {
 
       {/* 이미지 선택 목록 */}
       <div className='grid grid-cols-3 gap-2 mb-4'>
-        {Array.from({ length: 9 }).map((_, index) => (
+        {images.map((url, index) => (
           <div
             key={index}
             onClick={() => handleItemClick(index)}
@@ -40,7 +86,11 @@ export default function FullBodySelection() {
                 : 'bg-gray-200'
             }`}
           >
-            <span>이미지 {index + 1}</span>
+            <img
+              src={url}
+              alt={`이미지 ${index + 1}`}
+              className='w-full h-full object-cover rounded'
+            />
           </div>
         ))}
       </div>
