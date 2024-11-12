@@ -27,7 +27,7 @@ export default function LikedSnaps({ items }: LikedSnapsProps) {
       {items.map((item) => (
         <div
           key={item.id}
-          className='relative w-full aspect-square overflow-hidden'
+          className='relative w-fullaspect-[5/6] overflow-hidden'
         >
           <img
             src={item.imageUrl}

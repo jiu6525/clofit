@@ -55,7 +55,13 @@ export default function MainPage() {
     <div className='w-full min-h-screen bg-white flex justify-center'>
       <div className='w-full max-w-[600px] flex flex-col items-center'>
         <header className='w-full flex items-center justify-between py-4 px-6 mt-6'>
-          <Image src='/logo.svg' alt='Clofit Logo' width={80} height={30} />
+          <Image
+            src='/logo.svg'
+            alt='Clofit Logo'
+            width={80}
+            height={30}
+            style={{ width: 'auto', height: 'auto' }}
+          />
           <IoNotificationsOutline
             size={28}
             className='text-gray-700 cursor-pointer'
@@ -65,15 +71,15 @@ export default function MainPage() {
         {/* 슬라이드 섹션 */}
         <div className='w-full max-w-[600px] relative'>
           <Slider {...sliderSettings} className='overflow-hidden'>
-            {slides.map((slide) => (
+            {slides.map((slide, index) => (
               <div key={slide.id} className='relative w-full'>
                 <Image
                   src={slide.src}
                   alt={`슬라이드 이미지 ${slide.id}`}
-                  layout='responsive'
                   width={600}
                   height={300}
                   className='object-cover w-full'
+                  priority={index === 0} // 첫 번째 슬라이드 이미지 priority
                 />
                 <div className='absolute bottom-12 inset-x-0 flex flex-col items-center text-center'>
                   <p className='text-sm' style={{ color: slide.textColor }}>
@@ -125,6 +131,7 @@ export default function MainPage() {
                   src='/snap1.webp'
                   alt={`추천 아이템 ${index + 1}`}
                   fill
+                  sizes='(max-width: 600px) 33vw'
                   className='object-cover'
                 />
               </div>
