@@ -7,7 +7,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import Slider from 'react-slick';
-import { IoNotificationsOutline } from 'react-icons/io5';
+import { IoNotificationsOutline, IoChevronForward } from 'react-icons/io5';
 
 export default function MainPage() {
   const router = useRouter();
@@ -24,11 +24,11 @@ export default function MainPage() {
     },
     {
       id: 2,
-      src: '/images/mainslide2.svg',
+      src: '/images/mainslide2.png',
       smallText: '텍스트 뭐라고 하냐',
       largeText: '미정입니다',
       buttonText: '지금 둘러보기',
-      textColor: '#FFFFFF',
+      textColor: '#171A1F',
     },
     {
       id: 3,
@@ -36,7 +36,7 @@ export default function MainPage() {
       smallText: '추천 상품이 나와 어울릴지 궁금하다면',
       largeText: 'AI 가상 피팅',
       buttonText: '지금 피팅하기',
-      textColor: '#171A1F',
+      textColor: '#FFFFFF',
     },
   ];
 
@@ -81,7 +81,7 @@ export default function MainPage() {
                   className='object-cover w-full'
                   priority={index === 0} // 첫 번째 슬라이드 이미지 priority
                 />
-                <div className='absolute bottom-12 inset-x-0 flex flex-col items-center text-center'>
+                <div className='absolute bottom-9 inset-x-0 flex flex-col items-center text-center'>
                   <p className='text-sm' style={{ color: slide.textColor }}>
                     {slide.smallText}
                   </p>
@@ -93,13 +93,14 @@ export default function MainPage() {
                   </p>
                   <button
                     onClick={() => router.push('/closet')}
-                    className={`px-4 py-2 rounded-md text-sm font-regular ${
+                    className={`px-4 py-2 rounded-md text-sm font-regular flex items-center ${
                       slide.textColor === '#171A1F'
                         ? 'bg-[#171A1F] text-white'
                         : 'bg-white text-[#171A1F]'
                     }`}
                   >
                     {slide.buttonText}
+                    <IoChevronForward size={16} className='ml-1' />
                   </button>
                 </div>
               </div>
