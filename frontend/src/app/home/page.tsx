@@ -7,7 +7,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import Slider from 'react-slick';
-import { IoNotificationsOutline } from 'react-icons/io5';
+import { IoNotificationsOutline, IoChevronForward } from 'react-icons/io5';
 
 export default function MainPage() {
   const router = useRouter();
@@ -75,7 +75,7 @@ export default function MainPage() {
                   height={300}
                   className='object-cover w-full'
                 />
-                <div className='absolute bottom-12 inset-x-0 flex flex-col items-center text-center'>
+                <div className='absolute bottom-8 inset-x-0 flex flex-col items-center text-center'>
                   <p className='text-sm' style={{ color: slide.textColor }}>
                     {slide.smallText}
                   </p>
@@ -87,13 +87,14 @@ export default function MainPage() {
                   </p>
                   <button
                     onClick={() => router.push('/closet')}
-                    className={`px-4 py-2 rounded-md text-sm font-regular ${
+                    className={`px-4 py-2 rounded-md text-sm font-regular flex items-center ${
                       slide.textColor === '#171A1F'
                         ? 'bg-[#171A1F] text-white'
                         : 'bg-white text-[#171A1F]'
                     }`}
                   >
                     {slide.buttonText}
+                    <IoChevronForward size={16} className='ml-1' />
                   </button>
                 </div>
               </div>

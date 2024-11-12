@@ -1,14 +1,27 @@
 'use client';
 
 import React, { useState } from 'react';
-import Navbar from '@/components/Navbar'; // Navbar 컴포넌트를 임포트
+import Navbar from '@/components/Navbar';
 import Image from 'next/image';
+import CategoryFilter from './components/CategoryFilter';
 
 export default function FeedPage() {
-  const placeholderImage = '/snap1.webp'; // 임시 이미지 경로
-  const [activeTab, setActiveTab] = useState('전체'); // 현재 선택된 탭 상태
+  const [activeTab, setActiveTab] = useState('전체');
 
-  // 탭 변경 함수
+  // Sample items data
+  const sampleItems = [
+    { id: 1, type: '상품', src: '/images/product1.jpg' },
+    { id: 2, type: '상품', src: '/images/product2.jpg' },
+    { id: 3, type: '코디', src: '/images/coordin1.jpg' },
+    { id: 4, type: '코디', src: '/images/coordin2.jpg' },
+  ];
+
+  // Filter items based on active tab
+  const filteredItems = sampleItems.filter((item) => {
+    if (activeTab === '전체') return true; // Show all items for '전체'
+    return item.type === activeTab; // Filter by type for '상품' or '코디'
+  });
+
   const handleTabClick = (tab: string) => {
     setActiveTab(tab);
   };
@@ -20,30 +33,16 @@ export default function FeedPage() {
         <h1 className='text-2xl font-semibold'>탐색</h1>
       </header>
 
-      {/* Tabs */}
-      <div className='w-full flex justify-around text-base font-medium my-2'>
-        {['전체', '상품', '코디'].map((tab) => (
-          <span
-            key={tab}
-            onClick={() => handleTabClick(tab)}
-            className={`pb-1 border-b-2 ${
-              activeTab === tab
-                ? 'text-[#373A3F] border-black'
-                : 'text-[#9095A1] border-transparent'
-            } cursor-pointer`}
-          >
-            {tab}
-          </span>
-        ))}
-      </div>
+      {/* Category Filter */}
+      <CategoryFilter activeTab={activeTab} onTabClick={handleTabClick} />
 
       {/* Image Grid */}
-      <div className='grid grid-cols-3 gap-0  w-full max-w-[1024px] mx-auto'>
-        {Array.from({ length: 18 }).map((_, index) => (
-          <div key={index} className='w-full aspect-square relative'>
+      <div className='grid grid-cols-3 gap-0 w-full max-w-[1024px] mx-auto'>
+        {filteredItems.map((item) => (
+          <div key={item.id} className='w-full aspect-square relative'>
             <Image
-              src={placeholderImage}
-              alt={`placeholder ${index}`}
+              src={item.src}
+              alt={`item ${item.id}`}
               layout='fill'
               objectFit='cover'
               className='w-full h-full'
