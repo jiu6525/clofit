@@ -3,15 +3,24 @@ package com.clofit.db.redis.service;
 import com.clofit.api.fitting.entity.FittingResult;
 import com.clofit.config.RedisConfig;
 import com.clofit.db.redis.RedisHandler;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.lettuce.core.RedisException;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Redis 단일 데이터를 처리하는 비즈니스 로직 구현체입니다.
@@ -20,10 +29,12 @@ import java.time.Duration;
 @RequiredArgsConstructor
 public class RedisServiceImpl implements RedisService {
 
+    private final ObjectMapper objectMapper;
     private final RedisHandler redisHandler;
     private final RedisConfig redisConfig;
     private final RedisTemplate<String, Object> redisTemplate;
-    private final RedisTemplate<String, FittingResult> fittingResultRedisTemplate;
+//    private final RedisTemplate<String, FittingResult> fittingResultRedisTemplate;
+    private static final Logger logger = LoggerFactory.getLogger(RedisServiceImpl.class);
 
     /**
      * Redis 단일 데이터 값을 등록/수정합니다.
@@ -80,9 +91,113 @@ public class RedisServiceImpl implements RedisService {
     }
 
     @Override
-    public void storeFitting(FittingResult fittingResult) {
-        ListOperations<String, FittingResult> list =  fittingResultRedisTemplate.opsForList();
-        list.rightPush("fitting:" + fittingResult.getMemberId(), fittingResult);
+    public void storeFitting(FittingResult fittingResult, String memberId) throws JsonProcessingException {
+        ListOperations<String, Object> list =  redisTemplate.opsForList();
+        ValueOperations<String, Object> value = redisTemplate.opsForValue();
+
+        value.set(fittingResultKey(fittingResult.getId()), objectMapper.writeValueAsString(fittingResult));
+        list.rightPush(fittingListKey(memberId), objectMapper.writeValueAsString(fittingResult.getId()));
+    }
+
+    /**
+     * 피팅 결과가 완료되면 관련 정보를 레디스에 저장
+     * @param memberId
+     * @param redisId
+     * @param url
+     * @throws IOException
+     */
+    @Override
+    public void updateFitting(String memberId, String redisId, String url) throws IOException {
+        ListOperations<String, Object> list =  redisTemplate.opsForList();
+        List<Object> fittingList = list.range(fittingListKey(memberId), 0, -1);
+
+        if(fittingList == null) {
+            logger.warn("redis fitting:" + memberId + " is null");
+            return;
+        }
+        String listObj = null;
+        String tmpKey = "\"" + redisId + "\"";
+        boolean isFound = false;
+        int idx = 0;
+        for(Object fitting : fittingList) {
+            listObj = (String)fitting;
+            if(tmpKey.equals(listObj)) {
+                isFound = true;
+                break;
+            }
+            idx++;
+        }
+        if(!isFound) {
+            logger.warn("redis fitting:" + memberId + " inside of " + redisId + " is not found");
+            return;
+        }
+        redisTemplate.opsForValue().set(fittingResultKey(redisId), objectMapper.writeValueAsString(new FittingResult(redisId, true, url)));
+    }
+
+    /**
+     * FittingResult를 제거한다.
+     * @param memberId
+     * @param redisId
+     */
+    @Override
+    public void removeFittingResult(String memberId, String redisId) throws JsonProcessingException {
+        redisTemplate.delete(fittingResultKey(redisId));
+        redisTemplate.opsForList().remove(fittingListKey(memberId), 1, objectMapper.writeValueAsString(redisId));
+    }
+
+    /**
+     * 멤버가 진행한 피팅 결과 UUID 리스트
+     * @param memberId
+     * @return UUID List, 존재하지 않거나 사용 중인 경우 빈 리스트(Empty ArrayList)
+     */
+    @Override
+    public List<String> getFittingList(String memberId) {
+        List<Object> list = redisTemplate.opsForList().range(fittingListKey(memberId),0, -1);
+        if(list == null) {
+            logger.warn("redis fitting:" + memberId + " is null");
+            return new ArrayList<>();
+        }
+
+        List<String> stringList = new ArrayList<>();
+        for(Object fitting : list) {
+            stringList.add(((String)fitting).replaceAll("\"", ""));
+        }
+        return stringList;
+    }
+
+    /**
+     * Fitting Result Id 를 통해 조회
+     * @param redisId FittingResult.ID
+     * @return FittingResult, 존재하지 않거나 사용 중인 경우 null
+     */
+    @Override
+    public FittingResult getFittingResult(String redisId) throws JsonProcessingException {
+        Object o = redisTemplate.opsForValue().get(fittingResultKey(redisId));
+        if(o == null) {
+            logger.warn("redis fitting:" + redisId + " is null");
+            throw new RedisException("redis fitting:" + redisId + " is null");
+        }
+        FittingResult fr = objectMapper.readValue((String)o, FittingResult.class);
+
+        if(fr == null) {
+            logger.warn("redis fitting:" + redisId + " is null");
+            throw new RedisException("redis fitting:" + redisId + " is null");
+        }
+
+        return fr;
+    }
+
+    /**
+     * 주어진 UUID가 멤버의 소유인지 검사
+     * @param memberId
+     * @param redisId
+     * @return 해당 UUID가 존재한다면 true, 아니면 false
+     * @throws JsonProcessingException
+     */
+    @Override
+    public boolean existFittingResult(String memberId, String redisId) throws JsonProcessingException {
+        Long idx =  redisTemplate.opsForList().indexOf(fittingListKey(memberId), objectMapper.writeValueAsString(redisId));
+        return idx != null && idx >= 0;
     }
 
     // Redis에서 memberId 조회
@@ -93,5 +208,12 @@ public class RedisServiceImpl implements RedisService {
     // Redis에서 이미지 조회
     public byte[] getImage(String key) {
         return (byte[]) redisTemplate.opsForValue().get(key + ":image");
+    }
+
+    private String fittingListKey(String memberId) {
+        return "fitting:" + memberId;
+    }
+    private String fittingResultKey(String redisId) {
+        return "fitting_result:" + redisId;
     }
 }

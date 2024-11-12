@@ -15,4 +15,5 @@ public interface AwsS3Service {
     String getClothFile(ClothRequest clothRequest);
     String getModelFile(ModelRequest modelRequest);
     List<FittingSearchResponse> getFittingImages(FittingSearchRequest fittingSearchRequest);
+    void moveFile(String url);
 }

@@ -209,10 +209,27 @@ public class AwsS3ServiceImpl implements AwsS3Service {
         return amazonS3.getUrl(bucket, folderPath).toString();
     }
 
-
-    public String getFile(String fileName) {
-        String folderPath = "fitting/" + 3L + "/" + fileName;
-        return amazonS3.getUrl(bucket, folderPath).toString();
+    /**
+     * 임시 파일을 피팅 폴더로 이동
+     * @param url
+     */
+    @Override
+    public void moveFile(String url) {
+        String com = ".com/";
+        int index = url.indexOf(com);
+        String result = null;
+        if (index != -1) {
+            result = url.substring(index + com.length());
+            amazonS3.copyObject(bucket, result, bucket, result.replace("/tmp", ""));
+            amazonS3.deleteObject(bucket, result);
+        } else {
+            logger.warn("Keyword not found in the URL.");
+        }
     }
+
+//    public String getFile(String fileName) {
+//        String folderPath = "fitting/" + 3L + "/" + fileName;
+//        return amazonS3.getUrl(bucket, folderPath).toString();
+//    }
 
 }

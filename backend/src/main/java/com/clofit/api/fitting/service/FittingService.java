@@ -6,6 +6,5 @@ import com.clofit.api.fitting.request.ThreadFittingRequest;
 import java.util.List;
 
 public interface FittingService {
-    String threadFitting(FittingRequest fittingRequest, String redisId);
     byte[] fitting(FittingRequest fittingRequest) throws Exception;
 }

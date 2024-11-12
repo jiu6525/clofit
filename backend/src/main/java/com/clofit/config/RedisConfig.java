@@ -50,26 +50,6 @@ public class RedisConfig {
 
         return redisTemplate;
     }
-    @Bean
-    public RedisTemplate<String, FittingResult> fittingResultRedisTemplate() {
-        RedisTemplate<String, FittingResult> redisTemplate = new RedisTemplate<>();
-
-        // 레디스 연결
-        redisTemplate.setConnectionFactory(redisConnectionFactory());
-
-        // 일반적인 key:value의 경우 시리얼라이저
-        redisTemplate.setKeySerializer(new StringRedisSerializer());
-        redisTemplate.setValueSerializer(new StringRedisSerializer());
-
-        // Hash를 사용할 경우 시리얼라이저
-        redisTemplate.setHashKeySerializer(new StringRedisSerializer());
-        redisTemplate.setHashValueSerializer(new StringRedisSerializer());
-
-        // 모든 경우
-        redisTemplate.setDefaultSerializer(new StringRedisSerializer());
-
-        return redisTemplate;
-    }
 
     /**
      * 리스트에 접근하여 다양한 연산을 수행합니다.
@@ -79,7 +59,6 @@ public class RedisConfig {
     public ListOperations<String, Object> getListOperations() {
         return this.redisTemplate().opsForList();
     }
-
     /**
      * 단일 데이터에 접근하여 다양한 연산을 수행합니다.
      *
