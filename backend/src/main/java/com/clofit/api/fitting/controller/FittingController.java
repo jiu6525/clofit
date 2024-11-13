@@ -1,16 +1,26 @@
 package com.clofit.api.fitting.controller;
 
+import com.clofit.api.fitting.entity.ByteMultiPart;
+import com.clofit.api.fitting.entity.FittingResult;
+import com.clofit.api.fitting.request.FittingRequest;
+import com.clofit.api.fitting.request.FittingSearchRequest;
+import com.clofit.api.fitting.request.FittingStoreRequest;
+import com.clofit.api.fitting.request.ThreadFittingRequest;
 import com.clofit.api.fitting.request.*;
+import com.clofit.api.fitting.response.FittingIDResponse;
 import com.clofit.api.fitting.response.FittingSearchResponse;
 import com.clofit.api.fitting.service.AwsS3Service;
 import com.clofit.api.fitting.service.FittingService;
 import com.clofit.db.redis.service.RedisService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * 현재는 s3를 통해 사진의 읽기, 등록, 삭제 기능이 여기에 구현되어 있지만
@@ -114,6 +124,50 @@ public class FittingController {
     }
 
     /**
+     * Virtual Thread를 사용한 피팅
+     * @param fittingRequest 프론트에게 모델 이미지의 이름과 의류 사진을 요청받아서
+     *                       s3에 저장된 이미지 파일의 경로를 얻어와서 gpu 서버에 전송한 뒤
+     *                       결과물인 zip 파일을 얻어와서 redis 에 등록 후 프론트에 응답해줌
+     * @return 결과를 저장할 FittingResult의 ID
+     */
+    @PostMapping("/thread")
+    public ResponseEntity<FittingIDResponse> fitting2(@RequestBody FittingRequest fittingRequest) {
+        try {
+            // 서비스에서 비즈니스 로직 처리 후 이미지 파일 반환
+//            byte[] imageBytes = fittingService.fitting(fittingRequest);
+            FittingResult fittingResult = new FittingResult();
+            fittingResult.setId(UUID.randomUUID().toString());
+            fittingResult.setDone(false);
+
+            redisService.storeFitting(fittingResult, fittingRequest.getMemberId().toString());
+
+            Thread.ofVirtual().start(() -> {
+                try {
+                    byte[] imageBytes = fittingService.fitting(fittingRequest);
+
+                    String url = awsS3Service.uploadFile(new FittingStoreRequest(
+                            fittingRequest.getMemberId(),
+                            new ByteMultiPart(imageBytes, "test")),
+                            fittingResult.getId()
+                    );
+
+                    redisService.updateFitting(fittingRequest.getMemberId().toString(), fittingResult.getId(), url);
+
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            });
+
+            return new ResponseEntity<>(new FittingIDResponse(fittingResult.getId()), HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();  // 예외 디버깅용 출력
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
+
+
+    /**
      * @param fittingStoreRequest
      * 생성된 피팅 이미지 화면에서 출력된 img 파일과 memberId 값을 받음
      */
@@ -134,4 +188,90 @@ public class FittingController {
     public ResponseEntity<List<FittingSearchResponse>> getFittingImages(@RequestBody FittingSearchRequest fittingSearchRequest) {
         return ResponseEntity.ok(awsS3Service.getFittingImages(fittingSearchRequest));
     }
+
+    /**
+     * 피팅 결과 정보를 반환한다.
+     * @param memberId
+     * @param redisId
+     * @return
+     * @throws JsonProcessingException
+     */
+    @GetMapping("/{memberId}/{redisId}")
+    public ResponseEntity<FittingResult> getFittingResult(@PathVariable("memberId") String memberId, @PathVariable("redisId") String redisId) {
+        FittingResult fr = null;
+        try {
+            if(!redisService.existFittingResult(memberId, redisId)) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new FittingResult("null", false, "null"));
+            }
+
+            fr = redisService.getFittingResult(redisId);
+
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+
+        return ResponseEntity.ok(fr);
+    }
+
+    /**
+     * 피팅 결과 리스트를 반환한다.
+     * @param memberId
+     * @return
+     */
+    @GetMapping("/{memberId}")
+    public ResponseEntity<List<FittingResult>> getFittingResultList(@PathVariable("memberId") String memberId) {
+        List<String> objList = redisService.getFittingList(memberId);
+        List<FittingResult> fittingResultList = new ArrayList<>();
+
+        for(String obj : objList) {
+            try {
+//                obj = obj.replaceAll("\"", "");
+                fittingResultList.add(redisService.getFittingResult(obj));
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        return ResponseEntity.ok(fittingResultList);
+    }
+
+    /**
+     * 요소 삭제
+     * @param memberId
+     * @param redisId
+     * @return
+     * @throws JsonProcessingException
+     */
+    @DeleteMapping("/{memberId}/{redisId}")
+    public ResponseEntity<String> deleteFittingResult(@PathVariable("memberId") String memberId, @PathVariable("redisId") String redisId) {
+        try {
+            redisService.removeFittingResult(memberId, redisId);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+        return ResponseEntity.ok("Deleted");
+    }
+
+    @PutMapping("/{memberId}/{redisId}")
+    public ResponseEntity<String> saveFittingResult(@PathVariable("memberId") String memberId, @PathVariable("redisId") String redisId)  {
+        FittingResult fittingResult = null;
+        try {
+            fittingResult = redisService.getFittingResult(redisId);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+        if(fittingResult == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Fitting not found");
+        }
+
+        awsS3Service.moveFile(fittingResult.getUrl());
+        try {
+            redisService.removeFittingResult(memberId, redisId);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+
+        return ResponseEntity.ok("Saved");
+    }
+
 }

@@ -10,8 +10,10 @@ public interface AwsS3Service {
     String uploadClothFile(ClothInsertRequest clothInsertRequest);
     String uploadModelFile(ModelInsertRequest ModelInsertRequest);
     void uploadFile(FittingStoreRequest fittingStoreRequest);
+    String uploadFile(FittingStoreRequest fittingStoreRequest, String redisId);
     void deleteFile(String fileName);
     String getClothFile(ClothRequest clothRequest);
     String getModelFile(ModelRequest modelRequest);
     List<FittingSearchResponse> getFittingImages(FittingSearchRequest fittingSearchRequest);
+    void moveFile(String url);
 }
