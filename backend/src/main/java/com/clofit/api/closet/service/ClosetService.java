@@ -3,6 +3,7 @@ package com.clofit.api.closet.service;
 import com.clofit.api.closet.entity.Closet;
 import com.clofit.api.closet.repository.ClosetRepository;
 import com.clofit.api.closet.request.ClosetAddRequest;
+import com.clofit.api.closet.response.ClosetResponse;
 import com.clofit.api.clothes.entity.Clothes;
 import com.clofit.api.clothes.repository.ClothesRepository;
 import com.clofit.api.member.entity.Member;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -46,12 +48,22 @@ public class ClosetService {
     }
 
     public List<Closet> getCloset(Long memberId) {
-        List<Closet> closets = closetRepository.findAllByMemberId(memberId);
+        List<Closet> closet = closetRepository.findAllByMemberId(memberId);
+//        List<ClosetResponse> closetResponses = new ArrayList<>();
+//        for (Closet closet : closets) {
+//            ClosetResponse closetResponse = new ClosetResponse(
+//                    closet.getId(),
+//                    closet.getClothes().getId(),
+//                    closet.getMember().getMemberName(),
+//                    closet.getReg_closet_dttm()
+//            );
+//            closetResponses.add(closetResponse);
+//        }
 
-        if (closets.isEmpty()) {
-            throw new IllegalArgumentException("No closet found for member ID");
-        }
-
-        return closets;
+        return closet;
     }
+
+//    public List<Long> getItem() {
+//
+//    }
 }

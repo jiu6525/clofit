@@ -1,9 +1,13 @@
 package com.clofit.api.clothes.entity;
 
 import com.clofit.api.brand.entity.Brand;
+import com.clofit.api.closet.entity.Closet;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
 
 @Entity
 @Getter
@@ -14,6 +18,10 @@ public class Clothes {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "clothes_id")
     private Long id;
+
+    @OneToMany(mappedBy = "clothes", fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<Closet> closet;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "brand_id")
