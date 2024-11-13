@@ -1,6 +1,7 @@
 package com.clofit.api.member.entity;
 
 import com.clofit.api.closet.entity.Closet;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.CustomLog;
 import lombok.Getter;
@@ -9,6 +10,7 @@ import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -23,6 +25,10 @@ public class Member {
 
 //    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 //    @JoinColumn(name = "closet_id")
+
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<Closet> closet;
 
     @Column(name = "email")
     private String email;
