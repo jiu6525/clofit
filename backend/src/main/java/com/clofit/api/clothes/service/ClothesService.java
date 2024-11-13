@@ -19,19 +19,19 @@ public class ClothesService {
     private final BrandRepository brandRepository;
 
     public List<Clothes> getAllClothes() {
-        return clothesRepository.findAll();
+        return clothesRepository.findAllClothes();
     }
 
     public List<Clothes> getTopClothes() {
-        return clothesRepository.findAll(); // 상의만 검색으로 수정 필요
+        return clothesRepository.findTopClothes(); // 상의만 검색
     }
 
     public List<Clothes> getBottomClothes() {
-        return clothesRepository.findAll(); // 하의만 검색으로 수정 필요
+        return clothesRepository.findBottomClothes(); // 하의만 검색
     }
 
-    public Clothes getDetailClothes(Long memberId) { // memberId로 검색하는게 맞는지 확인 필요
-        return clothesRepository.findById(memberId).orElse(null);
+    public Clothes getDetailClothes(Long clothesId) {
+        return clothesRepository.findDetailClothes(clothesId);
     }
 
     public void registClothes(ClothesRegisterRequest clothesRegisterRequest) {

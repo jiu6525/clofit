@@ -3,7 +3,9 @@ package com.clofit.api.closet.controller;
 import com.clofit.api.closet.entity.Closet;
 import com.clofit.api.closet.request.ClosetDeleteRequest;
 import com.clofit.api.closet.request.ClosetAddRequest;
+import com.clofit.api.closet.response.ClosetResponse;
 import com.clofit.api.closet.service.ClosetService;
+import com.clofit.api.clothes.entity.Clothes;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -39,17 +41,18 @@ public class ClosetController {
         return ResponseEntity.ok(list);
     }
 
-    @GetMapping("/{member_id}") //현재 오류있음
+    @GetMapping("/{memberId}")
     @Operation(summary = "개인 의류 리스트 조회")
-    public ResponseEntity<List<Closet>> getCloset(@PathVariable Long member_id) {
-        List<Closet> list = closetService.getCloset(member_id);
+    public ResponseEntity<List<Closet>> getCloset(@PathVariable Long memberId) {
+        List<Closet> list = closetService.getCloset(memberId);
         return ResponseEntity.ok(list);
     }
 
-    @GetMapping
-    @Operation(summary = "상품 의류 리스트 조회")
-    public ResponseEntity<Void> getItem(){
-        return ResponseEntity.ok().build();
-    }
+//    @GetMapping
+//    @Operation(summary = "상품 의류 리스트 조회")
+//    public ResponseEntity<List<Long>> getItem(){
+//        List<Long> list = closetService.getItem();
+//        return ResponseEntity.ok(list);
+//    }
 
 }
