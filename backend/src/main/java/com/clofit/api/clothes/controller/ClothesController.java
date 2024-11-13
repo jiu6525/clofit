@@ -37,10 +37,10 @@ public class ClothesController {
         return ResponseEntity.ok(list);
     }
 
-    @GetMapping("/{memberId}")
+    @GetMapping("/{clothesId}")
     @Operation(summary = "의류 상세 조회")
-    public ResponseEntity<Clothes> getDetailClothes(@PathVariable Long memberId) {
-        Clothes clothes = clothesService.getDetailClothes(memberId);
+    public ResponseEntity<Clothes> getDetailClothes(@PathVariable Long clothesId) {
+        Clothes clothes = clothesService.getDetailClothes(clothesId);
         return ResponseEntity.ok(clothes);
     }
 
