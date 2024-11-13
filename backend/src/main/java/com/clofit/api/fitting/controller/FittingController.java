@@ -35,8 +35,8 @@ public class FittingController {
             @RequestParam("category") int category,
             @RequestParam("img") MultipartFile img)
     {
-        awsS3Service.uploadClothFile(new ClothInsertRequest(category, img));
-        return ResponseEntity.ok("등록완료");
+        String fileName = awsS3Service.uploadClothFile(new ClothInsertRequest(category, img));
+        return ResponseEntity.ok("등록완료" + fileName);
     }
 
     /**
@@ -48,8 +48,8 @@ public class FittingController {
             @RequestParam("memberId") Long memberId,
             @RequestParam("img") MultipartFile img)
     {
-        awsS3Service.uploadModelFile(new ModelInsertRequest(memberId, img));
-        return ResponseEntity.ok("등록완료");
+        String fileName = awsS3Service.uploadModelFile(new ModelInsertRequest(memberId, img));
+        return ResponseEntity.ok("등록완료" + fileName);
     }
 
     /**
@@ -103,7 +103,7 @@ public class FittingController {
             HttpHeaders responseHeaders = new HttpHeaders();
             responseHeaders.setContentType(MediaType.IMAGE_JPEG);
             responseHeaders.setContentDisposition(ContentDisposition.builder("inline")
-                    .filename("fitting_result.png")
+                    .filename("fitting_result.jpg")
                     .build());
 
             return new ResponseEntity<>(imageBytes, responseHeaders, HttpStatus.OK);

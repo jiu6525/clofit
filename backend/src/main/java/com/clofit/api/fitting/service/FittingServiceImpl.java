@@ -78,10 +78,10 @@ public class FittingServiceImpl implements FittingService {
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
 
         HttpEntity<String> entity = new HttpEntity<>(jsonPayload, headers);
+        System.out.println(entity);
         try {
             // 외부 API에 POST 요청을 보내 zip 파일을 응답받음
             ResponseEntity<byte[]> response = restTemplate.exchange(url, HttpMethod.POST, entity, byte[].class);
-            System.out.println(5);
             byte[] zipFileBytes = response.getBody();
             if (zipFileBytes != null) {
                 // zip 파일 압축 해제

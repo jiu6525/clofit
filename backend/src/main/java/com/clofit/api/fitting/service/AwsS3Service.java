@@ -7,8 +7,8 @@ import java.util.List;
 
 public interface AwsS3Service {
 
-    void uploadClothFile(ClothInsertRequest clothInsertRequest);
-    void uploadModelFile(ModelInsertRequest ModelInsertRequest);
+    String uploadClothFile(ClothInsertRequest clothInsertRequest);
+    String uploadModelFile(ModelInsertRequest ModelInsertRequest);
     void uploadFile(FittingStoreRequest fittingStoreRequest);
     void deleteFile(String fileName);
     String getClothFile(ClothRequest clothRequest);
