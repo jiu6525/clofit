@@ -1,8 +1,12 @@
 package com.clofit.api.fitting.service;
 
-import com.clofit.api.fitting.request.ClothRequest;
+import com.clofit.api.fitting.entity.ByteMultiPart;
 import com.clofit.api.fitting.request.FittingRequest;
+import com.clofit.api.fitting.request.FittingStoreRequest;
+import com.clofit.api.fitting.request.ThreadFittingRequest;
+import com.clofit.api.fitting.request.ClothRequest;
 import com.clofit.api.fitting.request.ModelRequest;
+
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

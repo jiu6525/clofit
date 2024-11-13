@@ -1,9 +1,12 @@
 package com.clofit.db.redis.service;
 
+import com.clofit.api.fitting.entity.FittingResult;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.time.Duration;
+import java.util.List;
 
 /**
  * Redis 단일 데이터를 처리하는 비즈니스 로직 인터페이스입니다.
@@ -24,4 +27,12 @@ public interface RedisService {
     int deleteSingleData(String key);
 
     void storeFitting(String key, String memberId, String imagePath) throws IOException;
+
+    void storeFitting(FittingResult fittingResult, String memberId) throws JsonProcessingException;
+    void updateFitting(String memberId, String redisId, String url) throws IOException;
+
+    void removeFittingResult(String memberId, String redisId) throws JsonProcessingException;
+    List<String> getFittingList(String memberId);
+    FittingResult getFittingResult(String redisId) throws JsonProcessingException;
+    boolean existFittingResult(String memberId, String redisId) throws JsonProcessingException;
 }
