@@ -87,15 +87,26 @@ class ColorFinder:
         distances = [self.color_distance_hsl(color, c) for c in self.color_list]
         return np.argmin(distances)
 
+    # def color_distance_hsl(self, color1, color2):
+    #     h1, s1, l1 = self.rgb_to_hsl(*color1)
+    #     h2, s2, l2 = self.rgb_to_hsl(*color2)
+    #
+    #     dh = min(abs(h1 - h2), 360 - abs(h1 - h2)) / 180.0
+    #     ds = abs(s1 - s2) / 100.0
+    #     dl = abs(l1 - l2) / 100.0
+    #
+    #     return (dh ** 2 + ds ** 2 + dl ** 2) ** 0.5
     def color_distance_hsl(self, color1, color2):
         h1, s1, l1 = self.rgb_to_hsl(*color1)
         h2, s2, l2 = self.rgb_to_hsl(*color2)
 
+        # Hue 차이는 360도를 기준으로 순환하므로, 더 나은 차이 계산을 위해
         dh = min(abs(h1 - h2), 360 - abs(h1 - h2)) / 180.0
         ds = abs(s1 - s2) / 100.0
         dl = abs(l1 - l2) / 100.0
 
-        return (dh ** 2 + ds ** 2 + dl ** 2) ** 0.5
+        # 가중치 조정: 채도와 명도의 차이가 더 중요할 수 있도록 가중치를 적용
+        return (dh ** 2 + 2 * ds ** 2 + 2 * dl ** 2) ** 0.5
 
     def rgb_to_hsl(self, r, g, b):
         r, g, b = r / 255.0, g / 255.0, b / 255.0

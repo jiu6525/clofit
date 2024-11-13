@@ -15,10 +15,18 @@ from color_detection import *
 # pred = cf.predict(img)
 # cf.show(pred)
 
-url = "https://clofit-s3-bucket.s3.ap-southeast-2.amazonaws.com/fitting/3/1.jpg"
+# url = "https://clofit-s3-bucket.s3.ap-southeast-2.amazonaws.com/fitting/3/1.jpg"
+url = "https://clofit-s3-bucket.s3.ap-southeast-2.amazonaws.com/cloth/bottom/26.png"
 cf = ClothesFinder()
 
-res = cf.run(url)
+idx = url.find("bottom")
+
+if idx == -1:
+    idx = 0
+else:
+    idx = 1
+
+res = cf.run(url, idx)
 
 # colorFinder = ColorFinder()
 # colorFinder.getColor(cv2.cvtColor(res.image, cv2.COLOR_RGBA2RGB), res.x1, res.y1, res.x2, res.y2)
