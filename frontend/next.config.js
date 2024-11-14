@@ -7,5 +7,8 @@ const withPWA = require('next-pwa')({
 });
 
 module.exports = withPWA({
+  images: {
+    domains: ['clofit-s3-bucket.s3.amazonaws.com'], // 외부 이미지 도메인 추가
+  },
   // 기타 next.js 설정
 });

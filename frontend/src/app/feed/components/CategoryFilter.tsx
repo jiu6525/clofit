@@ -7,7 +7,7 @@ type CategoryFilterProps = {
 };
 
 function CategoryFilter({ activeTab, onTabClick }: CategoryFilterProps) {
-  const categories = ['전체', '상품', '코디'];
+  const categories = ['전체', '상품', '스냅'];
 
   return (
     <div className='w-full flex justify-around text-base font-medium my-2'>
