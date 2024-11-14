@@ -65,10 +65,10 @@ export default function MyOriginPicture({
           {isDeleteMode && (
             <button
               onClick={() => toggleSelectPhoto(photo.id)}
-              className='absolute bottom-2 right-2 text-blue-500'
+              className='absolute top-2 right-2 text-blue-500'
             >
               {selectedPhotos.has(photo.id) ? (
-                <BsCheckCircle className='text-blue-500 text-2xl' />
+                <BsCheckCircle className='text-red-500 text-2xl' />
               ) : (
                 <BsCircle className='text-gray-300 text-2xl' />
               )}
