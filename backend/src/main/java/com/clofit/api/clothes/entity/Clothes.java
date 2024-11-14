@@ -2,6 +2,7 @@ package com.clofit.api.clothes.entity;
 
 import com.clofit.api.brand.entity.Brand;
 import com.clofit.api.closet.entity.Closet;
+import com.clofit.api.color.entity.Color;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -24,13 +25,13 @@ public class Clothes {
     private List<Closet> closet;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "brand_id")
-    private Brand brand;
+    @JoinColumn(name = "color_id")
+    private Color color;
 
     @Column(name = "textile")
     private String textile;
 
-    @Column(name = " item")
+    @Column(name = "item")
     private String item;
 
     @Column(name = "price")
@@ -38,6 +39,9 @@ public class Clothes {
 
     @Column(name = "img_path")
     private String imgPath;
+
+    @Column(name = "masked_path")
+    private String maskedPath;
 
     @Column(name = "style")
     private String style;
@@ -51,8 +55,8 @@ public class Clothes {
     @Column(name = "item_url")
     private String itemUrl;
 
-    @Column(name = "main_color")
-    private String mainColor;
+//    @Column(name = "main_color")
+//    private String mainColor;
 
     @Column(name = "my_clotes_yn")
     private char myClothesYn;

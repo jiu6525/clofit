@@ -13,8 +13,8 @@ public class Brand {
     @Column(name = "brand_id")
     private Long id;
 
-    @OneToMany(mappedBy = "brand", fetch = FetchType.LAZY)
-    private List<Clothes> clothes;
+//    @OneToMany(mappedBy = "brand", fetch = FetchType.LAZY)
+//    private List<Clothes> clothes;
 
     @Column(name = "brand_img_path")
     private String brandImgPath;
