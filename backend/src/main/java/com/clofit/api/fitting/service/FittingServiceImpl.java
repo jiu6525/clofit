@@ -1,6 +1,8 @@
 package com.clofit.api.fitting.service;
 
 import com.clofit.api.fitting.entity.ByteMultiPart;
+import com.clofit.api.fitting.entity.Fitting;
+import com.clofit.api.fitting.repository.FittingRepository;
 import com.clofit.api.fitting.request.FittingRequest;
 import com.clofit.api.fitting.request.FittingStoreRequest;
 import com.clofit.api.fitting.request.ThreadFittingRequest;
@@ -29,6 +31,7 @@ import java.util.zip.ZipInputStream;
 @RequiredArgsConstructor
 public class FittingServiceImpl implements FittingService {
 
+    private final FittingRepository fittingRepository;
     @Value("${ootd.gpu-server}")
     private String gpuServer;
 
@@ -60,6 +63,16 @@ public class FittingServiceImpl implements FittingService {
         }else{
             throw new Exception("잘못된 요청 입니다.");
         }
+    }
+
+    @Override
+    public List<Fitting> getPublicFittingList() {
+        return fittingRepository.findAllPublicYn();
+    }
+
+    @Override
+    public List<Fitting> getPublicFittingListByColor(Long colorId) {
+        return fittingRepository.findAllPublicYnByColorId(colorId);
     }
 
     private byte[] fitting(String modelFile, List<String> clothFile, int category) {

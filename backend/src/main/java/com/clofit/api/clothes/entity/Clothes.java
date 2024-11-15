@@ -1,6 +1,7 @@
 package com.clofit.api.clothes.entity;
 
 import com.clofit.api.closet.entity.Closet;
+import com.clofit.api.color.entity.Color;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -24,15 +25,22 @@ public class Clothes {
     @JsonBackReference
     private List<Closet> closet;
 
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "color_id")
+    @JsonIgnore
+    private Color color;
+
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name = "brand_id")
 //    @JsonManagedReference
 //    private Brand brand;
 
+
     @Column(name = "textile")
     private String textile;
 
-    @Column(name = " item")
+    @Column(name = "item")
     private String item;
 
     @Column(name = "price")
@@ -56,12 +64,12 @@ public class Clothes {
     @Column(name = "item_url")
     private String itemUrl;
 
-    @Column(name = "main_color")
-    private String mainColor;
+//    @Column(name = "main_color")
+//    private String mainColor;
 
-    @Column(name = "my_clotes_yn")
+    @Column(name = "my_clothes_yn")
     private char myClothesYn;
 
     @Column(name = "del_clothes_yn")
-    private char delClothesYn;
+    private Character delClothesYn;
 }
