@@ -6,10 +6,14 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import net.minidev.json.annotate.JsonIgnore;
+import lombok.ToString;
 
-@Entity
+
 @Getter
 @Setter
+@Entity
+@Table(name = "fitting")
+@ToString
 public class Fitting {
 
     @Id

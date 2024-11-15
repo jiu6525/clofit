@@ -15,4 +15,5 @@ public interface FittingRepository extends JpaRepository<Fitting, Long> {
     // 처음부터 개인의류라면 널 의류를 참조하도록 하는 것도 방법이다.
     @Query("SELECT DISTINCT f FROM Fitting f JOIN FETCH f.top JOIN FETCH f.bottom WHERE f.publicYn = 'Y' AND f.top.color.id = :colorId OR f.bottom.color.id = :colorId ")
     List<Fitting> findAllPublicYnByColorId(@Param("colorId") Long colorId);
+
 }
