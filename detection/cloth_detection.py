@@ -29,7 +29,7 @@ class ClothesFinder:
         self.model = YOLO(self.yolo_pt_path)
         self.s3 = S3()
         self.colorFinder = ColorFinder()
-        self.bottom = (6, 7)
+        self.bottom = (6, 7, 8, 9, 10)
         self.top = (0,1,2,3,4)
 
     # 옷 찾아내기
@@ -41,7 +41,9 @@ class ClothesFinder:
 
     # 배경을 제거한 이미지와 해당 옷의 종류 반환
     def run(self, url, type):
-        original = self.s3.get(url)
+        httpIdx = url.find("http")
+
+        original = self.s3.get(url) if httpIdx != -1 else cv2.imread(url)
 
         pred = self.predict(original)
 
@@ -66,41 +68,56 @@ class ClothesFinder:
 
         points = np.array([[[int(x), int(y)] for x, y in zip(data[idx]["segments"]["x"], data[idx]["segments"]["y"])]],
                           dtype=np.int32)
-        mask = np.zeros(pred[idx].plot().shape[:2], dtype=np.uint8)
+        mask = np.zeros(pred[0].plot().shape[:2], dtype=np.uint8)
         cv2.fillPoly(mask, points, 255)
 
         tmp = cv2.cvtColor(np.array(original), cv2.COLOR_RGB2BGRA)
 
 
         color = self.colorFinder.getAvgColor(original, mask)
-        print(color)
+        # color = self.colorFinder.getAvgColorHSV(original, mask)
+        # print(color)
+        color_id = self.colorFinder.find_closest_color_LAB(tuple(color))
+        # color_com = self.colorFinder.getColor(color_id)
+
+
         # color = self.colorFinder.colorFromList(color)
         # color = self.colorFinder.colorFromListHSL(color) HSL이 그나마 가장 좋은듯?
-        color_id = self.colorFinder.colorFromListWeight(color)
-        print(color_id)
-        print("THIS IS " + clothes_type)
-
+        # color_id = self.colorFinder.colorFromListWeight(color)
+        # co, color_id = self.colorFinder.find_closest_color(color)
+        # print(color_id)
+        # print(co)
+        # print(self.colorFinder.closest(color))
+        # print("------------------------")
         # 검정 배경
         masked_image = cv2.bitwise_and(tmp, tmp, mask=mask)
         masked_image[mask == 0] = [255, 255, 255, 255]
         # 투명 배경으로 바꾸기
         # tmp[:, :, 3] = mask
 
-        bgr = (color[2], color[1], color[0])
+        # bgr_com = (color_com[2], color_com[1], color_com[0])
+        # bgr = (color[2], color[1], color[0])
 
         # 100x100 픽셀 크기의 색상 이미지를 생성
-        color_image = np.zeros((100, 100, 3), dtype=np.uint8)
-        color_image[:] = bgr
+        # color_image = np.zeros((300, 300, 3), dtype=np.uint8)
+        # color_image_com = np.zeros((300,300,3), dtype=np.uint8)
+        # color_image[:] = bgr
+        # color_image_com[:] = bgr_com
 
         # OpenCV 창에 표시
-        cv2.imshow('Color', color_image)
-        cv2.imshow("1", masked_image)
-        self.show(pred)
+        # cv2.imshow('Color', color_image)
+        # cv2.imshow('Color_com', color_image_com)
+        # cv2.imshow("original", cv2.resize(tmp, (640, 640)))
+        # cv2.waitKey(0)
+        # cv2.destroyAllWindows()
+
+        # cv2.imshow("1", masked_image)
+        # self.show(pred)
 
         return Clothes(clothes_type=clothes_type,
                        clothes_type_id=clothes_type_id,
                        confidence=confidence,
-                       image=tmp,
+                       image=masked_image,
                        color_id=color_id,
                        x1=data[idx]["box"]["x1"],
                        x2=data[idx]["box"]["x2"],
