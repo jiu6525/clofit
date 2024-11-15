@@ -1,6 +1,5 @@
 package com.clofit.api.clothes.repository;
 
-import com.clofit.api.brand.entity.Brand;
 import com.clofit.api.clothes.entity.Clothes;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

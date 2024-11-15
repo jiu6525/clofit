@@ -1,12 +1,12 @@
 package com.clofit.api.clothes.service;
 
-import com.clofit.api.brand.entity.Brand;
-import com.clofit.api.brand.repository.BrandRepository;
 import com.clofit.api.clothes.entity.Clothes;
 import com.clofit.api.clothes.repository.ClothesRepository;
 import com.clofit.api.clothes.request.ClothesRegisterRequest;
+
 import com.clofit.api.color.entity.Color;
 import com.clofit.api.color.repository.ColorRepository;
+import com.clofit.api.clothes.request.ClothesUploadRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,7 +18,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ClothesService {
     private final ClothesRepository clothesRepository;
-    private final BrandRepository brandRepository;
     private final ColorRepository colorRepository;
 
     public List<Clothes> getAllClothes() {
@@ -43,6 +42,7 @@ public class ClothesService {
 
     public void registClothes(ClothesRegisterRequest clothesRegisterRequest) {
         Clothes clothes = new Clothes();
+
 //        Brand brand = brandRepository.findById(clothesRegisterRequest.getBrandId())
 //                .orElseThrow(() -> new IllegalArgumentException("Invalid brand ID"));
 //        clothes.setBrand(brand);
@@ -59,6 +59,20 @@ public class ClothesService {
         clothes.setItemUrl(clothesRegisterRequest.getItemUrl());
 
 //        clothes.setMainColor(clothesRegisterRequest.getMainColor());
+
+        clothesRepository.save(clothes);
+    }
+
+    public void uploadClothes(String imgPath, String maskedPath, String colorId, String category) {
+        Color color = colorRepository.findById(Long.parseLong(colorId))
+                .orElseThrow(() -> new IllegalArgumentException("Invalid color id"));
+
+        Clothes clothes = new Clothes();
+        clothes.setImgPath(imgPath);
+        clothes.setMaskedPath(maskedPath);
+        clothes.setColor(color);
+        clothes.setCategory(category);
+        clothes.setMyClothesYn('Y');
 
         clothesRepository.save(clothes);
     }

@@ -1,9 +1,10 @@
 package com.clofit.api.clothes.entity;
 
-import com.clofit.api.brand.entity.Brand;
 import com.clofit.api.closet.entity.Closet;
 import com.clofit.api.color.entity.Color;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,13 +22,20 @@ public class Clothes {
     private Long id;
 
     @OneToMany(mappedBy = "clothes", fetch = FetchType.LAZY)
-    @JsonIgnore
+    @JsonBackReference
     private List<Closet> closet;
+
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "color_id")
     @JsonIgnore
     private Color color;
+
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "brand_id")
+//    @JsonManagedReference
+//    private Brand brand;
+
 
     @Column(name = "textile")
     private String textile;
