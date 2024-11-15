@@ -3,8 +3,16 @@ package com.clofit.api.fitting.entity;
 import com.clofit.api.clothes.entity.Clothes;
 import com.clofit.api.member.entity.Member;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
+
+@Getter
+@Setter
 @Entity
+@Table(name = "fitting")
+@ToString
 public class Fitting {
 
     @Id
