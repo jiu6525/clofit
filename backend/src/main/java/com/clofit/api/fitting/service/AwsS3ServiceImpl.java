@@ -128,6 +128,35 @@ public class AwsS3ServiceImpl implements AwsS3Service {
 
     }
 
+    @Override
+    public String uploadFile(FittingStoreRequest fittingStoreRequest, String redisId) {
+        MultipartFile fittingImg = fittingStoreRequest.getFittingImg();
+        Long memberId = fittingStoreRequest.getMemberId();
+
+
+        if (fittingImg == null || fittingImg.isEmpty()) {
+            logger.info("업로드 파일이 없거나 비어 있습니다.");
+            return redisId;
+        }
+        String name = redisId + ".png";  //redis id 기준으로 저장하기
+        // memberId를 경로에 포함시키고, 파일명에 RedisId를 넣어준다.
+        String fileName = "fitting/" + memberId + "/tmp/" + name; // 경로 지정
+
+        ObjectMetadata objectMetadata = new ObjectMetadata();
+        objectMetadata.setContentLength(fittingImg.getSize());
+        objectMetadata.setContentType(fittingImg.getContentType());
+        objectMetadata.setContentDisposition("inline; filename=\"" + name + "\"");
+
+        try(InputStream inputStream = fittingImg.getInputStream()){
+            amazonS3.putObject(new PutObjectRequest(bucket, fileName, inputStream, objectMetadata)
+                    .withCannedAcl(CannedAccessControlList.PublicRead));
+            logger.info("파일 업로드가 완료되었습니다.{}", fileName);
+        } catch (IOException e){
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "파일 업로드에 실패했습니다.");
+        }
+        return amazonS3.getUrl(bucket, fileName).toString();
+    }
+
     // 파일명을 난수화하기 위해 UUID 를 활용하여 난수를 돌린다.
     public String createFileName(){
         return UUID.randomUUID().toString().concat(".png");
@@ -179,4 +208,29 @@ public class AwsS3ServiceImpl implements AwsS3Service {
         String folderPath = "model/" + modelRequest.getMemberId() + "/" + modelRequest.getModelImg();
         return amazonS3.getUrl(bucket, folderPath).toString();
     }
+
+    /**
+     * 임시 파일을 피팅 폴더로 이동
+     * @param url
+     */
+    @Override
+    public void moveFile(String url) {
+        String com = ".com/";
+        int index = url.indexOf(com);
+        String result = null;
+        if (index != -1) {
+            result = url.substring(index + com.length());
+            amazonS3.copyObject(bucket, result, bucket, result.replace("/tmp", ""));
+            amazonS3.deleteObject(bucket, result);
+        } else {
+            logger.warn("Keyword not found in the URL.");
+        }
+
+    }
+
+//    public String getFile(String fileName) {
+//        String folderPath = "fitting/" + 3L + "/" + fileName;
+//        return amazonS3.getUrl(bucket, folderPath).toString();
+//    }
+
 }
