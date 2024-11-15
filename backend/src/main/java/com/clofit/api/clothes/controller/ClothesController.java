@@ -2,19 +2,23 @@ package com.clofit.api.clothes.controller;
 
 import com.clofit.api.clothes.entity.Clothes;
 import com.clofit.api.clothes.request.ClothesRegisterRequest;
+import com.clofit.api.clothes.request.ClothesUploadRequest;
 import com.clofit.api.clothes.service.ClothesService;
+import com.clofit.api.gpu.service.GPUService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
+import java.util.*;
 
 @RestController
 @RequestMapping("/clothes")
 @RequiredArgsConstructor
 public class ClothesController {
     private final ClothesService clothesService;
+    private final GPUService s3Service;
 
     @GetMapping
     @Operation(summary = "의류 검색")
@@ -39,7 +43,7 @@ public class ClothesController {
 
     @GetMapping("/{clothesId}")
     @Operation(summary = "의류 상세 조회")
-    public ResponseEntity<Clothes> getDetailClothes(@PathVariable Long clothesId) {
+    public ResponseEntity<Clothes> getDetailClothes(@PathVariable("clothesId") Long clothesId) {
         Clothes clothes = clothesService.getDetailClothes(clothesId);
         return ResponseEntity.ok(clothes);
     }
@@ -48,6 +52,21 @@ public class ClothesController {
     @Operation(summary = "의류 등록")
     public ResponseEntity<Void> registClothes(@RequestBody ClothesRegisterRequest clothesRegisterRequest) {
         clothesService.registClothes(clothesRegisterRequest);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/upload")
+    @Operation(summary = "개인 의류 등록")
+    public ResponseEntity<Void> uploadClothes(@RequestParam("file") MultipartFile file,
+                                              @RequestParam("memberId") Long memberId) {
+        String uuid = UUID.randomUUID().toString();
+        String fileName = "member-clothes/" + memberId + "/" + uuid + ".png";
+        String imgPath = s3Service.upload(fileName, file);
+        String maskedPath = "masked_path";
+        String color_id = "color_id";
+        String category = "category";
+
+        clothesService.uploadClothes(imgPath, maskedPath, color_id, category);
         return ResponseEntity.ok().build();
     }
 
