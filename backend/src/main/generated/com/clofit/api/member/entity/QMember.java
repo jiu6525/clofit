@@ -18,13 +18,11 @@ public class QMember extends EntityPathBase<Member> {
 
     private static final long serialVersionUID = 1611635995L;
 
-    private static final PathInits INITS = PathInits.DIRECT2;
-
     public static final QMember member = new QMember("member1");
 
     public final NumberPath<Integer> age = createNumber("age", Integer.class);
 
-    public final com.clofit.api.closet.entity.QCloset closet;
+    public final ListPath<com.clofit.api.closet.entity.Closet, com.clofit.api.closet.entity.QCloset> closet = this.<com.clofit.api.closet.entity.Closet, com.clofit.api.closet.entity.QCloset>createList("closet", com.clofit.api.closet.entity.Closet.class, com.clofit.api.closet.entity.QCloset.class, PathInits.DIRECT2);
 
     public final DateTimePath<java.time.LocalDateTime> delMemberDttm = createDateTime("delMemberDttm", java.time.LocalDateTime.class);
 
@@ -49,24 +47,15 @@ public class QMember extends EntityPathBase<Member> {
     public final StringPath role = createString("role");
 
     public QMember(String variable) {
-        this(Member.class, forVariable(variable), INITS);
+        super(Member.class, forVariable(variable));
     }
 
     public QMember(Path<? extends Member> path) {
-        this(path.getType(), path.getMetadata(), PathInits.getFor(path.getMetadata(), INITS));
+        super(path.getType(), path.getMetadata());
     }
 
     public QMember(PathMetadata metadata) {
-        this(metadata, PathInits.getFor(metadata, INITS));
-    }
-
-    public QMember(PathMetadata metadata, PathInits inits) {
-        this(Member.class, metadata, inits);
-    }
-
-    public QMember(Class<? extends Member> type, PathMetadata metadata, PathInits inits) {
-        super(type, metadata, inits);
-        this.closet = inits.isInitialized("closet") ? new com.clofit.api.closet.entity.QCloset(forProperty("closet"), inits.get("closet")) : null;
+        super(Member.class, metadata);
     }
 
 }

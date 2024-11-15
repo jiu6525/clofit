@@ -32,7 +32,7 @@ public class QOriginPicture extends EntityPathBase<OriginPicture> {
 
     public final com.clofit.api.member.entity.QMember member;
 
-    public final StringPath regPicDttm = createString("regPicDttm");
+    public final DateTimePath<java.time.LocalDateTime> regPicDttm = createDateTime("regPicDttm", java.time.LocalDateTime.class);
 
     public QOriginPicture(String variable) {
         this(OriginPicture.class, forVariable(variable), INITS);
@@ -52,7 +52,7 @@ public class QOriginPicture extends EntityPathBase<OriginPicture> {
 
     public QOriginPicture(Class<? extends OriginPicture> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.member = inits.isInitialized("member") ? new com.clofit.api.member.entity.QMember(forProperty("member"), inits.get("member")) : null;
+        this.member = inits.isInitialized("member") ? new com.clofit.api.member.entity.QMember(forProperty("member")) : null;
     }
 
 }

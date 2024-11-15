@@ -26,6 +26,8 @@ public class QCloset extends EntityPathBase<Closet> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
+    public final com.clofit.api.member.entity.QMember member;
+
     public final StringPath reg_closet_dttm = createString("reg_closet_dttm");
 
     public QCloset(String variable) {
@@ -47,6 +49,7 @@ public class QCloset extends EntityPathBase<Closet> {
     public QCloset(Class<? extends Closet> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.clothes = inits.isInitialized("clothes") ? new com.clofit.api.clothes.entity.QClothes(forProperty("clothes"), inits.get("clothes")) : null;
+        this.member = inits.isInitialized("member") ? new com.clofit.api.member.entity.QMember(forProperty("member")) : null;
     }
 
 }

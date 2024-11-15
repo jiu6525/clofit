@@ -43,7 +43,7 @@ public class ClosetController {
 
     @GetMapping("/{memberId}")
     @Operation(summary = "개인 의류 리스트 조회")
-    public ResponseEntity<List<Closet>> getCloset(@PathVariable Long memberId) {
+    public ResponseEntity<List<Closet>> getCloset(@PathVariable("memberId") Long memberId) {
         List<Closet> list = closetService.getCloset(memberId);
         return ResponseEntity.ok(list);
     }

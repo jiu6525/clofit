@@ -1,12 +1,18 @@
 services:
-  backend:
-    image: clofit-dev-backend:latest
-    container_name: clofit-dev-backend
+  dev_mysql:
+    image: mysql:8.0.37
+    container_name: dev_mysql
+    restart: always
     networks:
       - backend-network
-    # restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: clofit_b307_dev!
+      MYSQL_DATABASE: clofit
+    volumes:
+      # 컨테이너가 삭제되어도 데이터 유지하도록 마운트
+      - ./shared:/var/lib/mysql
     expose:
-      - "8080"
+      - "3306"
 
 networks:
   backend-network:

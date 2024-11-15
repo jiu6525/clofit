@@ -39,7 +39,7 @@ public class ClothesController {
 
     @GetMapping("/{clothesId}")
     @Operation(summary = "의류 상세 조회")
-    public ResponseEntity<Clothes> getDetailClothes(@PathVariable Long clothesId) {
+    public ResponseEntity<Clothes> getDetailClothes(@PathVariable("clothesId") Long clothesId) {
         Clothes clothes = clothesService.getDetailClothes(clothesId);
         return ResponseEntity.ok(clothes);
     }

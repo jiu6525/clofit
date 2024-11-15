@@ -7,6 +7,7 @@ import com.querydsl.core.types.dsl.*;
 import com.querydsl.core.types.PathMetadata;
 import javax.annotation.processing.Generated;
 import com.querydsl.core.types.Path;
+import com.querydsl.core.types.dsl.PathInits;
 
 
 /**
@@ -22,6 +23,8 @@ public class QBrand extends EntityPathBase<Brand> {
     public final StringPath brandImgPath = createString("brandImgPath");
 
     public final StringPath brandName = createString("brandName");
+
+    public final ListPath<com.clofit.api.clothes.entity.Clothes, com.clofit.api.clothes.entity.QClothes> clothes = this.<com.clofit.api.clothes.entity.Clothes, com.clofit.api.clothes.entity.QClothes>createList("clothes", com.clofit.api.clothes.entity.Clothes.class, com.clofit.api.clothes.entity.QClothes.class, PathInits.DIRECT2);
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 

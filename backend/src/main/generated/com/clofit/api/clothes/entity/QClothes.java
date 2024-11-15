@@ -26,6 +26,8 @@ public class QClothes extends EntityPathBase<Clothes> {
 
     public final StringPath category = createString("category");
 
+    public final ListPath<com.clofit.api.closet.entity.Closet, com.clofit.api.closet.entity.QCloset> closet = this.<com.clofit.api.closet.entity.Closet, com.clofit.api.closet.entity.QCloset>createList("closet", com.clofit.api.closet.entity.Closet.class, com.clofit.api.closet.entity.QCloset.class, PathInits.DIRECT2);
+
     public final ComparablePath<Character> delClothesYn = createComparable("delClothesYn", Character.class);
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
