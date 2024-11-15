@@ -37,6 +37,10 @@ public class ClothesService {
         return clothesRepository.findDetailClothes(clothesId);
     }
 
+    public List<Clothes> getPublicClothesList() { return clothesRepository.findAllPublicClothes(); }
+
+    public List<Clothes> getPublicClothesListByColor(Long colorId) { return clothesRepository.findAllPublicClothesByColor(colorId); }
+
     public void registClothes(ClothesRegisterRequest clothesRegisterRequest) {
         Clothes clothes = new Clothes();
 //        Brand brand = brandRepository.findById(clothesRegisterRequest.getBrandId())

@@ -26,6 +26,7 @@ public class Clothes {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "color_id")
+    @JsonIgnore
     private Color color;
 
     @Column(name = "textile")
@@ -58,9 +59,9 @@ public class Clothes {
 //    @Column(name = "main_color")
 //    private String mainColor;
 
-    @Column(name = "my_clotes_yn")
+    @Column(name = "my_clothes_yn")
     private char myClothesYn;
 
     @Column(name = "del_clothes_yn")
-    private char delClothesYn;
+    private Character delClothesYn;
 }
