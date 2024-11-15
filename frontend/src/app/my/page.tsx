@@ -1,27 +1,53 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import MyOriginPicture from './components/MyOriginPicture';
 import LikedSnaps from './components/LikedSnaps';
-import usePhotoStore from '@/stores/usePhotoStore'; // PhotoStore import 추가
+import usePhotoStore from '@/stores/usePhotoStore';
+import useMemberStore from '@/stores/useMemberStore';
 import axiosInstance from '@/api/axiosInstance';
 import { AiOutlineDelete } from 'react-icons/ai';
+import { FaCamera } from 'react-icons/fa';
+
+interface MemberInfoResponse {
+  memberName: string;
+  personalColor: string;
+  profileFilePath: string;
+}
 
 export default function MyPage() {
-  const nickname = '유아이볼';
-  const profileImageUrl = '/default-profile.png';
-  const email = 'user@example.com';
+  const { fetchPhotos } = usePhotoStore();
+  const { setPersonalColor } = useMemberStore();
 
-  const { fetchPhotos } = usePhotoStore(); // fetchPhotos 가져오기
+  // memberId를 상단에서 한 번만 선언
+  const memberId = 1;
+
   const [activeTab, setActiveTab] = useState<'myPhotos' | 'likedSnaps'>(
     'myPhotos'
   );
   const [isDeleteMode, setIsDeleteMode] = useState(false);
   const [selectedPhotos, setSelectedPhotos] = useState<Set<number>>(new Set());
+  const [nickname, setNickname] = useState<string | null>(null);
+  const [profileImageUrl, setProfileImageUrl] = useState<string | null>(null);
 
-  const items = [
-    // 좋아요한 스냅 데이터 (생략)
-  ];
+  useEffect(() => {
+    const fetchMemberInfo = async () => {
+      try {
+        const response = await axiosInstance.get<MemberInfoResponse>(
+          `/member/my/${memberId}`
+        );
+        const { memberName, personalColor, profileFilePath } = response.data;
+
+        setNickname(memberName);
+        setProfileImageUrl(profileFilePath || '/default-profile.png');
+        setPersonalColor(personalColor);
+      } catch (error) {
+        console.error('사용자 정보 불러오기 실패:', error);
+      }
+    };
+
+    fetchMemberInfo();
+  }, [setPersonalColor]);
 
   const handleTabChange = (tab: 'myPhotos' | 'likedSnaps') => {
     setActiveTab(tab);
@@ -43,6 +69,31 @@ export default function MyPage() {
     });
   };
 
+  const handleFileChange = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      await axiosInstance.put(
+        `/member/profile-image?memberId=${memberId}`,
+        formData,
+        {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        }
+      );
+      alert('프로필 이미지가 성공적으로 업데이트되었습니다.');
+      setProfileImageUrl(URL.createObjectURL(file));
+    } catch (error) {
+      console.error('프로필 이미지 업데이트 실패:', error);
+      alert('프로필 이미지 업데이트에 실패했습니다.');
+    }
+  };
+
   const handleDeletePhotos = async () => {
     const pictureIds = Array.from(selectedPhotos);
     if (pictureIds.length === 0) {
@@ -50,15 +101,11 @@ export default function MyPage() {
       return;
     }
 
-    const data = {
-      memberId: 1,
-      pictureIds,
-    };
+    const data = { memberId, pictureIds };
 
     try {
       await axiosInstance.put('/origin-picture/delete', data);
-      console.log('삭제 성공');
-      await fetchPhotos(); // 삭제 후 사진 목록 새로고침
+      await fetchPhotos();
       setSelectedPhotos(new Set());
       setIsDeleteMode(false);
     } catch (error) {
@@ -68,49 +115,69 @@ export default function MyPage() {
   };
 
   return (
-    <div className='my-page w-full bg-white text-black min-h-screen'>
-      {/* 프로필 섹션 */}
+    <div className='my-page w-full bg-white text-[#373A3F] min-h-screen'>
       <div className='flex flex-col items-center mt-12 mb-6'>
         <div className='relative mb-4'>
-          <img
-            src={profileImageUrl}
-            alt='프로필 이미지'
-            className='w-24 h-24 rounded-full border border-gray-300'
-          />
+          {profileImageUrl ? (
+            <img
+              src={profileImageUrl}
+              alt='프로필 이미지'
+              className='w-24 h-24 rounded-full border border-gray-300'
+            />
+          ) : (
+            <div className='w-24 h-24 rounded-full border border-gray-300 bg-gray-200'></div>
+          )}
+          <label
+            htmlFor='profile-upload'
+            className='absolute bottom-0 right-0 bg-white w-6 h-6 rounded-full flex justify-center items-center cursor-pointer'
+          >
+            <FaCamera className='text-[#222222] text-xs' />
+            <input
+              type='file'
+              id='profile-upload'
+              accept='image/*'
+              onChange={handleFileChange}
+              className='hidden'
+            />
+          </label>
         </div>
-        <h1 className='text-lg font-semibold'>{nickname}</h1>
-        <p className='text-sm text-gray-500'>{email}</p>
+        {nickname && <h1 className='text-lg font-semibold'>{nickname}</h1>}
       </div>
       <hr className='border-gray-200 my-4' />
 
-      {/* 탭 버튼 및 삭제 모드 버튼 */}
       <div className='flex items-center mb-4 space-x-4'>
         <div className='flex-grow flex items-center space-x-4'>
           <button
             onClick={() => handleTabChange('myPhotos')}
-            className={`px-2 py-1 text-sm font-semibold ${activeTab === 'myPhotos' ? 'border-b-2 border-black text-black' : 'text-gray-500'}`}
+            className={`px-2 py-1 text-sm font-semibold ${
+              activeTab === 'myPhotos'
+                ? 'border-b-2 border-[#373A3F] text-[#373A3F]'
+                : 'text-[#8F8B8D]'
+            }`}
           >
             나의 전신 사진
           </button>
           <button
             onClick={() => handleTabChange('likedSnaps')}
-            className={`px-2 py-1 text-sm font-semibold ${activeTab === 'likedSnaps' ? 'border-b-2 border-black text-black' : 'text-gray-500'}`}
+            className={`px-2 py-1 text-sm font-semibold ${
+              activeTab === 'likedSnaps'
+                ? 'border-b-2 border-[#373A3F] text-[#373A3F]'
+                : 'text-[#8F8B8D]'
+            }`}
           >
             좋아요한 스냅
           </button>
         </div>
 
-        {/* 삭제 모드 버튼 */}
         {activeTab === 'myPhotos' && !isDeleteMode && (
           <button
             onClick={toggleDeleteMode}
-            className='ml-4 px-2 py-1 text-red-500 hover:text-red-700 flex items-center'
+            className='ml-4 px-2 py-1 text-[#8F8B8D] hover:text-red-700 flex items-center'
           >
             <AiOutlineDelete className='text-2xl' />
           </button>
         )}
 
-        {/* 삭제 모드에서 취소 및 삭제 버튼 */}
         {isDeleteMode && (
           <div className='flex items-center space-x-2'>
             <button
@@ -129,7 +196,6 @@ export default function MyPage() {
         )}
       </div>
 
-      {/* 탭 콘텐츠 */}
       {activeTab === 'myPhotos' && (
         <MyOriginPicture
           isDeleteMode={isDeleteMode}
@@ -137,7 +203,7 @@ export default function MyPage() {
           toggleSelectPhoto={toggleSelectPhoto}
         />
       )}
-      {activeTab === 'likedSnaps' && <LikedSnaps items={items} />}
+      {activeTab === 'likedSnaps' && <LikedSnaps items={[]} />}
     </div>
   );
 }
