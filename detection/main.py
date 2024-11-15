@@ -1,4 +1,5 @@
 from ultralytics import YOLO
+import os
 import cv2
 import numpy as np
 from PIL import Image
@@ -8,7 +9,14 @@ from human_detection import HumanFinder
 from S3 import S3
 import json
 from color_detection import *
+import csv
 
+f = open("color_null.csv", "r")
+reader = csv.reader(f)
+lines = []
+ff = open("test.csv", 'a', newline='')
+wr = csv.writer(ff)
+# wr.writerows(lines)
 # img = "./images/test.jpg"
 #
 # cf = ClothesFinder()
@@ -16,17 +24,69 @@ from color_detection import *
 # cf.show(pred)
 
 # url = "https://clofit-s3-bucket.s3.ap-southeast-2.amazonaws.com/fitting/3/1.jpg"
-url = "https://clofit-s3-bucket.s3.ap-southeast-2.amazonaws.com/cloth/bottom/26.png"
+# url = "https://clofit-s3-bucket.s3.ap-southeast-2.amazonaws.com/cloth/bottom/26.png"
+url_ = "https://clofit-s3-bucket.s3.ap-southeast-2.amazonaws.com/cloth/top/"
+# url = "./images/test1.png"
 cf = ClothesFinder()
 
-idx = url.find("bottom")
+flag = False
+for line in reader:
+    # if line[0] == "clothes_id" or int(line[0]) < 948:
+    #     continue
+    # ignore first line
+    if flag :
+        line.append("masked_url")
+        # lines.append(line)
+        wr.writerow(line)
+        flag = False
+        continue
 
-if idx == -1:
-    idx = 0
-else:
-    idx = 1
+    url = line[3]
+    type_id = url.find("bottom")
+    if type_id == -1:
+        type_id = 0
+    else:
+        type_id = 1
 
-res = cf.run(url, idx)
+    res = cf.run(url, type_id)
+    line[6] = res.color_id
+    file_path = "./mask/" + (("bottom/" + str(int(line[0]) - 500)) if type_id == 1 else "top/" + line[0]) + "_masked.png"
+    if not os.path.exists(file_path):
+        cv2.imwrite(file_path, res.image)
+
+    line.append(url.rstrip(".png") + "_masked.png")
+    # lines.append(line)
+    wr.writerow(line)
+
+
+# for line in lines:
+#     wr.wr
+
+# idx = url_.find("bottom")
+#
+# if idx == -1:
+#     idx = 0
+# else:
+#     idx = 1
+
+# idx = 0
+# for i, line in range(1, 501), reader:
+#     i_str = str(i)
+#     url = url_ + i_str + ".png"
+#     # print("# " + i_str + " ---- " + url)
+#     res = cf.run(url, idx)
+#     line[6] = res.color_id
+#     lines.append(line)
+#
+# url_ = "https://clofit-s3-bucket.s3.ap-southeast-2.amazonaws.com/cloth/bottom/"
+# idx = 1
+# for i, line in range(1, 501), reader:
+#     i_str = str(i)
+#     url = url_ + i_str + ".png"
+#     # print("# " + i_str + " ---- " + url)
+#     res = cf.run(url, idx)
+#     line[6] = res.color_id
+#     lines.append(line)
 
 # colorFinder = ColorFinder()
 # colorFinder.getColor(cv2.cvtColor(res.image, cv2.COLOR_RGBA2RGB), res.x1, res.y1, res.x2, res.y2)

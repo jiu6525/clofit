@@ -5,6 +5,7 @@ import com.clofit.api.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import net.minidev.json.annotate.JsonIgnore;
 import lombok.ToString;
 
 
@@ -22,6 +23,7 @@ public class Fitting {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
+    @JsonIgnore
     private Member member;
 
     @Column(name = "img_path")
@@ -31,15 +33,25 @@ public class Fitting {
     private String regFittingDttm;
 
     @Column(name = "favorite_yn")
-    private char favoriteYn;
+    private Character favoriteYn;
 
     @Column(name = "fitting_name")
     private String fittingName;
 
     @Column(name = "public_yn")
-    private char publicYn;
+    private Character publicYn;
+
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "clothes_id")
+//    private Clothes clothes;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = " clothes_id")
-    private Clothes clothes;;
+    @JoinColumn(name = "top")
+    @JsonIgnore
+    private Clothes top;;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "bottom")
+    @JsonIgnore
+    private Clothes bottom;;
 }
