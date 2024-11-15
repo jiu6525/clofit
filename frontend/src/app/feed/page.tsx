@@ -1,11 +1,11 @@
 'use client';
 
 import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
 import axiosInstance from '@/api/axiosInstance';
 import Navbar from '@/components/Navbar';
 import Image from 'next/image';
 import CategoryFilter from './components/CategoryFilter';
-import ProductModal from './components/ProductModal';
 
 export interface ClothesItem {
   id: number;
@@ -28,8 +28,8 @@ export default function FeedPage() {
   const [activeTab, setActiveTab] = useState('전체');
   const [productItems, setProductItems] = useState<ClothesItem[]>([]);
   const [snapItems, setSnapItems] = useState<ClothesItem[]>([]);
-  const [selectedItem, setSelectedItem] = useState<ClothesItem | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const router = useRouter();
 
   // 상품 데이터 API 호출
   useEffect(() => {
@@ -90,16 +90,17 @@ export default function FeedPage() {
     setActiveTab(tab);
   }, []);
 
-  const openModal = useCallback((item: ClothesItem) => {
-    console.log('Clicked item:', item);
-    if (item.type === '상품') {
-      setSelectedItem(item);
-    }
-  }, []);
-
-  const closeModal = useCallback(() => {
-    setSelectedItem(null);
-  }, []);
+  // 아이템 클릭 시 동작: 상품은 상세 페이지로, 스냅은 스냅 상세 페이지로 이동
+  const handleItemClick = useCallback(
+    (item: ClothesItem) => {
+      if (item.type === '상품') {
+        router.push(`/feed/product/${item.id}`); // 상품 상세 페이지로 이동
+      } else {
+        router.push(`/feed/snap/${item.id}`); // 스냅 상세 페이지로 이동
+      }
+    },
+    [router]
+  );
 
   return (
     <div className='flex flex-col items-center w-full min-h-screen bg-white'>
@@ -113,7 +114,7 @@ export default function FeedPage() {
           <div
             key={item.id}
             className='w-full aspect-[5/6] relative'
-            onClick={() => openModal(item)}
+            onClick={() => handleItemClick(item)}
           >
             <Image
               src={item.imgPath}
@@ -126,9 +127,6 @@ export default function FeedPage() {
           </div>
         ))}
       </div>
-      {selectedItem && (
-        <ProductModal item={selectedItem} onClose={closeModal} />
-      )}
       <Navbar />
     </div>
   );
