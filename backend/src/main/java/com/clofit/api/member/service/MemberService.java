@@ -61,5 +61,8 @@ public class MemberService {
         );
     }
 
+    public String getColor(Long memberId) {
+        return memberRepository.getPersonalColor(memberId);
+    }
 
 }

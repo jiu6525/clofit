@@ -1,6 +1,7 @@
 package com.clofit.api.member.entity;
 
 import com.clofit.api.closet.entity.Closet;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.CustomLog;
@@ -27,7 +28,7 @@ public class Member {
 //    @JoinColumn(name = "closet_id")
 
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
-    @JsonIgnore
+    @JsonBackReference
     private List<Closet> closet;
 
     @Column(name = "email")
