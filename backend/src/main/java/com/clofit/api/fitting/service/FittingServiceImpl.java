@@ -143,34 +143,25 @@ public class FittingServiceImpl implements FittingService {
     }
 
     @Override
-    public List<byte[]> recentFitting(FittingSearchRequest fittingSearchRequest) {
+    public List<String> recentFitting(FittingSearchRequest fittingSearchRequest) {
         String memberId = String.valueOf(fittingSearchRequest.getMemberId()); // memberId 가져오기
 
-        // Redis에서 이미지 데이터 리스트 조회
         List<Object> imageDataList = template.opsForList().range(memberId, 0, -1);
 
-        List<String> imageDataStringList = new ArrayList<>();
+        List<String> imageList = new ArrayList<>();
         if (imageDataList != null) {
             for (Object obj : imageDataList) {
                 if (obj instanceof String) {
-                    imageDataStringList.add((String) obj);
+                    imageList.add((String) obj);
                 } else {
                     throw new IllegalArgumentException("Expected String but found " + obj.getClass().getName());
                 }
             }
         }
 
-        List<byte[]> imageBytesList = new ArrayList<>();
-        try {
-            for (String imageData : imageDataStringList) {
-                byte[] imageBytes = Base64.getDecoder().decode(imageData);
-                imageBytesList.add(imageBytes);
-            }
-        } catch (IllegalArgumentException e) {
-            throw new RuntimeException("이미지 디코딩 실패", e);
-        }
+        System.out.println(Arrays.toString(imageList.toArray()));
 
-        return imageBytesList;
+        return imageList;
     }
 
 
@@ -225,7 +216,9 @@ public class FittingServiceImpl implements FittingService {
                     String imgUrl = awsS3Service.recentFile(memberId, img);
                     FittingRecentRequest fittingRecentRequest = new FittingRecentRequest(fittingRequest, imgUrl);
 
-                    template.opsForList().rightPush(String.valueOf(memberId), fittingRecentRequest.toString());
+                    String uuid = UUID.randomUUID().toString();
+                    template.opsForList().rightPush(String.valueOf(memberId), uuid);
+                    template.opsForSet().add(uuid, fittingRecentRequest.toString());
 
                     logger.info("Data saved to Redis: memberId = {}", memberId);
                 } catch (Exception e) {

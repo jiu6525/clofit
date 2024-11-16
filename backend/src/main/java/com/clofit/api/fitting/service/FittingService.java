@@ -12,6 +12,6 @@ public interface FittingService {
     CompletableFuture<byte[]> fittingMQ(FittingRequest fittingRequest);
     List<Fitting> getPublicFittingList();
     List<Fitting> getPublicFittingListByColor(Long colorId);
-    List<byte[]> recentFitting(FittingSearchRequest fittingSearchRequest);
+    List<String> recentFitting(FittingSearchRequest fittingSearchRequest);
 
 }

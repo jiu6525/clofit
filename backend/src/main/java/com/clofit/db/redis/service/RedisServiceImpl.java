@@ -20,7 +20,9 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Redis 단일 데이터를 처리하는 비즈니스 로직 구현체입니다.
@@ -95,8 +97,8 @@ public class RedisServiceImpl implements RedisService {
         ListOperations<String, Object> list =  redisTemplate.opsForList();
         ValueOperations<String, Object> value = redisTemplate.opsForValue();
 
-        value.set(fittingResultKey(fittingResult.getId()), objectMapper.writeValueAsString(fittingResult));
-        list.rightPush(fittingListKey(memberId), objectMapper.writeValueAsString(fittingResult.getId()));
+        value.set(fittingResultKey(fittingResult.getMemberId()), objectMapper.writeValueAsString(fittingResult));
+        list.rightPush(fittingListKey(memberId), objectMapper.writeValueAsString(fittingResult.getMemberId()));
     }
 
     /**
@@ -131,7 +133,7 @@ public class RedisServiceImpl implements RedisService {
             logger.warn("redis fitting:" + memberId + " inside of " + redisId + " is not found");
             return;
         }
-        redisTemplate.opsForValue().set(fittingResultKey(redisId), objectMapper.writeValueAsString(new FittingResult(redisId, true, url)));
+//        redisTemplate.opsForValue().set(fittingResultKey(redisId), objectMapper.writeValueAsString(new FittingResult(redisId, true, url)));
     }
 
     /**
@@ -172,19 +174,68 @@ public class RedisServiceImpl implements RedisService {
      */
     @Override
     public FittingResult getFittingResult(String redisId) throws JsonProcessingException {
-        Object o = redisTemplate.opsForValue().get(fittingResultKey(redisId));
-        if(o == null) {
-            logger.warn("redis fitting:" + redisId + " is null");
-            throw new RedisException("redis fitting:" + redisId + " is null");
-        }
-        FittingResult fr = objectMapper.readValue((String)o, FittingResult.class);
-
-        if(fr == null) {
-            logger.warn("redis fitting:" + redisId + " is null");
-            throw new RedisException("redis fitting:" + redisId + " is null");
+        System.out.println(redisId);
+        Set<Object> set = redisTemplate.opsForSet().members(redisId);
+        if (set == null || set.isEmpty()) {
+            logger.warn("redis fitting: {} is null or empty", redisId);
+            throw new RedisException("redis fitting: " + redisId + " is null or empty");
         }
 
-        return fr;
+        String input = (String) set.iterator().next();
+        input =  input.replace("FittingRecentRequest", "")
+                .replace("(", "")
+                .replace(")", "")
+                .replaceAll("\\s", "")
+                .trim();
+        StringBuilder json = new StringBuilder("{");
+        String[] split = input.split(",");
+        for (int i = 0; i < split.length; i++) {
+            String s = split[i];
+            String[] keyValue = s.split("=");
+            if (keyValue.length == 2) {
+                String key = keyValue[0].trim();
+                String value = keyValue[1].trim();
+
+                if (value.startsWith("[") && value.endsWith("]")) {
+                    value = value.substring(1, value.length() - 1);
+                    String[] valueItems = value.split(",");
+                    StringBuilder listBuilder = new StringBuilder();
+                    listBuilder.append("[");
+                    for (int j = 0; j < valueItems.length; j++) {
+                        listBuilder.append("\"").append(valueItems[j].trim()).append("\"");
+                        if (j < valueItems.length - 1) {
+                            listBuilder.append(",");
+                        }
+                    }
+                    listBuilder.append("]");
+                    json.append("\"").append(key).append("\":").append(listBuilder);
+                } else {
+                    json.append("\"").append(key).append("\":\"").append(value).append("\"");
+                }
+
+                if (i < split.length - 1) {
+                    json.append(",");
+                }
+            }
+        }
+
+        json.append("}");
+
+        System.out.println("json: " + json);
+
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        FittingResult fittingResult = objectMapper.readValue(json.toString(), FittingResult.class);
+
+        System.out.println("fittingResult" + fittingResult);
+
+
+        if (fittingResult == null) {
+            logger.warn("redis fitting: " + redisId + " is null");
+            throw new RedisException("redis fitting: " + redisId + " is null");
+        }
+
+        return fittingResult;
     }
 
     /**

@@ -135,7 +135,7 @@ public class FittingController {
             // 서비스에서 비즈니스 로직 처리 후 이미지 파일 반환
 //            byte[] imageBytes = fittingService.fitting(fittingRequest);
             FittingResult fittingResult = new FittingResult();
-            fittingResult.setId(UUID.randomUUID().toString());
+            fittingResult.setMemberId(UUID.randomUUID().toString());
             fittingResult.setDone(false);
 
             redisService.storeFitting(fittingResult, fittingRequest.getMemberId().toString());
@@ -147,17 +147,17 @@ public class FittingController {
                     String url = awsS3Service.uploadFile(new FittingStoreRequest(
                             fittingRequest.getMemberId(),
                             new ByteMultiPart(imageBytes, "test")),
-                            fittingResult.getId()
+                            fittingResult.getMemberId()
                     );
 
-                    redisService.updateFitting(fittingRequest.getMemberId().toString(), fittingResult.getId(), url);
+                    redisService.updateFitting(fittingRequest.getMemberId().toString(), fittingResult.getMemberId(), url);
 
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
             });
 
-            return new ResponseEntity<>(new FittingIDResponse(fittingResult.getId()), HttpStatus.OK);
+            return new ResponseEntity<>(new FittingIDResponse(fittingResult.getMemberId()), HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();  // 예외 디버깅용 출력
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
@@ -187,26 +187,22 @@ public class FittingController {
         });
     }
 
+    /**
+     *
+     * @param fittingSearchRequest
+     * memberId 값을 입력받으면 redis 에 임시저장된 의류정보와 url 주소를 보내준다.
+     */
     @PostMapping("/recent")
-    public ResponseEntity<List<Map<String, Object>>> recent(@RequestBody FittingSearchRequest fittingSearchRequest) {
+    public ResponseEntity<List<String>> recent(@RequestBody FittingSearchRequest fittingSearchRequest) {
         try {
-            List<byte[]> imageBytesList = fittingService.recentFitting(fittingSearchRequest);
+            // uuid 값이 들어있는 리스트 반환
+            List<String> imageList = fittingService.recentFitting(fittingSearchRequest);
 
-            if (imageBytesList.isEmpty()) {
+            if (imageList.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
             }
 
-            List<Map<String, Object>> base64ImagesWithIndex = new ArrayList<>();
-
-            for (int i = 0; i < imageBytesList.size(); i++) {
-                String base64Image = Base64.getEncoder().encodeToString(imageBytesList.get(i));
-                Map<String, Object> imageWithIndex = new HashMap<>();
-                imageWithIndex.put("index", i);
-                imageWithIndex.put("image", base64Image);
-                base64ImagesWithIndex.add(imageWithIndex);
-            }
-
-            return ResponseEntity.ok(base64ImagesWithIndex);
+            return ResponseEntity.ok(imageList);
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
@@ -246,9 +242,9 @@ public class FittingController {
     public ResponseEntity<FittingResult> getFittingResult(@PathVariable("memberId") String memberId, @PathVariable("redisId") String redisId) {
         FittingResult fr = null;
         try {
-            if(!redisService.existFittingResult(memberId, redisId)) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new FittingResult("null", false, "null"));
-            }
+//            if(!redisService.existFittingResult(memberId, redisId)) {
+//                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new FittingResult("null", false, "null"));
+//            }
 
             fr = redisService.getFittingResult(redisId);
 
@@ -310,7 +306,7 @@ public class FittingController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Fitting not found");
         }
 
-        awsS3Service.moveFile(fittingResult.getUrl());
+        awsS3Service.moveFile(fittingResult.getImgUrl());
         try {
             redisService.removeFittingResult(memberId, redisId);
         } catch (JsonProcessingException e) {
