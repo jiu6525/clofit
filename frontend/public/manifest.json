@@ -1,0 +1,21 @@
+{
+  "name": "Clofit App",
+  "short_name": "Clofit",
+  "description": "Clofit description",
+  "icons": [
+    {
+      "src": "/icon-196x196.png",
+      "type": "image/png",
+      "sizes": "196x196"
+    },
+    {
+      "src": "/icon-558x558.png",
+      "type": "image/png",
+      "sizes": "558x558"
+    }
+  ],
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#ffffff",
+  "background_color": "#ffffff"
+}
