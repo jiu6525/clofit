@@ -8,7 +8,5 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DeleteOriginPictureReqeust {
-    private Long memberId;
     private List<Long> pictureIds;
-
 }

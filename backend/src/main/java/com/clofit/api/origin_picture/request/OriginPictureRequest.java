@@ -8,6 +8,4 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class OriginPictureRequest {
 
-    private Long memberId;
-
 }
