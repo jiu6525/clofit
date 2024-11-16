@@ -22,11 +22,13 @@ public class FeedController {
 
     private final FeedService feedService;
 
+
     @PostMapping
     public ResponseEntity<FeedResponse> getFeed(@AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
         Long memberId = customOAuth2User.getmemberId();
 
         List<Feed> list = feedService.getFeeds(memberId);
+
         return ResponseEntity.ok(new FeedResponse(list));
     }
 }

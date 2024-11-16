@@ -9,4 +9,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     @Query("SELECT m.personalColor FROM Member m WHERE m.id = :id ")
     String getPersonalColor(Long id);
+
+    @Query("UPDATE Member m SET m.personalColor = :color WHERE m.id = :id ")
+    void setPersonalColor(Long id, String color);
 }

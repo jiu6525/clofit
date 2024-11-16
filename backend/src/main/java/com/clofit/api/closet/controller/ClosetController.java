@@ -9,6 +9,8 @@ import com.clofit.api.clothes.entity.Clothes;
 import com.clofit.oauth2.dto.CustomOAuth2User;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -24,17 +26,23 @@ public class ClosetController {
 
     @PostMapping
     @Operation(summary = "옷장에 의류 저장")
-    public ResponseEntity<Void> addCloset(@AuthenticationPrincipal CustomOAuth2User customOAuth2User, @RequestBody ClosetAddRequest closetAddRequest) {
-        Long memberId = customOAuth2User.getmemberId();
 
-        closetService.addCloset(memberId, closetAddRequest);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<String> addCloset(@AuthenticationPrincipal CustomOAuth2User customOAuth2User, @RequestBody ClosetAddRequest closetAddRequest) {
+            Long memberId = customOAuth2User.getmemberId();
+
+            boolean exist = closetService.addCloset(memberId, closetAddRequest);
+
+        if(exist){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("이미 등록된 의류입니다.");
+        } else{
+            return ResponseEntity.ok("의류등록 성공");
+        }
     }
 
     @DeleteMapping
     @Operation(summary = "의류 삭제")
-    public ResponseEntity<Void> deleteCloset(Long closetId) {
-        closetService.deleteCloset(closetId);
+    public ResponseEntity<Void> deleteCloset(@RequestBody List<Long> closetIds) {
+        closetService.deleteCloset(closetIds);
         return ResponseEntity.ok().build();
     }
 

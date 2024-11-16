@@ -2,7 +2,6 @@ package com.clofit.api.clothes.controller;
 
 import com.clofit.api.clothes.entity.Clothes;
 import com.clofit.api.clothes.request.ClothesRegisterRequest;
-import com.clofit.api.clothes.request.ClothesUploadRequest;
 import com.clofit.api.clothes.service.ClothesService;
 import com.clofit.api.gpu.service.GPUService;
 import com.clofit.oauth2.dto.CustomOAuth2User;
@@ -20,7 +19,11 @@ import java.util.*;
 @RequiredArgsConstructor
 public class ClothesController {
     private final ClothesService clothesService;
-    private final GPUService s3Service;
+    private final GPUService gpuService;
+
+    private static final String FILETYPE = ".png";
+    private static final String BASEPATH = "member-clothes/";
+
 
     @GetMapping
     @Operation(summary = "의류 검색")
@@ -59,18 +62,23 @@ public class ClothesController {
 
     @PostMapping("/upload")
     @Operation(summary = "개인 의류 등록")
-    public ResponseEntity<Void> uploadClothes(@RequestParam("file") MultipartFile file,
-                                              @AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
+
+    public ResponseEntity<Void> uploadClothes(
+            @AuthenticationPrincipal CustomOAuth2User customOAuth2User,
+            @RequestParam("file") MultipartFile file
+    ) {
         Long memberId = customOAuth2User.getmemberId();
 
         String uuid = UUID.randomUUID().toString();
-        String fileName = "member-clothes/" + memberId + "/" + uuid + ".png";
-        String imgPath = s3Service.upload(fileName, file);
-        String maskedPath = "masked_path";
-        String color_id = "color_id";
-        String category = "category";
+        String imgPath = BASEPATH + memberId + "/" + uuid;
 
-        clothesService.uploadClothes(imgPath, maskedPath, color_id, category);
+        gpuService.upload2(memberId, imgPath, FILETYPE, file);
+
+//        String maskedPath = "masked_path";
+//        String color_id = "color_id";
+//        String category = "category";
+//
+//        clothesService.uploadClothes(imgPath, maskedPath, color_id, category);
         return ResponseEntity.ok().build();
     }
 

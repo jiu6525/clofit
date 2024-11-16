@@ -24,7 +24,14 @@ public class ClosetService {
     private final ClothesRepository clothesRepository;
     private final MemberRepository memberRepository;
 
-    public void addCloset(Long memberId, ClosetAddRequest closetAddRequest) {
+
+    public boolean addCloset(Long memberId, ClosetAddRequest closetAddRequest) {
+        boolean exist = closetRepository.existsByMemberIdAndClothesId(
+                memberId, closetAddRequest.getClothesId()
+        );
+        if (exist) {
+            return true;
+        }
         Closet closet = new Closet();
         Clothes clothes = clothesRepository.findById(closetAddRequest.getClothesId())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid clothes ID"));
@@ -34,13 +41,12 @@ public class ClosetService {
         closet.setMember(member);
         closet.setReg_closet_dttm(LocalDateTime.now().toString());
         closetRepository.save(closet);
+        return false;
     }
 
-    public void deleteCloset(Long closetId) {
-        Closet closet = closetRepository.findById(closetId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid closet ID"));
-
-        closetRepository.delete(closet);
+    public void deleteCloset(List<Long> closetIds) {
+        List<Closet> closets = closetRepository.findAllById(closetIds);
+        closetRepository.deleteAll(closets);
     }
 
     public List<Closet> searchCloset(String category) {
