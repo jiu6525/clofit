@@ -41,7 +41,8 @@ public class ClosetController {
 
     @DeleteMapping
     @Operation(summary = "의류 삭제")
-    public ResponseEntity<Void> deleteCloset(@RequestBody List<Long> closetIds) {
+    public ResponseEntity<Void> deleteCloset(@RequestBody ClosetDeleteRequest closetDeleteRequest) {
+        List<Long> closetIds = closetDeleteRequest.getClosetIds();
         closetService.deleteCloset(closetIds);
         return ResponseEntity.ok().build();
     }
