@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -22,6 +23,8 @@ public class JWTFilter extends OncePerRequestFilter {
 
     private final Logger logger = LoggerFactory.getLogger(JWTFilter.class);
     private final JWTUtil jwtUtil;
+    @Value("${front.react-server}")
+    private String FRONT_REACT_SERVER;
 
     public JWTFilter(JWTUtil jwtUtil) {
 
@@ -52,6 +55,7 @@ public class JWTFilter extends OncePerRequestFilter {
         if (authorization == null) {
 
             logger.warn("token null");
+            response.sendRedirect(FRONT_REACT_SERVER + "/");
             filterChain.doFilter(request, response);
 
             //조건이 해당되면 메소드 종료 (필수)
