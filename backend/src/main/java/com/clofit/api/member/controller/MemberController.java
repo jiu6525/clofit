@@ -83,15 +83,10 @@ public class MemberController {
     }
     
     // 마이페이지 정보
-<<<<<<< HEAD
-    @GetMapping("/my/{memberId}")
-    public ResponseEntity<MemberInfoResponse> getMemberInfo(@PathVariable("memberId") Long memberId) {
-=======
     @GetMapping("/mypage")
     public ResponseEntity<MemberInfoResponse> getMemberInfo(@AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
         Long memberId = customOAuth2User.getmemberId();
 
->>>>>>> 17a59486747050443520f0a600775bf5af9c37d4
         MemberInfoResponse memberInfoResponse = memberService.getMemberInfo(memberId);
         return ResponseEntity.ok(memberInfoResponse);
     }
