@@ -63,8 +63,8 @@ public class ClothesService {
         clothesRepository.save(clothes);
     }
 
-    public void uploadClothes(String imgPath, String maskedPath, String colorId, String category) {
-        Color color = colorRepository.findById(Long.parseLong(colorId))
+    public void uploadClothes(String imgPath, String maskedPath, Long colorId, String category) {
+        Color color = colorRepository.findById(colorId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid color id"));
 
         Clothes clothes = new Clothes();
