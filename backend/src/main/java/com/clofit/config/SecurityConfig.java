@@ -127,7 +127,7 @@ public class SecurityConfig {
                 "/v3/api-docs/**",
                 "/test/**"
 //                "/oauth2/authorization/kakao"
-//               ,"/**"
+               ,"/**"
         );
     }
 }

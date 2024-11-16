@@ -1,7 +1,9 @@
 package com.clofit.api.gpu.service;
 
+import com.clofit.api.clothes.service.ClothesService;
 import com.clofit.api.fitting.entity.ByteMultiPart;
 import com.clofit.api.gpu.dao.GPUDao;
+import com.clofit.api.gpu.dto.PrivateClothesDto;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +26,7 @@ public class GPUServiceImpl implements GPUService {
     private final GPUDao gpuDao;
 
     private final RestTemplate restTemplate;
+    private final ClothesService clothesService;
 
     @Value("${background_remover.gpu-server}")
     private String background_remover_gpu_server;
@@ -33,7 +36,7 @@ public class GPUServiceImpl implements GPUService {
         return gpuDao.upload(path, image);
     }
 
-    public void upload2(String path, String type, MultipartFile image) {
+    public void upload2(Long memberId, String path, String type, MultipartFile image) {
         String url = gpuDao.upload(path + type, image); //원본 업로드하기
 //        String url = "https://clofit-s3-bucket.s3.ap-southeast-2.amazonaws.com/cloth/bottom/26.png";
         String jsonPayload = "{ \"url\": \"" + url + "\"}";
@@ -47,16 +50,32 @@ public class GPUServiceImpl implements GPUService {
         try {
             ResponseEntity<Map> response = restTemplate.exchange(background_remover_gpu_server + "mask", HttpMethod.POST, entity, Map.class);
 
-            Integer color_id = (Integer)response.getBody().get("color_id");
+            Long color_id = Long.valueOf((Integer)response.getBody().get("color_id"));
             Double confidence = (Double)response.getBody().get("confidence");
             String clothes_type = (String)response.getBody().get("clothes_type");
             Integer clothes_type_id = (Integer)response.getBody().get("clothes_type_id");
+            String clothes_type_bottom_top = (String)response.getBody().get("clothes_type_bottom_top");
 //            String masked_image = (String)response.getBody().get("masked_image"); //Base64 encoded
 //            System.out.println(masked_image);
             byte[] masked_image = Base64.getDecoder().decode((String)response.getBody().get("masked_image"));
 
             ByteMultiPart multiPart = new ByteMultiPart(masked_image, "private clothes");
             gpuDao.upload(path + "_mask" + type, multiPart); // 배경 제거 이미지 업로드
+
+            clothesService.uploadClothes(path + type, path + "_mask" + type, color_id, clothes_type_bottom_top);
+
+//            gpuDao.insert2ClothesTable(
+//                    new PrivateClothesDto(
+//                            memberId,
+//                            color_id,
+//                            confidence,
+//                            clothes_type,
+//                            clothes_type_id,
+//                            clothes_type_bottom_top,
+//                            path + type,
+//                            path + "_mask" + type
+//                    )
+//            );
 
         } catch (Exception e) {
             logger.error("오류 발생: {}", e.getMessage(), e); // 구체적인 오류 메시지 및 스택 트레이스 로깅
