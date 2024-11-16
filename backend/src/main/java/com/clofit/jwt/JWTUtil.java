@@ -38,12 +38,18 @@ public class JWTUtil {
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().getExpiration().before(new Date());
     }
 
-    public String createJwt(String username, String name, String role, Long expiredMs) {
+    public Long getMemberId(String token) {
+        // 토큰에서 ID 값 추출
+        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("memberId", Long.class);
+    }
+
+    public String createJwt(String username, String name, String role,Long memberId, Long expiredMs) {
 
         return Jwts.builder()
                 .claim("username", username)
                 .claim("name", name)
                 .claim("role", role)
+                .claim("memberId",memberId)
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + expiredMs))
                 .signWith(secretKey)
