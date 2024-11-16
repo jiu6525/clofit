@@ -13,6 +13,7 @@ import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactor
 import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
@@ -35,8 +36,8 @@ public class RedisConfig {
         redisConfiguration.setHostName(host);
         redisConfiguration.setPort(port);
         redisConfiguration.setPassword(password);
-        return new LettuceConnectionFactory(redisConfiguration);
-//        return new LettuceConnectionFactory(host, port);
+//        return new LettuceConnectionFactory(redisConfiguration);
+        return new LettuceConnectionFactory(host, port);
     }
 
     @Bean

@@ -18,9 +18,8 @@ import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * 현재는 s3를 통해 사진의 읽기, 등록, 삭제 기능이 여기에 구현되어 있지만
@@ -165,6 +164,53 @@ public class FittingController {
         }
     }
 
+    @PostMapping("/fitting3")
+    public void fitting3(@RequestBody FittingRequest fittingRequest) {
+// 가상 스레드를 사용해 비동기적으로 처리
+        Thread.ofVirtual().start(() -> {
+            // 비동기적으로 메시지를 큐에 푸시
+            CompletableFuture<byte[]> resultFuture = fittingService.fittingMQ(fittingRequest);
+
+            // CompletableFuture가 완료될 때마다 결과를 처리
+            resultFuture.whenComplete((result, throwable) -> {
+                if (throwable != null) {
+                    // 에러 발생 시 처리
+                    System.err.println("Error processing GPU task: " + throwable.getMessage());
+                } else {
+                    // 작업이 성공적으로 완료된 경우
+                    System.out.println("Task completed successfully: " + new String(result));
+                    // GPU 작업이 완료된 후 처리된 결과를 서버로 전송하거나 후속 작업을 진행
+                }
+            });
+
+            // 비동기적으로 처리된 작업의 결과를 기다리지 않고 바로 리턴되도록 할 수 있음
+        });
+    }
+
+    @PostMapping("/recent")
+    public ResponseEntity<List<Map<String, Object>>> recent(@RequestBody FittingSearchRequest fittingSearchRequest) {
+        try {
+            List<byte[]> imageBytesList = fittingService.recentFitting(fittingSearchRequest);
+
+            if (imageBytesList.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            }
+
+            List<Map<String, Object>> base64ImagesWithIndex = new ArrayList<>();
+
+            for (int i = 0; i < imageBytesList.size(); i++) {
+                String base64Image = Base64.getEncoder().encodeToString(imageBytesList.get(i));
+                Map<String, Object> imageWithIndex = new HashMap<>();
+                imageWithIndex.put("index", i);
+                imageWithIndex.put("image", base64Image);
+                base64ImagesWithIndex.add(imageWithIndex);
+            }
+
+            return ResponseEntity.ok(base64ImagesWithIndex);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
 
 
     /**

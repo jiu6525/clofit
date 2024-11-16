@@ -230,9 +230,29 @@ public class AwsS3ServiceImpl implements AwsS3Service {
 
     }
 
+    @Override
+    public String recentFile(Long memberId, byte[] img) {
+        String name = createFileName();
+        String fileName = "fitting/" + memberId + "/tmp/" + name;
+        MultipartFile recentImg = new ByteArrayMultipartFile(name, img);
+
+        ObjectMetadata objectMetadata = new ObjectMetadata();
+        objectMetadata.setContentLength(recentImg.getSize());
+        objectMetadata.setContentType(recentImg.getContentType());
+        objectMetadata.setContentDisposition("inline; filename=\"" + name + "\"");
+
+        try (InputStream inputStream = recentImg.getInputStream()) {
+            amazonS3.putObject(new PutObjectRequest(bucket, fileName, inputStream, objectMetadata)
+                    .withCannedAcl(CannedAccessControlList.PublicRead));
+            logger.info("파일 업로드가 완료되었습니다.{}", fileName);
+        } catch (IOException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "파일 업로드에 실패했습니다.");
+        }
+
 //    public String getFile(String fileName) {
 //        String folderPath = "fitting/" + 3L + "/" + fileName;
 //        return amazonS3.getUrl(bucket, folderPath).toString();
 //    }
-
+        return amazonS3.getUrl(bucket, fileName).toString();
+    }
 }

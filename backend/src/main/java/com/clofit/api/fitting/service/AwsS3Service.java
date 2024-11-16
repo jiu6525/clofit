@@ -16,4 +16,5 @@ public interface AwsS3Service {
     String getModelFile(ModelRequest modelRequest);
     List<FittingSearchResponse> getFittingImages(FittingSearchRequest fittingSearchRequest);
     void moveFile(String url);
+    String recentFile(Long memberId, byte[] img);
 }
