@@ -135,6 +135,6 @@ public class SecurityConfig {
 
     @Bean
     public AuthenticationEntryPoint unauthorizedEntryPoint() {
-        return (request, response, authException) -> response.sendRedirect("/login");
+        return (request, response, authException) -> response.sendRedirect("/");
     }
 }
