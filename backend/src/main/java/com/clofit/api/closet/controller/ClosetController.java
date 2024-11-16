@@ -37,9 +37,10 @@ public class ClosetController {
 
     @DeleteMapping
     @Operation(summary = "의류 삭제")
-    public ResponseEntity<Void> deleteCloset(@RequestBody ClosetDeleteRequest closetDeleteRequest) {
+    public ResponseEntity<Void> deleteCloset(@AuthenticationPrincipal CustomOAuth2User customOAuth2User, @RequestBody ClosetDeleteRequest closetDeleteRequest) {
+        Long memberId = customOAuth2User.getmemberId();
         List<Long> closetIds = closetDeleteRequest.getClosetIds();
-        closetService.deleteCloset(closetIds);
+        closetService.deleteCloset(memberId, closetIds);
         return ResponseEntity.ok().build();
     }
 
