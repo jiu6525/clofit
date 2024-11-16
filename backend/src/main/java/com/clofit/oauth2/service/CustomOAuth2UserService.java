@@ -66,6 +66,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             member.setEmail(email);
             member.setRole("ROLE_USER");
 
+
             memberRepository.save(member);
 
             MemberDTO memberDTO = new MemberDTO();
@@ -73,6 +74,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             memberDTO.setName(name);
             memberDTO.setEmail(email);
             memberDTO.setRole("ROLE_USER");
+            memberDTO.setMemberId(member.getId());
 
 
             return new CustomOAuth2User(memberDTO);
@@ -83,6 +85,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             memberDTO.setEmail(email);
             memberDTO.setName(name);
             memberDTO.setRole(existData.getRole());
+            memberDTO.setMemberId(existData.getId());
 
             return new CustomOAuth2User(memberDTO);
         }

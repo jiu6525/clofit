@@ -45,6 +45,9 @@ public class JWTFilter extends OncePerRequestFilter {
             }
         }
 
+//         로컬에서 테스트할 때 아래 키 값 넣을 것
+//        authorization = "";
+
         //Authorization 헤더 검증
         if (authorization == null) {
 
@@ -71,6 +74,7 @@ public class JWTFilter extends OncePerRequestFilter {
         String username = jwtUtil.getUsername(token);
         String name = jwtUtil.getName(token);
         String role = jwtUtil.getRole(token);
+        Long memberId = jwtUtil.getMemberId(token);
 
         logger.info("현재 등록한 유저의 정보\n");
         logger.info("username : " + username + "\nname : " + name + "\nrole : " + role);
@@ -80,6 +84,7 @@ public class JWTFilter extends OncePerRequestFilter {
         memberDTO.setUsername(username);
         memberDTO.setName(name);
         memberDTO.setRole(role);
+        memberDTO.setMemberId(memberId);
 
         //UserDetails에 회원 정보 객체 담기
         CustomOAuth2User customOAuth2User = new CustomOAuth2User(memberDTO);
