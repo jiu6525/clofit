@@ -13,4 +13,6 @@ public interface ClosetRepository extends JpaRepository<Closet, Long> {
 
     @Query("SELECT DISTINCT c FROM Closet c JOIN FETCH c.clothes JOIN FETCH c.member WHERE c.member.id = :memberId")
     List<Closet> findAllByMemberId(@Param("memberId") Long memberId);
+
+
 }

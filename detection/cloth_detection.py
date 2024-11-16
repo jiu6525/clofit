@@ -32,6 +32,18 @@ class ClothesFinder:
         self.colorFinder = ColorFinder()
         self.bottom = (6, 7, 8, 9, 10)
         self.top = (0,1,2,3,4)
+        self.clothes_type_name_dic = {
+            0: "반팔옷",
+            1: "긴팔옷",
+            2: "반팔옷",
+            3: "긴팔옷",
+            4: "조끼",
+            6: "반바지",
+            7: "긴바지",
+            8: "반바지",
+            9: "반바지",
+            10: "긴바지"
+        }
 
     # 옷 찾아내기
     def predict(self, img):
@@ -70,6 +82,7 @@ class ClothesFinder:
         confidence = data[idx]["confidence"]
         clothes_type_bottom_top = "bottom" if clothes_type_id in self.bottom else "top"
         # print(data)
+        clothes_type = self.clothes_type_name_dic[clothes_type_id]
 
         points = np.array([[[int(x), int(y)] for x, y in zip(data[idx]["segments"]["x"], data[idx]["segments"]["y"])]],
                           dtype=np.int32)
