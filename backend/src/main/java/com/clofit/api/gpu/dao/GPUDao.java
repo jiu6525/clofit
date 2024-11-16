@@ -7,6 +7,7 @@ import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.clofit.api.fitting.request.FittingStoreRequest;
+import com.clofit.api.gpu.dto.PrivateClothesDto;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,4 +56,9 @@ public class GPUDao {
 
         return s3.getUrl(bucket, path).toString();
     }
+
+    public void insert2ClothesTable(PrivateClothesDto clothes) {
+
+    }
+
 }
