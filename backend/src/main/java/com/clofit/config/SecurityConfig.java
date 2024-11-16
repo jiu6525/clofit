@@ -137,7 +137,7 @@ public class SecurityConfig {
     public AuthenticationEntryPoint unauthorizedEntryPoint() {
         return (request, response, authException) -> {
             System.out.println("!!!!!!!!!!!!!!!!!Unauthorized Entry");
-            response.sendRedirect("/");
+            response.sendRedirect(reactServer + "/");
         };
 
     }
