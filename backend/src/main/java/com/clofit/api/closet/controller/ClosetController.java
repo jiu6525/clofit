@@ -8,6 +8,8 @@ import com.clofit.api.closet.service.ClosetService;
 import com.clofit.api.clothes.entity.Clothes;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,9 +24,13 @@ public class ClosetController {
 
     @PostMapping
     @Operation(summary = "옷장에 의류 저장")
-    public ResponseEntity<Void> addCloset(@RequestBody ClosetAddRequest closetAddRequest) {
-        closetService.addCloset(closetAddRequest);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<String> addCloset(@RequestBody ClosetAddRequest closetAddRequest) {
+        boolean exist = closetService.addCloset(closetAddRequest);
+        if(exist){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("이미 등록된 의류입니다.");
+        } else{
+            return ResponseEntity.ok("의류등록 성공");
+        }
     }
 
     @DeleteMapping
