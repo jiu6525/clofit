@@ -6,11 +6,13 @@ import com.clofit.api.closet.request.ClosetAddRequest;
 import com.clofit.api.closet.response.ClosetResponse;
 import com.clofit.api.closet.service.ClosetService;
 import com.clofit.api.clothes.entity.Clothes;
+import com.clofit.oauth2.dto.CustomOAuth2User;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -35,7 +37,8 @@ public class ClosetController {
 
     @DeleteMapping
     @Operation(summary = "의류 삭제")
-    public ResponseEntity<Void> deleteCloset(@RequestBody List<Long> closetIds) {
+    public ResponseEntity<Void> deleteCloset(@RequestBody ClosetDeleteRequest closetDeleteRequest) {
+        List<Long> closetIds = closetDeleteRequest.getClosetIds();
         closetService.deleteCloset(closetIds);
         return ResponseEntity.ok().build();
     }
