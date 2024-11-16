@@ -15,4 +15,7 @@ public interface ClosetRepository extends JpaRepository<Closet, Long> {
     List<Closet> findAllByMemberId(@Param("memberId") Long memberId);
 
     boolean existsByMemberIdAndClothesId(Long memberId, Long clothesId);
+
+    @Query("SELECT c.id FROM Closet c WHERE c.member.id = :memberId AND c.id IN :closetIds")
+    List<Long> findValidClosetIdsByMemberId(@Param("memberId") Long memberId, @Param("closetIds") List<Long> closetIds);
 }
