@@ -44,11 +44,9 @@ public class ClosetService {
         return false;
     }
 
-    public void deleteCloset(Long closetId) {
-        Closet closet = closetRepository.findById(closetId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid closet ID"));
-
-        closetRepository.delete(closet);
+    public void deleteCloset(List<Long> closetIds) {
+        List<Closet> closets = closetRepository.findAllById(closetIds);
+        closetRepository.deleteAll(closets);
     }
 
     public List<Closet> searchCloset(String category) {
