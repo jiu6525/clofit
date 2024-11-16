@@ -1,74 +1,71 @@
 'use client';
 
-import { useEffect, useState, useRef } from 'react';
+import { useState, useEffect } from 'react';
+import axiosInstance from '@/api/axiosInstance';
 import { useRouter } from 'next/navigation';
+import { FaPlus } from 'react-icons/fa';
 import { FaCamera } from 'react-icons/fa';
 import { SlPicture } from 'react-icons/sl';
 import { IoSearch } from 'react-icons/io5';
 
-interface Item {
+// Closet API 응답 타입
+interface ClosetItem {
   id: number;
-  name: string;
-  type: string;
-  category: string;
+  clothes: {
+    id: number;
+    imgPath: string;
+    style: string;
+    category: string; // top, bottom 등
+  };
 }
 
 export default function Closet() {
+  const [closetItems, setClosetItems] = useState<ClosetItem[]>([]);
+  const [filteredItems, setFilteredItems] = useState<ClosetItem[]>([]);
   const [hasItems, setHasItems] = useState(false);
-  const [selectedSource, setSelectedSource] = useState('전체');
   const [selectedCategory, setSelectedCategory] = useState('전체');
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const fileInputRef = useRef<HTMLInputElement | null>(null); // 파일 입력 요소의 참조 생성
+  const [isLoading, setIsLoading] = useState(true); // 로딩 상태 추가
   const router = useRouter();
 
-  // 아이템 목록 (예시 데이터)
-  const allItems: Item[] = [
-    { id: 1, name: '티셔츠', type: '내 옷', category: '티셔츠' },
-    { id: 2, name: '청바지', type: '내 옷', category: '청바지' },
-    { id: 3, name: '셔츠', type: '상품', category: '셔츠' },
-    { id: 4, name: '후드티', type: '상품', category: '후드티' },
-    { id: 5, name: '티셔츠', type: '상품', category: '티셔츠' },
-  ];
-
-  // 아이템을 가져오는 함수 (임시 설정)
+  // 옷장 데이터를 가져오는 함수
   useEffect(() => {
     fetchItems();
   }, []);
 
   async function fetchItems() {
+    setIsLoading(true); // 로딩 시작
     try {
-      setHasItems(false); // 임시로 아이템이 있다고 설정
+      const response = await axiosInstance.get<ClosetItem[]>('/closet/1');
+      setClosetItems(response.data);
+      setFilteredItems(response.data);
+      setHasItems(response.data.length > 0);
     } catch (error) {
-      console.error('아이템 로딩 중 에러 발생:', error);
+      console.error('옷장 데이터를 가져오는 중 문제가 발생했습니다:', error);
+    } finally {
+      setIsLoading(false); // 로딩 종료
     }
   }
 
-  // 필터링 로직
-  const filteredItems = allItems.filter((item) => {
-    const sourceMatch =
-      selectedSource === '전체' || item.type === selectedSource;
-    const categoryMatch =
-      selectedCategory === '전체' || item.category === selectedCategory;
-    return sourceMatch && categoryMatch;
-  });
+  // 카테고리 필터링 함수
+  const handleCategoryFilter = (category: string) => {
+    setSelectedCategory(category);
+
+    if (category === '전체') {
+      setFilteredItems(closetItems);
+    } else {
+      setFilteredItems(
+        closetItems.filter((item) => item.clothes.category === category)
+      );
+    }
+  };
 
   // 모달 열기 및 닫기 핸들러
-  const handleOpenModal = () => {
-    setIsModalOpen(true);
-  };
+  const handleOpenModal = () => setIsModalOpen(true);
+  const handleCloseModal = () => setIsModalOpen(false);
 
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-  };
-
-  // 파일 선택 이벤트 핸들러
-  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      console.log('Selected file:', file);
-      // 여기에서 파일을 업로드하거나 필요한 처리를 할 수 있습니다.
-    }
+  const handleDeleteItems = () => {
+    alert('아이템 삭제 기능 준비 중');
   };
 
   return (
@@ -79,42 +76,44 @@ export default function Closet() {
 
       {/* Main Content */}
       <div className='w-full max-w-[600px] flex-grow flex flex-col items-center px-4'>
-        {hasItems ? (
+        {isLoading ? (
+          // 로딩 스피너
+          <div className='flex justify-center items-center h-full'>
+            <div className='w-12 h-12 border-4 border-gray-300 border-t-gray-900 rounded-full animate-spin'></div>
+          </div>
+        ) : (
           <div className='w-full'>
-            {/* 출처 필터 탭 */}
-            <div className='w-full flex justify-around text-base font-medium my-2'>
-              {['전체', '내 옷', '상품'].map((source) => (
-                <span
-                  key={source}
-                  onClick={() => setSelectedSource(source)}
-                  className={`pb-1 border-b-2 cursor-pointer ${
-                    selectedSource === source
-                      ? 'text-[#373A3F] border-black'
-                      : 'text-[#9095A1] border-transparent'
+            {/* 카테고리 필터 탭 */}
+            <div className='flex justify-around border-b mt-2 text-sm sm:text-sm'>
+              {['전체', 'top', 'bottom'].map((category) => (
+                <button
+                  key={category}
+                  className={`py-2 px-3 ${
+                    selectedCategory === category
+                      ? 'text-black border-b-2 border-black'
+                      : 'text-gray-400'
                   }`}
+                  onClick={() => handleCategoryFilter(category)}
                 >
-                  {source}
-                </span>
+                  {category === '전체' ? '전체' : `카테고리 ${category}`}
+                </button>
               ))}
             </div>
 
-            {/* 카테고리 필터 탭 */}
-            <div className='flex justify-around border-b mt-2 text-sm sm:text-sm'>
-              {['전체', '티셔츠', '청바지', '셔츠', '후드티'].map(
-                (category) => (
-                  <button
-                    key={category}
-                    className={`py-2 px-3 ${
-                      selectedCategory === category
-                        ? 'text-black border-b-2 border-black'
-                        : 'text-gray-400'
-                    }`}
-                    onClick={() => setSelectedCategory(category)}
-                  >
-                    {category}
-                  </button>
-                )
-              )}
+            {/* 추가/삭제 버튼 */}
+            <div className='flex justify-between mt-4 px-6'>
+              <button
+                onClick={handleOpenModal}
+                className='px-4 py-2 bg-blue-500 text-white rounded-lg text-sm font-semibold'
+              >
+                아이템 추가하기
+              </button>
+              <button
+                onClick={handleDeleteItems}
+                className='px-4 py-2 bg-red-500 text-white rounded-lg text-sm font-semibold'
+              >
+                아이템 삭제하기
+              </button>
             </div>
 
             {/* 아이템 목록 */}
@@ -122,37 +121,21 @@ export default function Closet() {
               {filteredItems.map((item) => (
                 <div
                   key={item.id}
-                  className='border rounded p-4 flex justify-center items-center w-full max-w-[260px]'
+                  className='relative w-full aspect-square border rounded overflow-hidden'
                 >
-                  {item.name}
+                  <img
+                    src={item.clothes.imgPath}
+                    alt={`Item ${item.clothes.id}`}
+                    className='absolute inset-0 w-full h-full object-cover'
+                  />
                 </div>
               ))}
             </div>
           </div>
-        ) : (
-          <div className='flex flex-col items-center justify-center h-full text-center w-full max-w-[600px] px-4'>
-            <img
-              src='/images/empty-closet-icon.svg'
-              alt='Empty Closet Icon'
-              className='w-16 h-16 mb-4'
-            />
-            <p className='text-lg text-[#4A4A4A] font-medium mb-2'>
-              옷장이 비어있어요.
-            </p>
-            <p className=' text-[#717171] mb-4'>
-              옷장을 아이템으로 채워보세요.
-            </p>
-            <button
-              className='bg-[#171A1F] text-white rounded-md mt-4 mb-16 px-10 py-3'
-              onClick={handleOpenModal}
-            >
-              아이템 추가 하러 가기
-            </button>
-          </div>
         )}
       </div>
 
-      {/* 모달 */}
+      {/* Modal */}
       {isModalOpen && (
         <div className='fixed inset-0 bg-black bg-opacity-50 flex justify-center items-end'>
           <div className='bg-white rounded-t-lg w-full max-w-[600px] p-4 h-80'>
@@ -174,7 +157,7 @@ export default function Closet() {
               </button>
               <button
                 className='flex items-center gap-6 p-2 text-left font-medium'
-                onClick={() => fileInputRef.current?.click()}
+                onClick={() => alert('갤러리에서 선택하기 기능 준비 중')}
               >
                 <SlPicture size={24} /> 갤러리에서 선택하기
               </button>
@@ -182,20 +165,11 @@ export default function Closet() {
                 className='flex items-center gap-6 p-2 text-left font-medium'
                 onClick={() => {
                   handleCloseModal();
-                  router.push('/feed'); // 추천 아이템 둘러보기 클릭 시 /feed로 이동
+                  router.push('/feed'); // 추천 아이템 둘러보기 클릭
                 }}
               >
                 <IoSearch size={24} /> 추천 아이템 둘러보기
               </button>
-
-              {/* 숨겨진 파일 입력 요소 */}
-              <input
-                type='file'
-                accept='image/*'
-                ref={fileInputRef}
-                className='hidden'
-                onChange={handleFileSelect}
-              />
             </div>
           </div>
         </div>
