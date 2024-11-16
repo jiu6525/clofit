@@ -5,9 +5,11 @@ import com.clofit.api.clothes.request.ClothesRegisterRequest;
 import com.clofit.api.clothes.request.ClothesUploadRequest;
 import com.clofit.api.clothes.service.ClothesService;
 import com.clofit.api.gpu.service.GPUService;
+import com.clofit.oauth2.dto.CustomOAuth2User;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -58,7 +60,9 @@ public class ClothesController {
     @PostMapping("/upload")
     @Operation(summary = "개인 의류 등록")
     public ResponseEntity<Void> uploadClothes(@RequestParam("file") MultipartFile file,
-                                              @RequestParam("memberId") Long memberId) {
+                                              @AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
+        Long memberId = customOAuth2User.getmemberId();
+
         String uuid = UUID.randomUUID().toString();
         String fileName = "member-clothes/" + memberId + "/" + uuid + ".png";
         String imgPath = s3Service.upload(fileName, file);

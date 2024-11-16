@@ -72,7 +72,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         userCookie.setPath("/");
         response.addCookie(userCookie);
 
-        response.sendRedirect(reactServer + "/");
+        response.sendRedirect(reactServer + "/home");
     }
 
     private Cookie createCookie(String key, String value) {
