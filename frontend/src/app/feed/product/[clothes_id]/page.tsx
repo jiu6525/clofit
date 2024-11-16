@@ -24,14 +24,21 @@ export default function ProductDetailPage() {
   if (!product) return <div>로딩 중...</div>;
 
   const handleAddToCloset = () => {
-    // 옷장에 추가하는 로직
     axiosInstance
-      .post('/api/closet', {
-        memberId: 1, // 회원 ID, 실제로는 인증된 사용자의 ID를 가져와야 함
-        img: product.imgPath, // 상품 이미지 URL
+      .post('/closet', {
+        memberId: 1, // 회원 ID
+        clothesId: product.id, // 상품 ID
       })
-      .then(() => {
-        alert('옷장에 추가되었습니다.');
+      .then((response) => {
+        // 옷장에 추가된 상품 정보 출력
+        console.log('옷장에 추가된 아이템 정보:', {
+          id: product.id,
+          name: product.item,
+          imgPath: product.imgPath,
+        });
+
+        // 성공 메시지 표시
+        alert(`옷장에 '${product.item}'이(가) 추가되었습니다.`);
       })
       .catch((err) => {
         console.error('옷장에 추가하는 중 문제가 발생했습니다.', err);
