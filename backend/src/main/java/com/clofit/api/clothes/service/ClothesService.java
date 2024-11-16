@@ -6,7 +6,6 @@ import com.clofit.api.clothes.request.ClothesRegisterRequest;
 
 import com.clofit.api.color.entity.Color;
 import com.clofit.api.color.repository.ColorRepository;
-import com.clofit.api.clothes.request.ClothesUploadRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -63,7 +62,7 @@ public class ClothesService {
         clothesRepository.save(clothes);
     }
 
-    public void uploadClothes(String imgPath, String maskedPath, Long colorId, String category) {
+    public void uploadClothes(String imgPath, String maskedPath, Long colorId, String category, String clothes_type) {
         Color color = colorRepository.findById(colorId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid color id"));
 
@@ -73,6 +72,7 @@ public class ClothesService {
         clothes.setColor(color);
         clothes.setCategory(category);
         clothes.setMyClothesYn('Y');
+        clothes.setStyle(clothes_type);
 
         clothesRepository.save(clothes);
     }

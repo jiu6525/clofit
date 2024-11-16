@@ -62,7 +62,7 @@ public class GPUServiceImpl implements GPUService {
             ByteMultiPart multiPart = new ByteMultiPart(masked_image, "private clothes");
             String maskPath = gpuDao.upload(path + "_mask" + type, multiPart); // 배경 제거 이미지 업로드
 
-            clothesService.uploadClothes(url, maskPath, color_id, clothes_type_bottom_top);
+            clothesService.uploadClothes(url, maskPath, color_id, clothes_type_bottom_top, clothes_type);
 
 //            gpuDao.insert2ClothesTable(
 //                    new PrivateClothesDto(
