@@ -47,7 +47,7 @@ public class Member {
     private String role;
 
     @Column(name = "del_user_yn")
-    private char delMemberYn;
+    private char delMemberYn = 'N';
 
     @Column(name = "del_member_dttm")
     private LocalDateTime delMemberDttm;

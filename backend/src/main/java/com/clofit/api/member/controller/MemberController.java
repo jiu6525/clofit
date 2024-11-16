@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.web.servlet.MultipartProperties;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -29,6 +30,9 @@ public class MemberController {
     private static final Logger log = LoggerFactory.getLogger(MemberController.class);
     private final MemberService memberService;
     private final MultipartProperties multipartProperties;
+
+    @Value("${front.react-server}")
+    private String FRONT_REACT_SERVER;
 
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success"),
@@ -53,10 +57,11 @@ public class MemberController {
     }
 
 
-    @PutMapping("resign/{memberId}")
-    public ResponseEntity<String> resign(@PathVariable("memberId") Long member_id) {
+    @PutMapping("resign")
+    public ResponseEntity<String> resign(@AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
         System.out.println("회원탈퇴 관련 처리");
-        boolean isDeleted = memberService.deleteMember(member_id);
+        Long memberId = customOAuth2User.getmemberId();
+        boolean isDeleted = memberService.deleteMember(memberId);
 
         if (isDeleted) {
             return ResponseEntity.ok("회원 탈퇴 처리 완료");
@@ -69,7 +74,8 @@ public class MemberController {
     @PutMapping("/profile-image")
     public ResponseEntity<String> uploadProfileImage(
             @RequestParam("file") MultipartFile file,
-            @RequestParam("memberId") Long memberId) {
+            @AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
+        Long memberId = customOAuth2User.getmemberId();
         try {
             String fileUrl = memberService.uploadMemberProfileImage(memberId, file);
             return ResponseEntity.ok("프로필 이미지 업로드 완료: " + fileUrl);
@@ -81,9 +87,22 @@ public class MemberController {
     }
     
     // 마이페이지 정보
-    @GetMapping("/my/{memberId}")
-    public ResponseEntity<MemberInfoResponse> getMemberInfo(@PathVariable Long memberId) {
+    @GetMapping("/mypage")
+    public ResponseEntity<MemberInfoResponse> getMemberInfo(@AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
+        Long memberId = customOAuth2User.getmemberId();
+
         MemberInfoResponse memberInfoResponse = memberService.getMemberInfo(memberId);
         return ResponseEntity.ok(memberInfoResponse);
+    }
+
+    @PutMapping("/personal-color/{color_id}")
+    public ResponseEntity<Void> setPersonalColor(@AuthenticationPrincipal CustomOAuth2User principal, @PathVariable("color_id") Long color_id) {
+//        memberService.setColor(principal.get);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/loginpage")
+    public void redirectLoginPage(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        response.sendRedirect(FRONT_REACT_SERVER + '/');
     }
 }

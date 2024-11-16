@@ -12,5 +12,5 @@ import lombok.Setter;
 public class BackgroundlessResponse {
     int status_code;
     String message;
-    String url;
+//    String url;
 }

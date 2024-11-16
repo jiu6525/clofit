@@ -1,6 +1,5 @@
 package com.clofit.config;
 
-import com.clofit.gpu.GPUFilter;
 import com.clofit.jwt.JWTFilter;
 import com.clofit.jwt.JWTUtil;
 import com.clofit.oauth2.hadler.CustomSuccessHandler;
@@ -9,11 +8,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.ExceptionHandlingConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -77,14 +79,14 @@ public class SecurityConfig {
         http.httpBasic(AbstractHttpConfigurer::disable);
 
         // JWT 필터 추가
-//        http.addFilterBefore(new JWTFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(new JWTFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
 
         // OAuth2 로그인 설정
         http.oauth2Login(oauth2 -> oauth2
                 .userInfoEndpoint(userInfoEndpointConfig -> userInfoEndpointConfig.userService(customOAuth2UserService))
                 .successHandler(customSuccessHandler)
         );
-
+        http.exceptionHandling((exception) -> exception.authenticationEntryPoint(unauthorizedEntryPoint()));
         // 세션 설정: STATELESS
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         
@@ -96,23 +98,23 @@ public class SecurityConfig {
         return http.build();
     }
 
-    @Order(2)
-    @Bean
-    public SecurityFilterChain filterChainGPU(HttpSecurity http) throws Exception {
-
-        http.csrf(AbstractHttpConfigurer::disable);
-
-        // GPU 필터 추가
-        http.addFilterBefore(new GPUFilter(ACCESS_KEY), UsernamePasswordAuthenticationFilter.class);
-
-        // 세션 설정: STATELESS
-        http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-
-        http.authorizeHttpRequests(auth -> auth.requestMatchers("/gpu/**").hasRole("GPU_SERVER"));
-//        http.authorizeHttpRequests(auth -> auth.requestMatchers("/gpu").hasRole("GPU_SERVER").anyRequest().authenticated());
-
-        return http.build();
-    }
+//    @Order(2)
+//    @Bean
+//    public SecurityFilterChain filterChainGPU(HttpSecurity http) throws Exception {
+//
+//        http.csrf(AbstractHttpConfigurer::disable);
+//
+//        // GPU 필터 추가
+//        http.addFilterBefore(new GPUFilter(ACCESS_KEY), UsernamePasswordAuthenticationFilter.class);
+//
+//        // 세션 설정: STATELESS
+//        http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+//
+//        http.authorizeHttpRequests(auth -> auth.requestMatchers("/gpu/**").hasRole("GPU_SERVER"));
+////        http.authorizeHttpRequests(auth -> auth.requestMatchers("/gpu").hasRole("GPU_SERVER").anyRequest().authenticated());
+//
+//        return http.build();
+//    }
     /**
      * Security 예외 PATH
      * 개발 단계에서는 모든 경로 허용
@@ -125,9 +127,19 @@ public class SecurityConfig {
                 "/swagger-ui/**",
                 "/swagger-resources/**",
                 "/v3/api-docs/**",
-                "/test/**"
+                "/test/**",
+                "/member/loginpage"
 //                "/oauth2/authorization/kakao"
-                ,"/**"
+//               ,"/**"
         );
+    }
+
+    @Bean
+    public AuthenticationEntryPoint unauthorizedEntryPoint() {
+        return (request, response, authException) -> {
+            System.out.println("!!!!!!!!!!!!!!!!!Unauthorized Entry");
+            response.sendRedirect("/loginpage");
+        };
+
     }
 }

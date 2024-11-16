@@ -52,6 +52,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         String memberName = customUserDetails.getUsername();
         String name = customUserDetails.getName();
         Member isExistingUser = memberRepository.findByEmail(email);
+        Long memberId = isExistingUser.getId();
         logger.info("isExistingUser{}", isExistingUser);
 
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
@@ -59,7 +60,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         GrantedAuthority auth = iterator.next();
         String role = auth.getAuthority();
 
-        String token = jwtUtil.createJwt(memberName,name, role, 60*60*60L);
+        String token = jwtUtil.createJwt(memberName,name, role, memberId, 60*60*60*1000L);
 
         response.addCookie(createCookie("Authorization", token));
         ObjectMapper objectMapper = new ObjectMapper();
@@ -71,7 +72,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         userCookie.setPath("/");
         response.addCookie(userCookie);
 
-        response.sendRedirect(reactServer + "/");
+        response.sendRedirect(reactServer + "/home");
     }
 
     private Cookie createCookie(String key, String value) {

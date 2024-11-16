@@ -5,8 +5,10 @@ import com.clofit.api.origin_picture.request.DeleteOriginPictureReqeust;
 import com.clofit.api.origin_picture.request.OriginPictureRequest;
 import com.clofit.api.origin_picture.response.OriginPictureResponse;
 import com.clofit.api.origin_picture.service.OriginPictureService;
+import com.clofit.oauth2.dto.CustomOAuth2User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,8 +25,9 @@ public class OriginPictureController {
 
     @PostMapping("/upload")
     public ResponseEntity<List<String>> uploadOriginPictures(
-            @RequestParam("memberId") Long memberId,
+            @AuthenticationPrincipal CustomOAuth2User customOAuth2User,
             @RequestParam("files") List<MultipartFile> files) {
+        Long memberId = customOAuth2User.getmemberId();
         try {
             List<String> fileUrls = originPictureService.uploadOriginPictures(memberId, files);
             return ResponseEntity.ok(fileUrls);
@@ -36,8 +39,8 @@ public class OriginPictureController {
     }
 
     @PutMapping("/delete")
-    public ResponseEntity<String> deleteOriginPictures(@RequestBody DeleteOriginPictureReqeust deleteOriginPictureReqeust) {
-        Long memberId = deleteOriginPictureReqeust.getMemberId();
+    public ResponseEntity<String> deleteOriginPictures(@AuthenticationPrincipal CustomOAuth2User customOAuth2User, @RequestBody DeleteOriginPictureReqeust deleteOriginPictureReqeust) {
+        Long memberId = customOAuth2User.getmemberId();
         List<Long> pictureIds = deleteOriginPictureReqeust.getPictureIds();
 
         // 유효성 검사: 삭제할 이미지 ID 리스트가 없는 경우
@@ -53,9 +56,9 @@ public class OriginPictureController {
         }
     }
 
-    @PostMapping("/base-image")
-    public ResponseEntity<List<OriginPictureResponse>> getBaseOriginPictures(@RequestBody OriginPictureRequest request) {
-        Long memberId = request.getMemberId();
+    @GetMapping("/base-image")
+    public ResponseEntity<List<OriginPictureResponse>> getBaseOriginPictures(@AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
+        Long memberId = customOAuth2User.getmemberId();
         List<OriginPicture> availablePictures = originPictureService.getBaseOriginPictures(memberId);
 
         // 필요한 경우, 엔티티를 응답 DTO로 변환
@@ -65,6 +68,5 @@ public class OriginPictureController {
 
         return ResponseEntity.ok(responses);
     }
-
 }
 

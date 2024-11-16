@@ -8,6 +8,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ClosetAddRequest {
-    private Long memberId;
     private Long clothesId;
 }

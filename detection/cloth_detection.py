@@ -12,6 +12,7 @@ from color_detection import ColorFinder
 class Clothes:
     clothes_type: str
     clothes_type_id: int
+    clothes_type_top_bottom: str
     confidence: float
     color_id: int
     x1: float
@@ -31,6 +32,18 @@ class ClothesFinder:
         self.colorFinder = ColorFinder()
         self.bottom = (6, 7, 8, 9, 10)
         self.top = (0,1,2,3,4)
+        self.clothes_type_name_dic = {
+            0: "반팔옷",
+            1: "긴팔옷",
+            2: "반팔옷",
+            3: "긴팔옷",
+            4: "조끼",
+            6: "반바지",
+            7: "긴바지",
+            8: "반바지",
+            9: "반바지",
+            10: "긴바지"
+        }
 
     # 옷 찾아내기
     def predict(self, img):
@@ -56,6 +69,9 @@ class ClothesFinder:
                 break
             idx += 1
 
+        if type == 2:
+            idx = 0
+
         if idx >= len(data) :
             print("ERROR : IDX OUT OF ARRAY")
             return 0
@@ -64,7 +80,9 @@ class ClothesFinder:
         clothes_type = data[idx]["name"]
         clothes_type_id = data[idx]["class"]
         confidence = data[idx]["confidence"]
+        clothes_type_bottom_top = "bottom" if clothes_type_id in self.bottom else "top"
         # print(data)
+        clothes_type = self.clothes_type_name_dic[clothes_type_id]
 
         points = np.array([[[int(x), int(y)] for x, y in zip(data[idx]["segments"]["x"], data[idx]["segments"]["y"])]],
                           dtype=np.int32)
@@ -77,7 +95,7 @@ class ClothesFinder:
         color = self.colorFinder.getAvgColor(original, mask)
         # color = self.colorFinder.getAvgColorHSV(original, mask)
         # print(color)
-        color_id = self.colorFinder.find_closest_color_LAB(tuple(color))
+        color_id = self.colorFinder.find_closest_color_LAB(tuple(color)) + 1
         # color_com = self.colorFinder.getColor(color_id)
 
 
@@ -116,6 +134,7 @@ class ClothesFinder:
 
         return Clothes(clothes_type=clothes_type,
                        clothes_type_id=clothes_type_id,
+                       clothes_type_top_bottom=clothes_type_bottom_top,
                        confidence=confidence,
                        image=masked_image,
                        color_id=color_id,
@@ -126,6 +145,9 @@ class ClothesFinder:
                        )
 
 
+    def cvt2PngBytes(self, image):
+        flag, data = cv2.imencode('.png', image)
+        return data.tobytes()
 
     # 이미지 보여주기
     def show(self, pred):
