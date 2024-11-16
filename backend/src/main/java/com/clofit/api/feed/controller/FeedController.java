@@ -23,7 +23,7 @@ public class FeedController {
     private final FeedService feedService;
 
 
-    @PostMapping
+    @GetMapping
     public ResponseEntity<FeedResponse> getFeed(@AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
         Long memberId = customOAuth2User.getmemberId();
 
