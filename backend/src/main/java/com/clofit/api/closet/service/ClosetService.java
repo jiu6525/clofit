@@ -24,18 +24,18 @@ public class ClosetService {
     private final ClothesRepository clothesRepository;
     private final MemberRepository memberRepository;
 
-    public boolean addCloset(ClosetAddRequest closetAddRequest) {
+
+    public boolean addCloset(Long memberId, ClosetAddRequest closetAddRequest) {
         boolean exist = closetRepository.existsByMemberIdAndClothesId(
-                closetAddRequest.getMemberId(), closetAddRequest.getClothesId()
+                memberId, closetAddRequest.getClothesId()
         );
         if (exist) {
             return true;
         }
-
         Closet closet = new Closet();
         Clothes clothes = clothesRepository.findById(closetAddRequest.getClothesId())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid clothes ID"));
-        Member member = memberRepository.findById(closetAddRequest.getMemberId())
+        Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid member ID"));
         closet.setClothes(clothes);
         closet.setMember(member);
