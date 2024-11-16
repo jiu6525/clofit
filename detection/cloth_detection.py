@@ -56,6 +56,9 @@ class ClothesFinder:
                 break
             idx += 1
 
+        if type == 2:
+            idx = 0
+
         if idx >= len(data) :
             print("ERROR : IDX OUT OF ARRAY")
             return 0
@@ -126,6 +129,9 @@ class ClothesFinder:
                        )
 
 
+    def cvt2PngBytes(self, image):
+        flag, data = cv2.imencode('.png', image)
+        return data.tobytes()
 
     # 이미지 보여주기
     def show(self, pred):
