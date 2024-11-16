@@ -82,7 +82,7 @@ public class MemberController {
     
     // 마이페이지 정보
     @GetMapping("/my/{memberId}")
-    public ResponseEntity<MemberInfoResponse> getMemberInfo(@PathVariable Long memberId) {
+    public ResponseEntity<MemberInfoResponse> getMemberInfo(@PathVariable("memberId") Long memberId) {
         MemberInfoResponse memberInfoResponse = memberService.getMemberInfo(memberId);
         return ResponseEntity.ok(memberInfoResponse);
     }

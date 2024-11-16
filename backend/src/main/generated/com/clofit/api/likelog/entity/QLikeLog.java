@@ -1,4 +1,4 @@
-package com.clofit.api.comment.entity;
+package com.clofit.api.likelog.entity;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 
@@ -11,20 +11,16 @@ import com.querydsl.core.types.dsl.PathInits;
 
 
 /**
- * QComment is a Querydsl query type for Comment
+ * QLikeLog is a Querydsl query type for LikeLog
  */
 @Generated("com.querydsl.codegen.DefaultEntitySerializer")
-public class QComment extends EntityPathBase<Comment> {
+public class QLikeLog extends EntityPathBase<LikeLog> {
 
-    private static final long serialVersionUID = 1166280301L;
+    private static final long serialVersionUID = -2046511987L;
 
     private static final PathInits INITS = PathInits.DIRECT2;
 
-    public static final QComment comment = new QComment("comment");
-
-    public final StringPath content = createString("content");
-
-    public final ComparablePath<Character> delCommentYn = createComparable("delCommentYn", Character.class);
+    public static final QLikeLog likeLog = new QLikeLog("likeLog");
 
     public final com.clofit.api.fitting.entity.QFitting fitting;
 
@@ -32,25 +28,25 @@ public class QComment extends EntityPathBase<Comment> {
 
     public final com.clofit.api.member.entity.QMember member;
 
-    public final StringPath regCommentDttm = createString("regCommentDttm");
+    public final DateTimePath<java.time.LocalDateTime> regLikeLogDttm = createDateTime("regLikeLogDttm", java.time.LocalDateTime.class);
 
-    public QComment(String variable) {
-        this(Comment.class, forVariable(variable), INITS);
+    public QLikeLog(String variable) {
+        this(LikeLog.class, forVariable(variable), INITS);
     }
 
-    public QComment(Path<? extends Comment> path) {
+    public QLikeLog(Path<? extends LikeLog> path) {
         this(path.getType(), path.getMetadata(), PathInits.getFor(path.getMetadata(), INITS));
     }
 
-    public QComment(PathMetadata metadata) {
+    public QLikeLog(PathMetadata metadata) {
         this(metadata, PathInits.getFor(metadata, INITS));
     }
 
-    public QComment(PathMetadata metadata, PathInits inits) {
-        this(Comment.class, metadata, inits);
+    public QLikeLog(PathMetadata metadata, PathInits inits) {
+        this(LikeLog.class, metadata, inits);
     }
 
-    public QComment(Class<? extends Comment> type, PathMetadata metadata, PathInits inits) {
+    public QLikeLog(Class<? extends LikeLog> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.fitting = inits.isInitialized("fitting") ? new com.clofit.api.fitting.entity.QFitting(forProperty("fitting"), inits.get("fitting")) : null;
         this.member = inits.isInitialized("member") ? new com.clofit.api.member.entity.QMember(forProperty("member")) : null;

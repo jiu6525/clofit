@@ -22,11 +22,11 @@ public class QClothes extends EntityPathBase<Clothes> {
 
     public static final QClothes clothes = new QClothes("clothes");
 
-    public final com.clofit.api.brand.entity.QBrand brand;
-
     public final StringPath category = createString("category");
 
     public final ListPath<com.clofit.api.closet.entity.Closet, com.clofit.api.closet.entity.QCloset> closet = this.<com.clofit.api.closet.entity.Closet, com.clofit.api.closet.entity.QCloset>createList("closet", com.clofit.api.closet.entity.Closet.class, com.clofit.api.closet.entity.QCloset.class, PathInits.DIRECT2);
+
+    public final com.clofit.api.color.entity.QColor color;
 
     public final ComparablePath<Character> delClothesYn = createComparable("delClothesYn", Character.class);
 
@@ -38,7 +38,7 @@ public class QClothes extends EntityPathBase<Clothes> {
 
     public final StringPath itemUrl = createString("itemUrl");
 
-    public final StringPath mainColor = createString("mainColor");
+    public final StringPath maskedPath = createString("maskedPath");
 
     public final ComparablePath<Character> myClothesYn = createComparable("myClothesYn", Character.class);
 
@@ -68,7 +68,7 @@ public class QClothes extends EntityPathBase<Clothes> {
 
     public QClothes(Class<? extends Clothes> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.brand = inits.isInitialized("brand") ? new com.clofit.api.brand.entity.QBrand(forProperty("brand")) : null;
+        this.color = inits.isInitialized("color") ? new com.clofit.api.color.entity.QColor(forProperty("color")) : null;
     }
 
 }

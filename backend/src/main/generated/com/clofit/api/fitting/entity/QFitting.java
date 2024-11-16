@@ -22,7 +22,7 @@ public class QFitting extends EntityPathBase<Fitting> {
 
     public static final QFitting fitting = new QFitting("fitting");
 
-    public final com.clofit.api.clothes.entity.QClothes clothes;
+    public final com.clofit.api.clothes.entity.QClothes bottom;
 
     public final ComparablePath<Character> favoriteYn = createComparable("favoriteYn", Character.class);
 
@@ -37,6 +37,8 @@ public class QFitting extends EntityPathBase<Fitting> {
     public final ComparablePath<Character> publicYn = createComparable("publicYn", Character.class);
 
     public final StringPath regFittingDttm = createString("regFittingDttm");
+
+    public final com.clofit.api.clothes.entity.QClothes top;
 
     public QFitting(String variable) {
         this(Fitting.class, forVariable(variable), INITS);
@@ -56,8 +58,9 @@ public class QFitting extends EntityPathBase<Fitting> {
 
     public QFitting(Class<? extends Fitting> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.clothes = inits.isInitialized("clothes") ? new com.clofit.api.clothes.entity.QClothes(forProperty("clothes"), inits.get("clothes")) : null;
-        this.member = inits.isInitialized("member") ? new com.clofit.api.member.entity.QMember(forProperty("member"), inits.get("member")) : null;
+        this.bottom = inits.isInitialized("bottom") ? new com.clofit.api.clothes.entity.QClothes(forProperty("bottom"), inits.get("bottom")) : null;
+        this.member = inits.isInitialized("member") ? new com.clofit.api.member.entity.QMember(forProperty("member")) : null;
+        this.top = inits.isInitialized("top") ? new com.clofit.api.clothes.entity.QClothes(forProperty("top"), inits.get("top")) : null;
     }
 
 }
