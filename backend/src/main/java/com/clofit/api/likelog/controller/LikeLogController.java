@@ -4,8 +4,10 @@ import com.clofit.api.fitting.entity.Fitting;
 import com.clofit.api.likelog.request.LikeLogRequest;
 import com.clofit.api.likelog.response.LikeLogResponse;
 import com.clofit.api.likelog.service.LikeLogService;
+import com.clofit.oauth2.dto.CustomOAuth2User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,8 +32,13 @@ public class LikeLogController {
     }
 
     @GetMapping("/my")
-    public ResponseEntity<List<LikeLogResponse>> getLikesByMember(@RequestBody LikeLogRequest request) {
-        List<LikeLogResponse> responses = likeLogService.getLikesByMemberId(request.getMemberId());
+    public ResponseEntity<List<LikeLogResponse>> getLikesByMember(@AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
+        // CustomOAuth2User에서 memberId를 가져옴
+        Long memberId = customOAuth2User.getmemberId();
+        //Long memberId = 1l;
+
+        List<LikeLogResponse> responses = likeLogService.getLikesByMemberId(memberId);
         return ResponseEntity.ok(responses);
     }
+
 }
