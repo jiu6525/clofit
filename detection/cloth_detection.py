@@ -12,6 +12,7 @@ from color_detection import ColorFinder
 class Clothes:
     clothes_type: str
     clothes_type_id: int
+    clothes_type_top_bottom: str
     confidence: float
     color_id: int
     x1: float
@@ -67,6 +68,7 @@ class ClothesFinder:
         clothes_type = data[idx]["name"]
         clothes_type_id = data[idx]["class"]
         confidence = data[idx]["confidence"]
+        clothes_type_bottom_top = "bottom" if clothes_type_id in self.bottom else "top"
         # print(data)
 
         points = np.array([[[int(x), int(y)] for x, y in zip(data[idx]["segments"]["x"], data[idx]["segments"]["y"])]],
@@ -80,7 +82,7 @@ class ClothesFinder:
         color = self.colorFinder.getAvgColor(original, mask)
         # color = self.colorFinder.getAvgColorHSV(original, mask)
         # print(color)
-        color_id = self.colorFinder.find_closest_color_LAB(tuple(color))
+        color_id = self.colorFinder.find_closest_color_LAB(tuple(color)) + 1
         # color_com = self.colorFinder.getColor(color_id)
 
 
@@ -119,6 +121,7 @@ class ClothesFinder:
 
         return Clothes(clothes_type=clothes_type,
                        clothes_type_id=clothes_type_id,
+                       clothes_type_top_bottom=clothes_type_bottom_top,
                        confidence=confidence,
                        image=masked_image,
                        color_id=color_id,
