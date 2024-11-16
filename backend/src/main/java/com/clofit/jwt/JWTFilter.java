@@ -55,8 +55,8 @@ public class JWTFilter extends OncePerRequestFilter {
         if (authorization == null) {
 
             logger.warn("token null");
-            response.sendRedirect(FRONT_REACT_SERVER + "/");
-//            filterChain.doFilter(request, response);
+//            response.sendRedirect(FRONT_REACT_SERVER + "/");
+            filterChain.doFilter(request, response);
 
             //조건이 해당되면 메소드 종료 (필수)
             return;
