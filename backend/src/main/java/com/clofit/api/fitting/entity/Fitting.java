@@ -2,10 +2,10 @@ package com.clofit.api.fitting.entity;
 
 import com.clofit.api.clothes.entity.Clothes;
 import com.clofit.api.member.entity.Member;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import net.minidev.json.annotate.JsonIgnore;
 import lombok.ToString;
 
 
@@ -48,10 +48,10 @@ public class Fitting {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "top")
     @JsonIgnore
-    private Clothes top;;
+    private Clothes top;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "bottom")
     @JsonIgnore
-    private Clothes bottom;;
+    private Clothes bottom;
 }
