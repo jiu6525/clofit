@@ -7,6 +7,7 @@ import com.clofit.api.feed.request.FeedRequest;
 import com.clofit.api.feed.response.FeedResponse;
 import com.clofit.api.feed.service.FeedService;
 import com.clofit.oauth2.dto.CustomOAuth2User;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -24,6 +25,7 @@ public class FeedController {
 
 
     @GetMapping("/byColor")
+    @Operation(summary = "색상 기반 피드 조회")
     public ResponseEntity<FeedResponse> getFeedsByColor(
             @AuthenticationPrincipal CustomOAuth2User customOAuth2User
             ) {
@@ -36,6 +38,7 @@ public class FeedController {
     }
 
     @GetMapping
+    @Operation(summary = "랜덤 피드 조회")
     public ResponseEntity<FeedResponse> getFeeds(
             @AuthenticationPrincipal CustomOAuth2User customOAuth2User
     ) {
@@ -48,6 +51,7 @@ public class FeedController {
     }
 
     @GetMapping("/items/byColor")
+    @Operation(summary = "색상 기반 피드 조회 - 상품")
     public ResponseEntity<FeedResponse> getItemsByColor(
             @AuthenticationPrincipal CustomOAuth2User customOAuth2User
     ) {
@@ -60,6 +64,7 @@ public class FeedController {
     }
 
     @GetMapping("/items")
+    @Operation(summary = "랜덤 피드 조회 - 상품")
     public ResponseEntity<FeedResponse> getItems(
             @AuthenticationPrincipal CustomOAuth2User customOAuth2User
     ) {
@@ -72,6 +77,7 @@ public class FeedController {
     }
 
     @GetMapping("/snaps/byColor")
+    @Operation(summary = "색상 기반 피드 조회 - 스냅")
     public ResponseEntity<FeedResponse> getSnapsByColor(
             @AuthenticationPrincipal CustomOAuth2User customOAuth2User
     ) {
@@ -84,6 +90,7 @@ public class FeedController {
     }
 
     @GetMapping("/snaps")
+    @Operation(summary = "랜덤 피드 조회 - 스냅")
     public ResponseEntity<FeedResponse> getSnaps(
             @AuthenticationPrincipal CustomOAuth2User customOAuth2User
     ) {
