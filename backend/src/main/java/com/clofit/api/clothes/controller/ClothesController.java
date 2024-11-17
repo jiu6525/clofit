@@ -2,6 +2,7 @@ package com.clofit.api.clothes.controller;
 
 import com.clofit.api.clothes.entity.Clothes;
 import com.clofit.api.clothes.request.ClothesRegisterRequest;
+import com.clofit.api.clothes.request.ClothesUpdateRequest;
 import com.clofit.api.clothes.service.ClothesService;
 import com.clofit.api.gpu.service.GPUService;
 import com.clofit.oauth2.dto.CustomOAuth2User;
@@ -68,6 +69,7 @@ public class ClothesController {
             @RequestParam("file") MultipartFile file
     ) {
         Long memberId = customOAuth2User.getmemberId();
+//        Long memberId = 3L;
 
         String uuid = UUID.randomUUID().toString();
         String imgPath = BASEPATH + memberId + "/" + uuid;
@@ -79,6 +81,13 @@ public class ClothesController {
 //        String category = "category";
 //
 //        clothesService.uploadClothes(imgPath, maskedPath, color_id, category);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/{clothesId}")
+    @Operation(summary = "의류 정보 수정")
+    public ResponseEntity<Void> updateClothes(@PathVariable Long clothesId, @RequestBody ClothesUpdateRequest clothesUpdateRequest) {
+        clothesService.updateClothes(clothesId, clothesUpdateRequest);
         return ResponseEntity.ok().build();
     }
 

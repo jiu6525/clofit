@@ -4,6 +4,7 @@ import com.clofit.api.clothes.entity.Clothes;
 import com.clofit.api.clothes.repository.ClothesRepository;
 import com.clofit.api.clothes.request.ClothesRegisterRequest;
 
+import com.clofit.api.clothes.request.ClothesUpdateRequest;
 import com.clofit.api.color.entity.Color;
 import com.clofit.api.color.repository.ColorRepository;
 import lombok.RequiredArgsConstructor;
@@ -75,5 +76,17 @@ public class ClothesService {
         clothes.setStyle(clothes_type);
 
         clothesRepository.save(clothes);
+    }
+
+    public void updateClothes(Long clothesId, ClothesUpdateRequest clothesUpdateRequest) {
+        Clothes clothes = clothesRepository.findById(clothesId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid clothes id"));
+
+        Color color = colorRepository.findById(clothesUpdateRequest.getColorId())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid color id"));
+
+        clothes.setColor(color);
+        clothes.setCategory(clothesUpdateRequest.getCategory());
+        clothes.setStyle(clothesUpdateRequest.getStyle());
     }
 }
