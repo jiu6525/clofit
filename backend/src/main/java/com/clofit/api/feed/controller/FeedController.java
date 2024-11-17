@@ -25,10 +25,10 @@ public class FeedController {
 
     @GetMapping
     public ResponseEntity<FeedResponse> getFeed(
-            @AuthenticationPrincipal CustomOAuth2User customOAuth2User
+//            @AuthenticationPrincipal CustomOAuth2User customOAuth2User
     ) {
-        Long memberId = customOAuth2User.getmemberId();
-//        Long memberId = 1L;
+//        Long memberId = customOAuth2User.getmemberId();
+        Long memberId = 1L;
         List<Feed> list = feedService.getFeeds(memberId);
 
         return ResponseEntity.ok(new FeedResponse(list));
