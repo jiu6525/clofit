@@ -42,7 +42,7 @@ public class MemberService {
         }
 
         // S3에 파일 업로드
-        String fileUrl = fileService.uploadFile(file);
+        String fileUrl = fileService.uploadFile(memberId, file);
 
         // 멤버 엔티티에 파일 URL 저장
         member.setProfileFilePath(fileUrl);

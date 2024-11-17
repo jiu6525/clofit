@@ -1,4 +1,4 @@
-package com.clofit.api.member.service;
+package com.clofit.api.origin_picture.service;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
@@ -13,7 +13,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class FileService {
+public class OriginFileService {
 
     private final AmazonS3 amazonS3;
 
@@ -23,7 +23,7 @@ public class FileService {
     // S3에 파일 업로드하고 URL 반환(프로필)
     public String uploadFile(Long memberId, MultipartFile file) throws IOException {
         // 고유한 파일 이름 생성
-        String uniqueFileName = "profile/" + memberId + "/" + generateUniqueFileName(file);
+        String uniqueFileName = "origin_picture/" + memberId + "/" + generateUniqueFileName(file);
 
         // 메타데이터 설정
         ObjectMetadata metadata = new ObjectMetadata();
