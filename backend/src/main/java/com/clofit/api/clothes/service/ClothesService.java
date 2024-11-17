@@ -38,7 +38,9 @@ public class ClothesService {
 
     public List<Clothes> getPublicClothesList() { return clothesRepository.findAllPublicClothes(); }
 
-    public List<Clothes> getPublicClothesListByColor(Long colorId) { return clothesRepository.findAllPublicClothesByColor(colorId); }
+    public List<Clothes> getPublicClothesListByColor(Long colorId) {
+        return clothesRepository.findAllPublicClothesByColor(colorId);
+    }
 
     public void registClothes(ClothesRegisterRequest clothesRegisterRequest) {
         Clothes clothes = new Clothes();

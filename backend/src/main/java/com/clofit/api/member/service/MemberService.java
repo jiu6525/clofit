@@ -63,6 +63,7 @@ public class MemberService {
 
     public String getColor(Long memberId) {
         return memberRepository.getPersonalColor(memberId);
+
     }
 
     public void setColor(Long memberId, String color) {

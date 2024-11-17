@@ -29,6 +29,7 @@ public class FeedServiceImpl implements FeedService {
         Long colorId = Long.parseLong(color);
 
         List<Clothes> clothesList = clothesService.getPublicClothesListByColor(colorId);
+
         List<Fitting> fittingList = fittingService.getPublicFittingListByColor(colorId);
 
         List<Feed> feedList = new ArrayList<>();

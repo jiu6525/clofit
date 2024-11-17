@@ -25,11 +25,10 @@ public class FeedController {
 
     @GetMapping("/byColor")
     public ResponseEntity<FeedResponse> getFeedsByColor(
-            @AuthenticationPrincipal CustomOAuth2User customOAuth2User
+//            @AuthenticationPrincipal CustomOAuth2User customOAuth2User
             ) {
-        Long memberId = customOAuth2User.getmemberId();
-//        Long memberId = 3L;
-
+//        Long memberId = customOAuth2User.getmemberId();
+        Long memberId = 3L;
         List<Feed> list = feedService.getFeedsByColor(memberId);
 
         return ResponseEntity.ok(new FeedResponse(list));
