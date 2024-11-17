@@ -29,6 +29,7 @@ public class Member {
 
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
     @JsonBackReference
+    @JsonIgnore
     private List<Closet> closet;
 
     @Column(name = "email")
@@ -47,7 +48,7 @@ public class Member {
     private String role;
 
     @Column(name = "del_user_yn")
-    private char delMemberYn = 'N';
+    private Character delMemberYn = 'N';
 
     @Column(name = "del_member_dttm")
     private LocalDateTime delMemberDttm;
