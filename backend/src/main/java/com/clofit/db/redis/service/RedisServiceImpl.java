@@ -109,9 +109,9 @@ public class RedisServiceImpl implements RedisService {
      * @throws IOException
      */
     @Override
-    public void updateFitting(String memberId, String redisId, String url) throws IOException {
+    public void updateFitting(Long memberId, String redisId, String url) throws IOException {
         ListOperations<String, Object> list =  redisTemplate.opsForList();
-        List<Object> fittingList = list.range(fittingListKey(memberId), 0, -1);
+        List<Object> fittingList = list.range(fittingListKey(String.valueOf(memberId)), 0, -1);
 
         if(fittingList == null) {
             logger.warn("redis fitting:" + memberId + " is null");
@@ -142,9 +142,9 @@ public class RedisServiceImpl implements RedisService {
      * @param redisId
      */
     @Override
-    public void removeFittingResult(String memberId, String redisId) throws JsonProcessingException {
+    public void removeFittingResult(Long memberId, String redisId) throws JsonProcessingException {
         redisTemplate.delete(fittingResultKey(redisId));
-        redisTemplate.opsForList().remove(fittingListKey(memberId), 1, objectMapper.writeValueAsString(redisId));
+        redisTemplate.opsForList().remove(fittingListKey(String.valueOf(memberId)), 1, objectMapper.writeValueAsString(redisId));
     }
 
     /**
@@ -153,8 +153,8 @@ public class RedisServiceImpl implements RedisService {
      * @return UUID List, 존재하지 않거나 사용 중인 경우 빈 리스트(Empty ArrayList)
      */
     @Override
-    public List<String> getFittingList(String memberId) {
-        List<Object> list = redisTemplate.opsForList().range(memberId,0, -1);
+    public List<String> getFittingList(Long memberId) {
+        List<Object> list = redisTemplate.opsForList().range(String.valueOf(memberId),0, -1);
         if(list == null) {
             logger.warn("redis fitting:" + memberId + " is null");
             return new ArrayList<>();
@@ -212,8 +212,8 @@ public class RedisServiceImpl implements RedisService {
      * @throws JsonProcessingException
      */
     @Override
-    public boolean existFittingResult(String memberId, String redisId) throws JsonProcessingException {
-        Long idx =  redisTemplate.opsForList().indexOf(fittingListKey(memberId), objectMapper.writeValueAsString(redisId));
+    public boolean existFittingResult(Long memberId, String redisId) throws JsonProcessingException {
+        Long idx =  redisTemplate.opsForList().indexOf(fittingListKey(String.valueOf(memberId)), objectMapper.writeValueAsString(redisId));
         return idx != null && idx >= 0;
     }
 
