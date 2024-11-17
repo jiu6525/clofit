@@ -7,8 +7,8 @@ import java.util.List;
 
 public interface AwsS3Service {
 
-    void uploadClothFile(ClothInsertRequest clothInsertRequest);
-    void uploadModelFile(ModelInsertRequest ModelInsertRequest);
+    String uploadClothFile(ClothInsertRequest clothInsertRequest);
+    String uploadModelFile(ModelInsertRequest ModelInsertRequest);
     void uploadFile(FittingStoreRequest fittingStoreRequest);
     String uploadFile(FittingStoreRequest fittingStoreRequest, String redisId);
     void deleteFile(String fileName);
@@ -16,4 +16,5 @@ public interface AwsS3Service {
     String getModelFile(ModelRequest modelRequest);
     List<FittingSearchResponse> getFittingImages(FittingSearchRequest fittingSearchRequest);
     void moveFile(String url);
+    String recentFile(Long memberId, byte[] img);
 }
