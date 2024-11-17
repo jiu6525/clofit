@@ -12,23 +12,30 @@ export default function LikedSnaps() {
   const [likedItems, setLikedItems] = useState<number[]>([]);
 
   useEffect(() => {
+    let didCancel = false;
+
     const fetchLikedSnaps = async () => {
       try {
-        // 좋아요된 스냅 목록 가져오기
         const response =
           await axiosInstance.get<LikeLogResponse[]>('/likes/my');
-        console.log('좋아요된 스냅 목록:', response.data);
-
-        setItems(response.data); // 목록 데이터 설정
-        // 좋아요된 항목들의 ID를 추출하여 likedItems 상태 업데이트
-        const likedIds = response.data.map((item) => item.fittingId);
-        setLikedItems(likedIds);
+        if (!didCancel) {
+          console.log('좋아요된 스냅 목록:', response.data);
+          setItems(response.data);
+          const likedIds = response.data.map((item) => item.fittingId);
+          setLikedItems(likedIds);
+        }
       } catch (error) {
-        console.error('좋아요 목록 불러오기 실패:', error);
+        if (!didCancel) {
+          console.error('좋아요 목록 불러오기 실패:', error);
+        }
       }
     };
 
     fetchLikedSnaps();
+
+    return () => {
+      didCancel = true;
+    };
   }, []);
 
   const toggleLike = async (id: number) => {
