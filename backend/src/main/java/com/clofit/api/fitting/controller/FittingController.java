@@ -145,7 +145,8 @@ public class FittingController {
     @PostMapping
     @Operation(summary = "가상 피팅")
     public void fitting(@AuthenticationPrincipal CustomOAuth2User customOAuth2User,@RequestBody FittingRequest fittingRequest) {
-// 가상 스레드를 사용해 비동기적으로 처리
+        fittingRequest.setMemberId(customOAuth2User.getmemberId());
+        // 가상 스레드를 사용해 비동기적으로 처리
         Thread.ofVirtual().start(() -> {
             // 비동기적으로 메시지를 큐에 푸시
             CompletableFuture<byte[]> resultFuture = fittingService.fittingMQ(fittingRequest);
@@ -197,7 +198,8 @@ public class FittingController {
      */
     @PostMapping("/search")
     @Operation(summary = "사용자가 저장한 피팅 사진 조회")
-    public ResponseEntity<List<FittingSearchResponse>> getFittingImages(@RequestBody FittingSearchRequest fittingSearchRequest) {
+    public ResponseEntity<List<FittingSearchResponse>> getFittingImages(@AuthenticationPrincipal CustomOAuth2User customOAuth2User, @RequestBody FittingSearchRequest fittingSearchRequest) {
+        fittingSearchRequest.setMemberId(customOAuth2User.getmemberId());
         return ResponseEntity.ok(awsS3Service.getFittingImages(fittingSearchRequest));
     }
 
@@ -277,8 +279,12 @@ public class FittingController {
         }
 
         awsS3Service.moveFile(fittingResult.getImgUrl());
+
         try {
             redisService.removeFittingResult(memberId, redisId);
+            FittingRecentDetailResponse fittingDetailResult = redisService.getFittingDetailResult(redisId);
+
+
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
