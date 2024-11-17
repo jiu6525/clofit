@@ -1,9 +1,10 @@
 package com.clofit.db.redis.service;
 
 import com.clofit.api.fitting.entity.FittingResult;
+import com.clofit.api.fitting.response.FittingRecentDetailResponse;
+import com.clofit.api.fitting.response.FittingRecentResponse;
 import com.clofit.config.RedisConfig;
 import com.clofit.db.redis.RedisHandler;
-import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.lettuce.core.RedisException;
@@ -20,7 +21,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -154,7 +154,7 @@ public class RedisServiceImpl implements RedisService {
      */
     @Override
     public List<String> getFittingList(String memberId) {
-        List<Object> list = redisTemplate.opsForList().range(fittingListKey(memberId),0, -1);
+        List<Object> list = redisTemplate.opsForList().range(memberId,0, -1);
         if(list == null) {
             logger.warn("redis fitting:" + memberId + " is null");
             return new ArrayList<>();
@@ -173,70 +173,33 @@ public class RedisServiceImpl implements RedisService {
      * @return FittingResult, 존재하지 않거나 사용 중인 경우 null
      */
     @Override
-    public FittingResult getFittingResult(String redisId) throws JsonProcessingException {
-        System.out.println(redisId);
+    public FittingRecentResponse getFittingResult(String redisId) throws JsonProcessingException {
+        Set<Object> set = redisTemplate.opsForSet().members(redisId);
+        if (set == null || set.isEmpty()) {
+            logger.warn("redis fitting: {} is null or empty", redisId);
+            throw new RedisException("redis fitting: " + redisId + " is null or empty");
+        }
+        FittingRecentDetailResponse fittingRecentDetailResponse = new ObjectMapper().readValue((String) set.iterator().next(), FittingRecentDetailResponse.class);
+
+        return new FittingRecentResponse(redisId, fittingRecentDetailResponse.getImgUrl());
+    }
+
+    /**
+     * Fitting Result Id 를 통해 조회
+     * @param redisId FittingResult.ID
+     * @return FittingResult, 존재하지 않거나 사용 중인 경우 null
+     */
+    @Override
+    public FittingRecentDetailResponse getFittingDetailResult(String redisId) throws JsonProcessingException {
         Set<Object> set = redisTemplate.opsForSet().members(redisId);
         if (set == null || set.isEmpty()) {
             logger.warn("redis fitting: {} is null or empty", redisId);
             throw new RedisException("redis fitting: " + redisId + " is null or empty");
         }
 
-        String input = (String) set.iterator().next();
-        input =  input.replace("FittingRecentRequest", "")
-                .replace("(", "")
-                .replace(")", "")
-                .replaceAll("\\s", "")
-                .trim();
-        StringBuilder json = new StringBuilder("{");
-        String[] split = input.split(",");
-        for (int i = 0; i < split.length; i++) {
-            String s = split[i];
-            String[] keyValue = s.split("=");
-            if (keyValue.length == 2) {
-                String key = keyValue[0].trim();
-                String value = keyValue[1].trim();
-
-                if (value.startsWith("[") && value.endsWith("]")) {
-                    value = value.substring(1, value.length() - 1);
-                    String[] valueItems = value.split(",");
-                    StringBuilder listBuilder = new StringBuilder();
-                    listBuilder.append("[");
-                    for (int j = 0; j < valueItems.length; j++) {
-                        listBuilder.append("\"").append(valueItems[j].trim()).append("\"");
-                        if (j < valueItems.length - 1) {
-                            listBuilder.append(",");
-                        }
-                    }
-                    listBuilder.append("]");
-                    json.append("\"").append(key).append("\":").append(listBuilder);
-                } else {
-                    json.append("\"").append(key).append("\":\"").append(value).append("\"");
-                }
-
-                if (i < split.length - 1) {
-                    json.append(",");
-                }
-            }
-        }
-
-        json.append("}");
-
-        System.out.println("json: " + json);
-
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        FittingResult fittingResult = objectMapper.readValue(json.toString(), FittingResult.class);
-
-        System.out.println("fittingResult" + fittingResult);
-
-
-        if (fittingResult == null) {
-            logger.warn("redis fitting: " + redisId + " is null");
-            throw new RedisException("redis fitting: " + redisId + " is null");
-        }
-
-        return fittingResult;
+        return new ObjectMapper().readValue((String) set.iterator().next(), FittingRecentDetailResponse.class);
     }
+
 
     /**
      * 주어진 UUID가 멤버의 소유인지 검사

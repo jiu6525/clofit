@@ -130,7 +130,7 @@ public class SecurityConfig {
                 "/test/**",
                 "/member/loginpage"
 //                "/oauth2/authorization/kakao"
-//               ,"/**"
+               ,"/**"
         );
     }
 

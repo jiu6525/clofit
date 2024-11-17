@@ -3,6 +3,7 @@ package com.clofit.api.fitting.service;
 import com.clofit.api.fitting.entity.Fitting;
 import com.clofit.api.fitting.repository.FittingRepository;
 import com.clofit.api.fitting.request.*;
+import com.clofit.api.fitting.response.FittingRecentDetailResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -178,25 +179,17 @@ public class FittingServiceImpl implements FittingService {
 
             // 응답을 기다림
             ResponseEntity<byte[]> responseEntity = responseMono.block(); // block()으로 응답 기다림
-            byte[] zipFileBytes = responseEntity != null ? responseEntity.getBody() : null;
+            byte[] imgFile = responseEntity != null ? responseEntity.getBody() : null;
 
             logger.info("연산 완료");
             logger.info("Request sent to GPU server.");
 
-            // 받은 데이터가 null이 아니면 압축 파일을 풀고 이미지 파일을 처리
-            if (zipFileBytes != null) {
-                List<byte[]> imageFiles = unzipFile(zipFileBytes);
-                logger.info(imageFiles.isEmpty() ? "No image files found." : "Image file processing complete.");
-                // 이미지가 있으면 첫 번째 이미지를 반환
-                if (!imageFiles.isEmpty()) {
-                    return imageFiles.getFirst();
-                } else {
-                    logger.info("No images to return.");
-                    return null; // 이미지가 없으면 null 반환
-                }
+            // 이미지가 있으면 첫 번째 이미지를 반환
+            if (imgFile != null) {
+                return imgFile;
             } else {
-                System.out.println("Response is not a zip file.");
-                return null;
+                logger.info("No images to return.");
+                return null; // 이미지가 없으면 null 반환
             }
         } catch (Exception e) {
             System.err.println("Error handling GPU task: " + e.getMessage());
@@ -210,15 +203,17 @@ public class FittingServiceImpl implements FittingService {
             isGpuBusy = isGpuServerBusy();
             if (!isGpuBusy) {
                 try {
-                    Long memberId = result.fittingRequest.getMemberId();
-                    byte[] img = startFitting(result);
-                    // 멤버 id 와 처리된 이미지 파일을 s3에 저장하고 redis에 url 주소를 저장하자
-                    String imgUrl = awsS3Service.recentFile(memberId, img);
-                    FittingRecentRequest fittingRecentRequest = new FittingRecentRequest(fittingRequest, imgUrl);
-
                     String uuid = UUID.randomUUID().toString();
+                    Long memberId = result.fittingRequest.getMemberId();
+                    
+                    // 멤버 id 와 처리된 이미지 파일을 s3에 저장하고 redis에 url 주소를 저장하자
                     template.opsForList().rightPush(String.valueOf(memberId), uuid);
-                    template.opsForSet().add(uuid, fittingRecentRequest.toString());
+                    template.opsForValue().set(uuid, new ObjectMapper().writeValueAsString(new FittingRecentDetailResponse()));
+
+                    byte[] img = startFitting(result);
+                    String imgUrl = awsS3Service.recentFile(memberId, img);
+                    FittingRecentDetailResponse fittingRecentDetailResponse = new FittingRecentDetailResponse(fittingRequest, imgUrl);
+                    template.opsForValue().set(uuid, new ObjectMapper().writeValueAsString(fittingRecentDetailResponse));
 
                     logger.info("Data saved to Redis: memberId = {}", memberId);
                 } catch (Exception e) {
@@ -360,7 +355,6 @@ public class FittingServiceImpl implements FittingService {
         try {
             // 외부 API에 POST 요청을 보내 zip 파일을 응답받음
             ResponseEntity<byte[]> response = restTemplate.exchange(url, HttpMethod.POST, entity, byte[].class);
-            System.out.println(5);
             byte[] zipFileBytes = response.getBody();
             if (zipFileBytes != null) {
                 // zip 파일 압축 해제

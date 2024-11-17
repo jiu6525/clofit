@@ -5,16 +5,19 @@ import com.clofit.api.fitting.entity.FittingResult;
 import com.clofit.api.fitting.request.FittingRequest;
 import com.clofit.api.fitting.request.FittingSearchRequest;
 import com.clofit.api.fitting.request.FittingStoreRequest;
-import com.clofit.api.fitting.request.ThreadFittingRequest;
 import com.clofit.api.fitting.request.*;
 import com.clofit.api.fitting.response.FittingIDResponse;
+import com.clofit.api.fitting.response.FittingRecentDetailResponse;
+import com.clofit.api.fitting.response.FittingRecentResponse;
 import com.clofit.api.fitting.response.FittingSearchResponse;
 import com.clofit.api.fitting.service.AwsS3Service;
 import com.clofit.api.fitting.service.FittingService;
 import com.clofit.db.redis.service.RedisService;
+import com.clofit.oauth2.dto.CustomOAuth2User;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.*;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -98,29 +101,29 @@ public class FittingController {
      *                       결과물인 zip 파일을 얻어와서 redis 에 등록 후 프론트에 응답해줌
      * @return zip 파일을 응답받아서 압축 해제 후 프론트로 전송
      */
-    @PostMapping
-    public ResponseEntity<byte[]> fitting(@RequestBody FittingRequest fittingRequest) {
-        try {
-            // 서비스에서 비즈니스 로직 처리 후 이미지 파일 반환
-            byte[] imageBytes = fittingService.fitting(fittingRequest);
-
-            /**
-             * 이미지를 redis에 저장하는 로직 구현 에정
-             */
-
-            // 이미지 파일을 응답으로 반환
-            HttpHeaders responseHeaders = new HttpHeaders();
-            responseHeaders.setContentType(MediaType.IMAGE_JPEG);
-            responseHeaders.setContentDisposition(ContentDisposition.builder("inline")
-                    .filename("fitting_result.jpg")
-                    .build());
-
-            return new ResponseEntity<>(imageBytes, responseHeaders, HttpStatus.OK);
-        } catch (Exception e) {
-            e.printStackTrace();  // 예외 디버깅용 출력
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        }
-    }
+//    @PostMapping
+//    public ResponseEntity<byte[]> fitting(@RequestBody FittingRequest fittingRequest) {
+//        try {
+//            // 서비스에서 비즈니스 로직 처리 후 이미지 파일 반환
+//            byte[] imageBytes = fittingService.fitting(fittingRequest);
+//
+//            /**
+//             * 이미지를 redis에 저장하는 로직 구현 에정
+//             */
+//
+//            // 이미지 파일을 응답으로 반환
+//            HttpHeaders responseHeaders = new HttpHeaders();
+//            responseHeaders.setContentType(MediaType.IMAGE_JPEG);
+//            responseHeaders.setContentDisposition(ContentDisposition.builder("inline")
+//                    .filename("fitting_result.jpg")
+//                    .build());
+//
+//            return new ResponseEntity<>(imageBytes, responseHeaders, HttpStatus.OK);
+//        } catch (Exception e) {
+//            e.printStackTrace();  // 예외 디버깅용 출력
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+//        }
+//    }
 
     /**
      * Virtual Thread를 사용한 피팅
@@ -164,8 +167,8 @@ public class FittingController {
         }
     }
 
-    @PostMapping("/fitting3")
-    public void fitting3(@RequestBody FittingRequest fittingRequest) {
+    @PostMapping
+    public void fitting(@RequestBody FittingRequest fittingRequest) {
 // 가상 스레드를 사용해 비동기적으로 처리
         Thread.ofVirtual().start(() -> {
             // 비동기적으로 메시지를 큐에 푸시
@@ -212,6 +215,7 @@ public class FittingController {
     /**
      * @param fittingStoreRequest
      * 생성된 피팅 이미지 화면에서 출력된 img 파일과 memberId 값을 받음
+     * 수정 -> 레디스에 저장된 값을 s3와 사용자 mysql 에 저장
      */
     @PostMapping("/store")
     public ResponseEntity<String> storeFile(@ModelAttribute FittingStoreRequest fittingStoreRequest) {
@@ -232,21 +236,20 @@ public class FittingController {
     }
 
     /**
-     * 피팅 결과 정보를 반환한다.
+     * 최신 피팅 결과 상세 정보를 반환한다.
      * @param memberId
      * @param redisId
      * @return
      * @throws JsonProcessingException
      */
     @GetMapping("/{memberId}/{redisId}")
-    public ResponseEntity<FittingResult> getFittingResult(@PathVariable("memberId") String memberId, @PathVariable("redisId") String redisId) {
-        FittingResult fr = null;
+    public ResponseEntity<FittingRecentDetailResponse> getFittingResult(@PathVariable("memberId") String memberId, @PathVariable("redisId") String redisId) {
+        FittingRecentDetailResponse fr = null;
         try {
 //            if(!redisService.existFittingResult(memberId, redisId)) {
 //                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new FittingResult("null", false, "null"));
 //            }
-
-            fr = redisService.getFittingResult(redisId);
+            fr = redisService.getFittingDetailResult(redisId);
 
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
@@ -256,14 +259,14 @@ public class FittingController {
     }
 
     /**
-     * 피팅 결과 리스트를 반환한다.
+     * 레디스에 있는 최신 피팅 결과 리스트를 반환한다.
      * @param memberId
      * @return
      */
     @GetMapping("/{memberId}")
-    public ResponseEntity<List<FittingResult>> getFittingResultList(@PathVariable("memberId") String memberId) {
+    public ResponseEntity<List<FittingRecentResponse>> getFittingResultList(@PathVariable("memberId") String memberId) {
         List<String> objList = redisService.getFittingList(memberId);
-        List<FittingResult> fittingResultList = new ArrayList<>();
+        List<FittingRecentResponse> fittingResultList = new ArrayList<>();
 
         for(String obj : objList) {
             try {
@@ -294,15 +297,17 @@ public class FittingController {
         return ResponseEntity.ok("Deleted");
     }
 
-    @PutMapping("/{memberId}/{redisId}")
-    public ResponseEntity<String> saveFittingResult(@PathVariable("memberId") String memberId, @PathVariable("redisId") String redisId)  {
-        FittingResult fittingResult = null;
+    @PutMapping("/{redisId}")
+    public ResponseEntity<String> saveFittingResult(@AuthenticationPrincipal CustomOAuth2User customOAuth2User, @PathVariable("redisId") String redisId) {
+//        String memberId = customOAuth2User.getmemberId().toString();
+        String memberId = "1";
+        FittingRecentDetailResponse fittingResult;
         try {
-            fittingResult = redisService.getFittingResult(redisId);
+            fittingResult = redisService.getFittingDetailResult(redisId);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
-        if(fittingResult == null) {
+        if (fittingResult == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Fitting not found");
         }
 
