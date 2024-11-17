@@ -1,9 +1,10 @@
 package com.clofit.db.redis.service;
 
 import com.clofit.api.fitting.entity.FittingResult;
+import com.clofit.api.fitting.response.FittingRecentDetailResponse;
+import com.clofit.api.fitting.response.FittingRecentResponse;
 import com.clofit.config.RedisConfig;
 import com.clofit.db.redis.RedisHandler;
-import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.lettuce.core.RedisException;
@@ -21,6 +22,7 @@ import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Redis 단일 데이터를 처리하는 비즈니스 로직 구현체입니다.
@@ -95,8 +97,8 @@ public class RedisServiceImpl implements RedisService {
         ListOperations<String, Object> list =  redisTemplate.opsForList();
         ValueOperations<String, Object> value = redisTemplate.opsForValue();
 
-        value.set(fittingResultKey(fittingResult.getId()), objectMapper.writeValueAsString(fittingResult));
-        list.rightPush(fittingListKey(memberId), objectMapper.writeValueAsString(fittingResult.getId()));
+        value.set(fittingResultKey(fittingResult.getMemberId()), objectMapper.writeValueAsString(fittingResult));
+        list.rightPush(fittingListKey(memberId), objectMapper.writeValueAsString(fittingResult.getMemberId()));
     }
 
     /**
@@ -131,7 +133,7 @@ public class RedisServiceImpl implements RedisService {
             logger.warn("redis fitting:" + memberId + " inside of " + redisId + " is not found");
             return;
         }
-        redisTemplate.opsForValue().set(fittingResultKey(redisId), objectMapper.writeValueAsString(new FittingResult(redisId, true, url)));
+//        redisTemplate.opsForValue().set(fittingResultKey(redisId), objectMapper.writeValueAsString(new FittingResult(redisId, true, url)));
     }
 
     /**
@@ -152,7 +154,7 @@ public class RedisServiceImpl implements RedisService {
      */
     @Override
     public List<String> getFittingList(String memberId) {
-        List<Object> list = redisTemplate.opsForList().range(fittingListKey(memberId),0, -1);
+        List<Object> list = redisTemplate.opsForList().range(memberId,0, -1);
         if(list == null) {
             logger.warn("redis fitting:" + memberId + " is null");
             return new ArrayList<>();
@@ -171,21 +173,36 @@ public class RedisServiceImpl implements RedisService {
      * @return FittingResult, 존재하지 않거나 사용 중인 경우 null
      */
     @Override
-    public FittingResult getFittingResult(String redisId) throws JsonProcessingException {
-        Object o = redisTemplate.opsForValue().get(fittingResultKey(redisId));
-        if(o == null) {
-            logger.warn("redis fitting:" + redisId + " is null");
-            throw new RedisException("redis fitting:" + redisId + " is null");
-        }
-        FittingResult fr = objectMapper.readValue((String)o, FittingResult.class);
-
-        if(fr == null) {
-            logger.warn("redis fitting:" + redisId + " is null");
-            throw new RedisException("redis fitting:" + redisId + " is null");
+    public FittingRecentResponse getFittingResult(String redisId) throws JsonProcessingException {
+        Set<Object> set = redisTemplate.opsForSet().members(redisId);
+        if (set == null || set.isEmpty()) {
+            logger.warn("redis fitting: {} is null or empty", redisId);
+            throw new RedisException("redis fitting: " + redisId + " is null or empty");
         }
 
-        return fr;
+        ObjectMapper objectMapper = new ObjectMapper();
+        FittingRecentDetailResponse fittingRecentDetailResponse = objectMapper.readValue((String) set.iterator().next(), FittingRecentDetailResponse.class);
+        System.out.println(fittingRecentDetailResponse);
+
+        return new FittingRecentResponse(redisId, fittingRecentDetailResponse.getImgUrl());
     }
+
+    /**
+     * Fitting Result Id 를 통해 조회
+     * @param redisId FittingResult.ID
+     * @return FittingResult, 존재하지 않거나 사용 중인 경우 null
+     */
+    @Override
+    public FittingRecentDetailResponse getFittingDetailResult(String redisId) throws JsonProcessingException {
+        Set<Object> set = redisTemplate.opsForSet().members(redisId);
+        if (set == null || set.isEmpty()) {
+            logger.warn("redis fitting: {} is null or empty", redisId);
+            throw new RedisException("redis fitting: " + redisId + " is null or empty");
+        }
+
+        return new ObjectMapper().readValue((String) set.iterator().next(), FittingRecentDetailResponse.class);
+    }
+
 
     /**
      * 주어진 UUID가 멤버의 소유인지 검사

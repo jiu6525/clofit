@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.web.servlet.MultipartProperties;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -29,6 +30,9 @@ public class MemberController {
     private static final Logger log = LoggerFactory.getLogger(MemberController.class);
     private final MemberService memberService;
     private final MultipartProperties multipartProperties;
+
+    @Value("${front.react-server}")
+    private String FRONT_REACT_SERVER;
 
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success"),
@@ -95,5 +99,10 @@ public class MemberController {
     public ResponseEntity<Void> setPersonalColor(@AuthenticationPrincipal CustomOAuth2User principal, @PathVariable("color_id") Long color_id) {
 //        memberService.setColor(principal.get);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/loginpage")
+    public void redirectLoginPage(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        response.sendRedirect(FRONT_REACT_SERVER + '/');
     }
 }

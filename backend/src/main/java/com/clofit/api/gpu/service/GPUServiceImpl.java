@@ -1,9 +1,9 @@
 package com.clofit.api.gpu.service;
 
+import com.clofit.api.clothes.response.ClothesUploadResponse;
 import com.clofit.api.clothes.service.ClothesService;
 import com.clofit.api.fitting.entity.ByteMultiPart;
 import com.clofit.api.gpu.dao.GPUDao;
-import com.clofit.api.gpu.dto.PrivateClothesDto;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,7 +36,7 @@ public class GPUServiceImpl implements GPUService {
         return gpuDao.upload(path, image);
     }
 
-    public void upload2(Long memberId, String path, String type, MultipartFile image) {
+    public ClothesUploadResponse upload2(Long memberId, String path, String type, MultipartFile image) {
         String url = gpuDao.upload(path + type, image); //원본 업로드하기
 //        String url = "https://clofit-s3-bucket.s3.ap-southeast-2.amazonaws.com/cloth/bottom/26.png";
         String jsonPayload = "{ \"url\": \"" + url + "\"}";
@@ -54,7 +54,7 @@ public class GPUServiceImpl implements GPUService {
             Double confidence = (Double)response.getBody().get("confidence");
             String clothes_type = (String)response.getBody().get("clothes_type");
             Integer clothes_type_id = (Integer)response.getBody().get("clothes_type_id");
-            String clothes_type_bottom_top = (String)response.getBody().get("clothes_type_bottom_top");
+            String clothes_type_top_bottom = (String)response.getBody().get("clothes_type_top_bottom");
 //            String masked_image = (String)response.getBody().get("masked_image"); //Base64 encoded
 //            System.out.println(masked_image);
             byte[] masked_image = Base64.getDecoder().decode((String)response.getBody().get("masked_image"));
@@ -62,7 +62,7 @@ public class GPUServiceImpl implements GPUService {
             ByteMultiPart multiPart = new ByteMultiPart(masked_image, "private clothes");
             String maskPath = gpuDao.upload(path + "_mask" + type, multiPart); // 배경 제거 이미지 업로드
 
-            clothesService.uploadClothes(url, maskPath, color_id, clothes_type_bottom_top, clothes_type);
+            return clothesService.uploadClothes(url, maskPath, color_id, clothes_type_top_bottom, clothes_type);
 
 //            gpuDao.insert2ClothesTable(
 //                    new PrivateClothesDto(

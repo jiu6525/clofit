@@ -13,11 +13,11 @@ public interface ClothesRepository extends JpaRepository<Clothes, Long> {
     List<Clothes> findAllClothes();
 
 //    @Query("SELECT DISTINCT c FROM Clothes c JOIN FETCH c.brand WHERE c.category = '0' ")
-    @Query("SELECT DISTINCT c FROM Clothes c JOIN FETCH c.color WHERE c.category = '0' ")
+    @Query("SELECT DISTINCT c FROM Clothes c JOIN FETCH c.color WHERE c.category = 'top' ")
     List<Clothes> findTopClothes();
 
 //    @Query("SELECT DISTINCT c FROM Clothes c JOIN FETCH c.brand WHERE c.category = '1' ")
-    @Query("SELECT DISTINCT c FROM Clothes c JOIN FETCH c.color WHERE c.category = '1' ")
+    @Query("SELECT DISTINCT c FROM Clothes c JOIN FETCH c.color WHERE c.category = 'bottom' ")
     List<Clothes> findBottomClothes();
 
 //    @Query("SELECT DISTINCT c FROM Clothes c JOIN FETCH c.brand WHERE c.id = :clothesId")

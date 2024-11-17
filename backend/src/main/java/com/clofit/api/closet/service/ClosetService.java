@@ -45,9 +45,9 @@ public class ClosetService {
         return false;
     }
 
-    public void deleteCloset(List<Long> closetIds) {
-        List<Closet> closets = closetRepository.findAllById(closetIds);
-        closetRepository.deleteAll(closets);
+    public void deleteCloset(Long memberId, List<Long> closetIds) {
+        List<Long> validClosetIds = closetRepository.findValidClosetIdsByMemberId(memberId, closetIds);
+        closetRepository.deleteAllById(validClosetIds);
     }
 
     public List<Closet> searchCloset(String category) {

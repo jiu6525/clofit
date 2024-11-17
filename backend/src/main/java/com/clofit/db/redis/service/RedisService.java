@@ -1,6 +1,8 @@
 package com.clofit.db.redis.service;
 
 import com.clofit.api.fitting.entity.FittingResult;
+import com.clofit.api.fitting.response.FittingRecentDetailResponse;
+import com.clofit.api.fitting.response.FittingRecentResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.stereotype.Service;
 
@@ -33,6 +35,7 @@ public interface RedisService {
 
     void removeFittingResult(String memberId, String redisId) throws JsonProcessingException;
     List<String> getFittingList(String memberId);
-    FittingResult getFittingResult(String redisId) throws JsonProcessingException;
+    FittingRecentResponse getFittingResult(String redisId) throws JsonProcessingException;
     boolean existFittingResult(String memberId, String redisId) throws JsonProcessingException;
+    FittingRecentDetailResponse getFittingDetailResult(String redisId) throws JsonProcessingException;
 }
