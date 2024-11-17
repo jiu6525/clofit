@@ -30,14 +30,13 @@ export default function MyPage() {
   const [nickname, setNickname] = useState<string | null>(null);
   const [profileImageUrl, setProfileImageUrl] = useState<string | null>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+
   useEffect(() => {
     const fetchMemberInfo = async () => {
       try {
-        // 제네릭을 사용하여 응답 데이터 타입을 지정합니다.
         const response =
           await axiosInstance.get<MemberInfoResponse>('/member/mypage');
 
-        // 이제 response.data는 MemberInfoResponse 타입으로 간주됩니다.
         const { memberName, personalColor, profileFilePath } = response.data;
 
         setNickname(memberName);
@@ -88,20 +87,24 @@ export default function MyPage() {
         }
       );
 
-      const fileUrl = response.data.split(': ')[1].trim(); // URL 추출
-      setProfileImageUrl(fileUrl); // 새로운 프로필 이미지 반영
-      alert('프로필 이미지가 성공적으로 업데이트되었습니다.');
+      if (typeof response.data === 'string') {
+        const fileUrl = response.data.split(': ')[1].trim(); // URL 추출
+        setProfileImageUrl(fileUrl); // 새로운 프로필 이미지 반영
+        alert('프로필 이미지가 성공적으로 업데이트되었습니다.');
+      } else {
+        console.error('Unexpected response data format:', response.data);
+        alert('프로필 이미지 업데이트에 실패했습니다.');
+      }
     } catch (error) {
       console.error('프로필 이미지 업데이트 실패:', error);
       alert('프로필 이미지 업데이트에 실패했습니다.');
     }
-  };
+  }; // 여기가 문제였던 부분: handleFileChange 닫힘 추가
 
   const handleLogout = async () => {
     try {
       await axiosInstance.post('/member/logout');
       alert('로그아웃되었습니다.');
-      // 추가적으로 토큰 및 사용자 데이터 삭제
     } catch (error) {
       console.error('로그아웃 실패:', error);
       alert('로그아웃에 실패했습니다.');
@@ -112,7 +115,6 @@ export default function MyPage() {
     try {
       await axiosInstance.put('/member/resign');
       alert('회원 탈퇴가 완료되었습니다.');
-      // 회원 탈퇴 후 리다이렉션
     } catch (error) {
       console.error('회원 탈퇴 실패:', error);
       alert('회원 탈퇴에 실패했습니다.');
@@ -126,18 +128,16 @@ export default function MyPage() {
       return;
     }
 
-    // 삭제할 이미지 ID 리스트 요청 데이터로 설정
     const data = { pictureIds };
 
     try {
-      // 서버로 삭제 요청을 보냄
       await axiosInstance.put('/origin-picture/delete', data, {
         headers: {
           'Content-Type': 'application/json',
         },
       });
 
-      await fetchPhotos(); // 삭제 후 사진 목록 새로고침
+      await fetchPhotos();
       setSelectedPhotos(new Set());
       setIsDeleteMode(false);
       alert('사진이 성공적으로 삭제되었습니다.');
@@ -149,9 +149,7 @@ export default function MyPage() {
 
   return (
     <div className='my-page w-full bg-white text-[#373A3F] min-h-screen'>
-      {/* 중앙 정렬 컨테이너 */}
       <div className='w-full max-w-[600px] mx-auto relative'>
-        {/* 최상단 오른쪽에 고정된 햄버거 버튼 */}
         <div className='absolute top-4 right-4'>
           <button
             onClick={() => setIsMenuOpen((prev) => !prev)}
@@ -178,7 +176,6 @@ export default function MyPage() {
         </div>
       </div>
 
-      {/* 프로필 이미지와 닉네임은 중앙에 유지 */}
       <div className='relative flex flex-col items-center mt-16 mb-6'>
         <div className='relative mb-4'>
           {profileImageUrl ? (
