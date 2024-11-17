@@ -1,12 +1,12 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import React from 'react';
 import axiosInstance from '@/api/axiosInstance';
 import { useRouter } from 'next/navigation';
 import { FaCamera } from 'react-icons/fa';
 import { SlPicture } from 'react-icons/sl';
 import { IoSearch } from 'react-icons/io5';
+import React from 'react';
 
 // Closet API 응답 타입
 interface ClosetItem {
@@ -25,8 +25,9 @@ const Closet = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [selectedItems, setSelectedItems] = useState<number[]>([]);
-  const [isDeleteMode, setIsDeleteMode] = useState(false);
+  const [selectedItems, setSelectedItems] = useState<number[]>([]); // 삭제 모드에서 선택된 아이템
+  const [isDeleteMode, setIsDeleteMode] = useState(false); // 삭제 모드 활성화 여부
+  const [selectedImage, setSelectedImage] = useState<File | null>(null); // 갤러리에서 선택된 이미지
   const router = useRouter();
 
   useEffect(() => {
@@ -36,10 +37,7 @@ const Closet = () => {
       try {
         const response =
           await axiosInstance.get<ClosetItem[]>('/closet/mycloset');
-
-        // 아이템 정렬: 최근에 추가된 순서로 정렬 (id 기준 내림차순)
         const sortedItems = response.data.sort((a, b) => b.id - a.id);
-
         setClosetItems(sortedItems);
       } catch (error) {
         console.error('옷장 데이터를 가져오는 중 문제가 발생했습니다:', error);
@@ -48,6 +46,7 @@ const Closet = () => {
         setIsLoading(false);
       }
     };
+
     fetchClosetItems();
   }, []);
 
@@ -59,7 +58,6 @@ const Closet = () => {
 
   const toggleModal = () => setIsModalOpen((prev) => !prev);
 
-  // 선택 모드 토글
   const toggleDeleteMode = () => {
     setIsDeleteMode(!isDeleteMode);
     if (!isDeleteMode) {
@@ -67,7 +65,6 @@ const Closet = () => {
     }
   };
 
-  // 아이템 선택 핸들러
   const handleSelectItem = (id: number) => {
     if (selectedItems.includes(id)) {
       setSelectedItems(selectedItems.filter((itemId) => itemId !== id));
@@ -76,7 +73,6 @@ const Closet = () => {
     }
   };
 
-  // 삭제 요청
   const handleDeleteItems = async () => {
     try {
       await axiosInstance({
@@ -92,6 +88,31 @@ const Closet = () => {
     } catch (error) {
       console.error('아이템 삭제 중 오류 발생:', error);
       setError('아이템 삭제 중 문제가 발생했습니다.');
+    }
+  };
+
+  const handleGalleryUpload = async () => {
+    if (!selectedImage) {
+      alert('이미지를 선택해주세요.');
+      return;
+    }
+
+    try {
+      const formData = new FormData();
+      formData.append('file', selectedImage);
+
+      const response = await axiosInstance.post('/clothes/upload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      router.push(
+        `/closet/add?data=${encodeURIComponent(JSON.stringify(response.data))}`
+      );
+    } catch (err) {
+      console.error('이미지 업로드 중 오류 발생:', err);
+      alert('이미지 업로드에 실패했습니다.');
     }
   };
 
@@ -187,12 +208,48 @@ const Closet = () => {
               >
                 <FaCamera size={24} /> 사진 찍기
               </button>
-              <button
-                className='flex items-center gap-6 p-2 text-left font-medium'
-                onClick={() => alert('갤러리에서 선택하기 기능 준비 중')}
-              >
+              <button className='flex items-center gap-6 p-2 text-left font-medium relative'>
                 <SlPicture size={24} /> 갤러리에서 선택하기
+                <input
+                  type='file'
+                  accept='image/*'
+                  className='absolute inset-0 opacity-0 cursor-pointer'
+                  onChange={async (e) => {
+                    if (e.target.files && e.target.files[0]) {
+                      const selectedFile = e.target.files[0];
+                      console.log('선택된 파일:', selectedFile); // 선택된 파일 로그 추가
+
+                      try {
+                        const formData = new FormData();
+                        formData.append('file', selectedFile);
+
+                        console.log('FormData:', formData); // FormData 디버깅 로그
+
+                        const response = await axiosInstance.post(
+                          '/clothes/upload',
+                          formData,
+                          {
+                            headers: {
+                              'Content-Type': 'multipart/form-data',
+                            },
+                          }
+                        );
+
+                        console.log('서버 응답 데이터:', response.data); // 서버 응답 확인
+                        router.push(
+                          `/closet/add?data=${encodeURIComponent(JSON.stringify(response.data))}`
+                        );
+                      } catch (err) {
+                        console.error('이미지 업로드 중 오류 발생:', err);
+                        alert('이미지 업로드에 실패했습니다.');
+                      }
+                    } else {
+                      console.log('파일이 선택되지 않았습니다.');
+                    }
+                  }}
+                />
               </button>
+
               <button
                 className='flex items-center gap-6 p-2 text-left font-medium'
                 onClick={() => {
