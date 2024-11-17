@@ -29,6 +29,7 @@ public class Member {
 
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
     @JsonBackReference
+    @JsonIgnore
     private List<Closet> closet;
 
     @Column(name = "email")
