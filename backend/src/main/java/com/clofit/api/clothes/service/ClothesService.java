@@ -82,11 +82,18 @@ public class ClothesService {
         Clothes clothes = clothesRepository.findById(clothesId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid clothes id"));
 
-        Color color = colorRepository.findById(clothesUpdateRequest.getColorId())
-                .orElseThrow(() -> new IllegalArgumentException("Invalid color id"));
+        if(clothesUpdateRequest.getColorId() != null){
+            Color color = colorRepository.findById(clothesUpdateRequest.getColorId())
+                    .orElseThrow(() -> new IllegalArgumentException("Invalid color id"));
+            clothes.setColor(color);
+        }
 
-        clothes.setColor(color);
-        clothes.setCategory(clothesUpdateRequest.getCategory());
-        clothes.setStyle(clothesUpdateRequest.getStyle());
+        if(clothesUpdateRequest.getCategory() != null){
+            clothes.setCategory(clothesUpdateRequest.getCategory());
+        }
+
+        if(clothesUpdateRequest.getStyle() != null){
+            clothes.setStyle(clothesUpdateRequest.getStyle());
+        }
     }
 }
