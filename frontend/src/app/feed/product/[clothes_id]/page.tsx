@@ -26,23 +26,22 @@ export default function ProductDetailPage() {
   const handleAddToCloset = () => {
     axiosInstance
       .post('/closet', {
-        memberId: 1, // 회원 ID
-        clothesId: product.id, // 상품 ID
+        clothesId: product.id, // 상품 ID만 전달
       })
-      .then((response) => {
-        // 옷장에 추가된 상품 정보 출력
-        console.log('옷장에 추가된 아이템 정보:', {
-          id: product.id,
-          name: product.item,
-          imgPath: product.imgPath,
-        });
-
+      .then(() => {
         // 성공 메시지 표시
         alert(`옷장에 '${product.item}'이(가) 추가되었습니다.`);
       })
       .catch((err) => {
-        console.error('옷장에 추가하는 중 문제가 발생했습니다.', err);
-        alert('옷장에 추가하지 못했습니다. 다시 시도해주세요.');
+        if (err.response?.status === 409) {
+          // 409 Conflict: 이미 옷장에 존재하는 경우
+          console.warn('이미 등록된 아이템:', product.item);
+          alert(`이미 옷장에 등록된 아이템입니다.`);
+        } else {
+          // 다른 오류 처리
+          console.error('옷장에 추가하는 중 문제가 발생했습니다.', err);
+          alert('옷장에 추가하지 못했습니다. 다시 시도해주세요.');
+        }
       });
   };
 
