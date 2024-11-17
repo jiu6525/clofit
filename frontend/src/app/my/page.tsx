@@ -6,8 +6,9 @@ import LikedSnaps from './components/LikedSnaps';
 import usePhotoStore from '@/stores/usePhotoStore';
 import useMemberStore from '@/stores/useMemberStore';
 import axiosInstance from '@/api/axiosInstance';
-import { AiOutlineDelete } from 'react-icons/ai';
 import { FaCamera } from 'react-icons/fa';
+import { HiOutlineMenu } from 'react-icons/hi';
+import { HiDotsVertical } from 'react-icons/hi';
 
 interface MemberInfoResponse {
   memberName: string;
@@ -19,7 +20,6 @@ export default function MyPage() {
   const { fetchPhotos } = usePhotoStore();
   const { setPersonalColor } = useMemberStore();
 
-  // memberId를 상단에서 한 번만 선언
   const memberId = 1;
 
   const [activeTab, setActiveTab] = useState<'myPhotos' | 'likedSnaps'>(
@@ -29,13 +29,15 @@ export default function MyPage() {
   const [selectedPhotos, setSelectedPhotos] = useState<Set<number>>(new Set());
   const [nickname, setNickname] = useState<string | null>(null);
   const [profileImageUrl, setProfileImageUrl] = useState<string | null>(null);
-
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   useEffect(() => {
     const fetchMemberInfo = async () => {
       try {
-        const response = await axiosInstance.get<MemberInfoResponse>(
-          `/member/my/${memberId}`
-        );
+        // 제네릭을 사용하여 응답 데이터 타입을 지정합니다.
+        const response =
+          await axiosInstance.get<MemberInfoResponse>('/member/mypage');
+
+        // 이제 response.data는 MemberInfoResponse 타입으로 간주됩니다.
         const { memberName, personalColor, profileFilePath } = response.data;
 
         setNickname(memberName);
@@ -45,7 +47,6 @@ export default function MyPage() {
         console.error('사용자 정보 불러오기 실패:', error);
       }
     };
-
     fetchMemberInfo();
   }, [setPersonalColor]);
 
@@ -79,18 +80,42 @@ export default function MyPage() {
     formData.append('file', file);
 
     try {
-      await axiosInstance.put(
-        `/member/profile-image?memberId=${memberId}`,
+      const response = await axiosInstance.put(
+        '/member/profile-image',
         formData,
         {
           headers: { 'Content-Type': 'multipart/form-data' },
         }
       );
+
+      const fileUrl = response.data.split(': ')[1].trim(); // URL 추출
+      setProfileImageUrl(fileUrl); // 새로운 프로필 이미지 반영
       alert('프로필 이미지가 성공적으로 업데이트되었습니다.');
-      setProfileImageUrl(URL.createObjectURL(file));
     } catch (error) {
       console.error('프로필 이미지 업데이트 실패:', error);
       alert('프로필 이미지 업데이트에 실패했습니다.');
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      await axiosInstance.post('/member/logout');
+      alert('로그아웃되었습니다.');
+      // 추가적으로 토큰 및 사용자 데이터 삭제
+    } catch (error) {
+      console.error('로그아웃 실패:', error);
+      alert('로그아웃에 실패했습니다.');
+    }
+  };
+
+  const handleAccountDelete = async () => {
+    try {
+      await axiosInstance.put('/member/resign');
+      alert('회원 탈퇴가 완료되었습니다.');
+      // 회원 탈퇴 후 리다이렉션
+    } catch (error) {
+      console.error('회원 탈퇴 실패:', error);
+      alert('회원 탈퇴에 실패했습니다.');
     }
   };
 
@@ -101,13 +126,21 @@ export default function MyPage() {
       return;
     }
 
-    const data = { memberId, pictureIds };
+    // 삭제할 이미지 ID 리스트 요청 데이터로 설정
+    const data = { pictureIds };
 
     try {
-      await axiosInstance.put('/origin-picture/delete', data);
-      await fetchPhotos();
+      // 서버로 삭제 요청을 보냄
+      await axiosInstance.put('/origin-picture/delete', data, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      await fetchPhotos(); // 삭제 후 사진 목록 새로고침
       setSelectedPhotos(new Set());
       setIsDeleteMode(false);
+      alert('사진이 성공적으로 삭제되었습니다.');
     } catch (error) {
       console.error('삭제 실패:', error);
       alert('삭제에 실패했습니다. 다시 시도해 주세요.');
@@ -116,7 +149,37 @@ export default function MyPage() {
 
   return (
     <div className='my-page w-full bg-white text-[#373A3F] min-h-screen'>
-      <div className='flex flex-col items-center mt-12 mb-6'>
+      {/* 중앙 정렬 컨테이너 */}
+      <div className='w-full max-w-[600px] mx-auto relative'>
+        {/* 최상단 오른쪽에 고정된 햄버거 버튼 */}
+        <div className='absolute top-4 right-4'>
+          <button
+            onClick={() => setIsMenuOpen((prev) => !prev)}
+            className='text-2xl text-gray-700'
+          >
+            <HiOutlineMenu />
+          </button>
+          {isMenuOpen && (
+            <div className='absolute top-8 right-0 bg-white border border-gray-300 rounded-lg shadow-lg p-2 flex flex-col space-y-2'>
+              <button
+                onClick={handleLogout}
+                className='text-sm hover:text-gray-600 px-2 py-1 whitespace-nowrap'
+              >
+                로그아웃
+              </button>
+              <button
+                onClick={handleAccountDelete}
+                className='text-sm text-red-600 hover:text-red-400 px-2 py-1 whitespace-nowrap'
+              >
+                회원 탈퇴
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* 프로필 이미지와 닉네임은 중앙에 유지 */}
+      <div className='relative flex flex-col items-center mt-16 mb-6'>
         <div className='relative mb-4'>
           {profileImageUrl ? (
             <img
@@ -143,9 +206,10 @@ export default function MyPage() {
         </div>
         {nickname && <h1 className='text-lg font-semibold'>{nickname}</h1>}
       </div>
+
       <hr className='border-gray-200 my-4' />
 
-      <div className='flex items-center mb-4 space-x-4'>
+      <div className='flex items-center mr-2 mb-4 space-x-4'>
         <div className='flex-grow flex items-center space-x-4'>
           <button
             onClick={() => handleTabChange('myPhotos')}
@@ -172,9 +236,9 @@ export default function MyPage() {
         {activeTab === 'myPhotos' && !isDeleteMode && (
           <button
             onClick={toggleDeleteMode}
-            className='ml-4 px-2 py-1 text-[#8F8B8D] hover:text-red-700 flex items-center'
+            className='px-2 py-1 text-[#8F8B8D] hover:text-gray-700 flex items-center'
           >
-            <AiOutlineDelete className='text-2xl' />
+            <HiDotsVertical className='text-xl' />
           </button>
         )}
 
@@ -182,7 +246,7 @@ export default function MyPage() {
           <div className='flex items-center space-x-2'>
             <button
               onClick={toggleDeleteMode}
-              className='px-2 py-1 bg-gray-300 text-black rounded-md'
+              className='px-2 py-1 bg-gray-300 text-white rounded-md'
             >
               취소
             </button>
@@ -203,7 +267,7 @@ export default function MyPage() {
           toggleSelectPhoto={toggleSelectPhoto}
         />
       )}
-      {activeTab === 'likedSnaps' && <LikedSnaps items={[]} />}
+      {activeTab === 'likedSnaps' && <LikedSnaps />}
     </div>
   );
 }
