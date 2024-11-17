@@ -144,10 +144,8 @@ public class FittingServiceImpl implements FittingService {
     }
 
     @Override
-    public List<String> recentFitting(FittingSearchRequest fittingSearchRequest) {
-        String memberId = String.valueOf(fittingSearchRequest.getMemberId()); // memberId 가져오기
-
-        List<Object> imageDataList = template.opsForList().range(memberId, 0, -1);
+    public List<String> recentFitting(Long memberId) {
+        List<Object> imageDataList = template.opsForList().range(String.valueOf(memberId), 0, -1);
 
         List<String> imageList = new ArrayList<>();
         if (imageDataList != null) {
@@ -168,6 +166,17 @@ public class FittingServiceImpl implements FittingService {
 
     private byte[] startFitting(fitting result) throws IOException {
         try {
+//            String url = result.url;
+//            String payload = result.jsonPayload;
+//
+//            HttpHeaders headers = new HttpHeaders();
+//            headers.setContentType(MediaType.APPLICATION_JSON);
+//            HttpEntity<String> entity = new HttpEntity<>(payload, headers);
+//
+//            ResponseEntity<byte[]> responseEntity = restTemplate.postForEntity(url, entity, byte[].class);
+//
+//            byte[] imgFile = responseEntity.getBody();
+
             // WebClient 요청 보내기
             Mono<ResponseEntity<byte[]>> responseMono = webClient.post()
                     .uri(result.url()) // URL 설정
@@ -206,14 +215,14 @@ public class FittingServiceImpl implements FittingService {
                     String uuid = UUID.randomUUID().toString();
                     Long memberId = result.fittingRequest.getMemberId();
                     
-                    // 멤버 id 와 처리된 이미지 파일을 s3에 저장하고 redis에 url 주소를 저장하자
-                    template.opsForList().rightPush(String.valueOf(memberId), uuid);
+
 //                    template.opsForValue().set(uuid, new ObjectMapper().writeValueAsString(new FittingRecentDetailResponse()));
 
                     byte[] img = startFitting(result);
                     String imgUrl = awsS3Service.recentFile(memberId, img);
                     FittingRecentDetailResponse fittingRecentDetailResponse = new FittingRecentDetailResponse(fittingRequest, imgUrl);
-//                    template.opsForValue().set(uuid, new ObjectMapper().writeValueAsString(fittingRecentDetailResponse));
+                    // 멤버 id 와 처리된 이미지 파일을 s3에 저장하고 redis에 url 주소를 저장하자
+                    template.opsForList().rightPush(String.valueOf(memberId), uuid);
                     template.opsForSet().add(uuid, new ObjectMapper().writeValueAsString(fittingRecentDetailResponse));
 
                     logger.info("Data saved to Redis: memberId = {}", memberId);
