@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { IoChevronBack } from 'react-icons/io5';
 import { MdCameraAlt } from 'react-icons/md';
 import { VscRefresh } from 'react-icons/vsc';
+import axiosInstance from '@/api/axiosInstance';
 
 export default function CameraPage() {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -55,7 +56,7 @@ export default function CameraPage() {
       const context = canvas.getContext('2d');
       if (context) {
         context.drawImage(video, 0, 0, canvas.width, canvas.height);
-        const imageDataUrl = canvas.toDataURL('image/png');
+        const imageDataUrl = canvas.toDataURL('image/png'); // 이미지를 PNG 데이터로 변환
         setCapturedImage(imageDataUrl);
         setIsPreviewVisible(true); // 미리보기 팝업 열기
         stopCamera(); // 사진 촬영 후 카메라 중지
@@ -69,9 +70,36 @@ export default function CameraPage() {
     startCamera(); // 다시 찍기 시 카메라 재시작
   };
 
-  const handleNext = () => {
-    stopCamera(); // "다음"을 누르면 카메라 중지
-    router.push('/closet/add');
+  const handleNext = async () => {
+    if (!capturedImage) {
+      alert('이미지가 없습니다.');
+      return;
+    }
+
+    try {
+      const blob = await fetch(capturedImage).then((res) => res.blob());
+      const file = new File([blob], 'captured-image.png', {
+        type: 'image/png',
+      });
+      const formData = new FormData();
+      formData.append('file', file);
+
+      // 요청 디버깅 로그
+      console.log('전송할 파일:', file);
+      console.log('FormData:', formData);
+
+      const response = await axiosInstance.post('/clothes/upload', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+
+      console.log('서버 응답 데이터:', response.data);
+      router.push(
+        `/closet/add?data=${encodeURIComponent(JSON.stringify(response.data))}`
+      );
+    } catch (error) {
+      console.error('이미지 업로드 중 오류 발생:', error);
+      alert('이미지 업로드에 실패했습니다.');
+    }
   };
 
   return (
