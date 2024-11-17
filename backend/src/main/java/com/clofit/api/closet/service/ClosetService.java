@@ -9,6 +9,7 @@ import com.clofit.api.clothes.repository.ClothesRepository;
 import com.clofit.api.member.entity.Member;
 import com.clofit.api.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -55,6 +56,12 @@ public class ClosetService {
 
     public List<Closet> getCloset(Long memberId) {
         List<Closet> closet = closetRepository.findAllByMemberId(memberId);
+
+        // 유효성 검사: 가져온 옷장이 없으면 예외 발생
+        if (closet.isEmpty()) {
+            throw new IllegalStateException("해당 멤버와 관련된 옷장이 없습니다.");
+        }
+
 //        List<ClosetResponse> closetResponses = new ArrayList<>();
 //        for (Closet closet : closets) {
 //            ClosetResponse closetResponse = new ClosetResponse(
