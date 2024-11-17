@@ -54,7 +54,7 @@ public class GPUServiceImpl implements GPUService {
             Double confidence = (Double)response.getBody().get("confidence");
             String clothes_type = (String)response.getBody().get("clothes_type");
             Integer clothes_type_id = (Integer)response.getBody().get("clothes_type_id");
-            String clothes_type_bottom_top = (String)response.getBody().get("clothes_type_bottom_top");
+            String clothes_type_top_bottom = (String)response.getBody().get("clothes_type_top_bottom");
 //            String masked_image = (String)response.getBody().get("masked_image"); //Base64 encoded
 //            System.out.println(masked_image);
             byte[] masked_image = Base64.getDecoder().decode((String)response.getBody().get("masked_image"));
@@ -62,7 +62,7 @@ public class GPUServiceImpl implements GPUService {
             ByteMultiPart multiPart = new ByteMultiPart(masked_image, "private clothes");
             String maskPath = gpuDao.upload(path + "_mask" + type, multiPart); // 배경 제거 이미지 업로드
 
-            clothesService.uploadClothes(url, maskPath, color_id, clothes_type_bottom_top, clothes_type);
+            clothesService.uploadClothes(url, maskPath, color_id, clothes_type_top_bottom, clothes_type);
 
 //            gpuDao.insert2ClothesTable(
 //                    new PrivateClothesDto(
