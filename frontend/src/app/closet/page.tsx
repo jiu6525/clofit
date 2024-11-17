@@ -6,6 +6,9 @@ import { useRouter } from 'next/navigation';
 import { FaCamera } from 'react-icons/fa';
 import { SlPicture } from 'react-icons/sl';
 import { IoSearch } from 'react-icons/io5';
+import { HiDotsVertical } from 'react-icons/hi';
+import { FiPlus } from 'react-icons/fi';
+import { BsCheckCircle, BsCircle } from 'react-icons/bs';
 import React from 'react';
 
 // Closet API 응답 타입
@@ -19,15 +22,21 @@ interface ClosetItem {
   };
 }
 
+// 카테고리 매핑
+const CATEGORY_MAP: { [key: string]: string } = {
+  전체: '전체',
+  상의: 'top',
+  하의: 'bottom',
+};
+
 const Closet = () => {
   const [closetItems, setClosetItems] = useState<ClosetItem[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState('전체');
+  const [activeTab, setActiveTab] = useState('전체'); // 현재 탭 ('전체', '상의', '하의')
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [selectedItems, setSelectedItems] = useState<number[]>([]); // 삭제 모드에서 선택된 아이템
-  const [isDeleteMode, setIsDeleteMode] = useState(false); // 삭제 모드 활성화 여부
-  const [selectedImage, setSelectedImage] = useState<File | null>(null); // 갤러리에서 선택된 이미지
+  const [selectedItems, setSelectedItems] = useState<number[]>([]);
+  const [isDeleteMenuOpen, setIsDeleteMenuOpen] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -50,28 +59,12 @@ const Closet = () => {
     fetchClosetItems();
   }, []);
 
+  // 선택된 탭에 따라 필터링
   const filteredItems = closetItems.filter((item) =>
-    selectedCategory === '전체'
+    activeTab === '전체'
       ? true
-      : item.clothes.category === selectedCategory
+      : item.clothes.category === CATEGORY_MAP[activeTab]
   );
-
-  const toggleModal = () => setIsModalOpen((prev) => !prev);
-
-  const toggleDeleteMode = () => {
-    setIsDeleteMode(!isDeleteMode);
-    if (!isDeleteMode) {
-      setSelectedItems([]);
-    }
-  };
-
-  const handleSelectItem = (id: number) => {
-    if (selectedItems.includes(id)) {
-      setSelectedItems(selectedItems.filter((itemId) => itemId !== id));
-    } else {
-      setSelectedItems([...selectedItems, id]);
-    }
-  };
 
   const handleDeleteItems = async () => {
     try {
@@ -84,22 +77,17 @@ const Closet = () => {
         closetItems.filter((item) => !selectedItems.includes(item.id))
       );
       setSelectedItems([]);
-      setIsDeleteMode(false);
+      setIsDeleteMenuOpen(false);
     } catch (error) {
       console.error('아이템 삭제 중 오류 발생:', error);
       setError('아이템 삭제 중 문제가 발생했습니다.');
     }
   };
 
-  const handleGalleryUpload = async () => {
-    if (!selectedImage) {
-      alert('이미지를 선택해주세요.');
-      return;
-    }
-
+  const handleGalleryUpload = async (file: File) => {
     try {
       const formData = new FormData();
-      formData.append('file', selectedImage);
+      formData.append('file', file);
 
       const response = await axiosInstance.post('/clothes/upload', formData, {
         headers: {
@@ -122,87 +110,115 @@ const Closet = () => {
         <h1 className='text-2xl font-semibold'>옷장</h1>
       </header>
 
-      <div className='w-full max-w-[600px] flex-grow flex flex-col items-center px-4'>
-        {isLoading ? (
-          <div className='flex justify-center items-center h-full'>
-            <div className='w-12 h-12 border-4 border-gray-300 border-t-gray-900 rounded-full animate-spin'></div>
-          </div>
-        ) : error ? (
-          <p className='text-red-500 text-center'>{error}</p>
-        ) : (
-          <div className='w-full'>
-            <div className='flex justify-around border-b mt-2 text-sm sm:text-sm'>
-              {['전체', 'top', 'bottom'].map((category) => (
-                <button
-                  key={category}
-                  className={`py-2 px-3 ${
-                    selectedCategory === category
-                      ? 'text-black border-b-2 border-black'
-                      : 'text-gray-400'
-                  }`}
-                  onClick={() => setSelectedCategory(category)}
-                >
-                  {category === '전체' ? '전체' : `카테고리 ${category}`}
-                </button>
-              ))}
-            </div>
-
-            <div className='flex justify-between mt-4 px-6'>
-              {isDeleteMode ? (
-                <button
-                  onClick={handleDeleteItems}
-                  className='px-4 py-2 bg-red-500 text-white rounded-lg text-sm font-semibold'
-                >
-                  선택한 아이템 삭제
-                </button>
-              ) : (
-                <button
-                  onClick={toggleModal}
-                  className='px-4 py-2 bg-blue-500 text-white rounded-lg text-sm font-semibold'
-                >
-                  아이템 추가하기
-                </button>
-              )}
+      <div className='w-full max-w-[600px]'>
+        {/* 상단 탭 */}
+        <div className='flex justify-between items-center px-4 mb-4'>
+          <div className='flex items-center space-x-4'>
+            {['전체', '상의', '하의'].map((tab) => (
               <button
-                onClick={toggleDeleteMode}
-                className={`px-4 py-2 ${
-                  isDeleteMode ? 'bg-gray-500' : 'bg-red-500'
-                } text-white rounded-lg text-sm font-semibold`}
+                key={tab}
+                onClick={() => {
+                  setActiveTab(tab);
+                  setIsDeleteMenuOpen(false); // 필터링 시 삭제 메뉴 닫기
+                }}
+                className={`px-2 py-1 text-sm font-semibold ${
+                  activeTab === tab
+                    ? 'border-b-2 border-black text-black'
+                    : 'text-gray-400'
+                }`}
               >
-                {isDeleteMode ? '선택 모드 종료' : '아이템 삭제하기'}
+                {tab}
               </button>
-            </div>
+            ))}
+          </div>
+          <div>
+            <button onClick={() => setIsDeleteMenuOpen((prev) => !prev)}>
+              <HiDotsVertical className='text-xl text-gray-500' />
+            </button>
+          </div>
+        </div>
 
-            <div className='grid grid-cols-2 gap-4 mt-4 p-4'>
-              {filteredItems.map((item) => (
-                <ItemCard
-                  key={item.id}
-                  item={item}
-                  isSelected={selectedItems.includes(item.id)}
-                  isDeleteMode={isDeleteMode}
-                  onSelect={handleSelectItem}
-                />
-              ))}
-            </div>
+        {/* 삭제 및 취소 메뉴 */}
+        {isDeleteMenuOpen && (
+          <div className='flex justify-end space-x-2 px-4 mb-2'>
+            <button
+              onClick={() => setIsDeleteMenuOpen(false)}
+              className='px-4 py-2 bg-gray-300 text-white rounded-md'
+            >
+              취소
+            </button>
+            <button
+              onClick={handleDeleteItems}
+              className='px-4 py-2 bg-red-500 text-white rounded-md'
+            >
+              삭제
+            </button>
           </div>
         )}
+
+        {/* 옷장 그리드 */}
+        <div className='grid grid-cols-3 gap-0'>
+          {/* 아이템 추가하기 버튼 */}
+          <div
+            className='relative w-full aspect-[5/6] bg-gray-200 flex items-center justify-center cursor-pointer'
+            onClick={() => setIsModalOpen(true)}
+          >
+            <FiPlus className='text-gray-500 text-4xl' />
+          </div>
+
+          {/* 옷장 항목 */}
+          {filteredItems.map((item) => (
+            <div
+              key={item.id}
+              className='relative w-full aspect-[5/6] bg-gray-200 overflow-hidden cursor-pointer'
+            >
+              <img
+                src={item.clothes.imgPath}
+                alt={`Item ${item.clothes.id}`}
+                className={`w-full h-full object-cover ${
+                  isDeleteMenuOpen && selectedItems.includes(item.id)
+                    ? 'opacity-50'
+                    : ''
+                }`}
+              />
+              {isDeleteMenuOpen && (
+                <button
+                  onClick={() => {
+                    if (selectedItems.includes(item.id)) {
+                      setSelectedItems(
+                        selectedItems.filter((id) => id !== item.id)
+                      );
+                    } else {
+                      setSelectedItems([...selectedItems, item.id]);
+                    }
+                  }}
+                  className='absolute top-2 right-2 text-blue-500'
+                >
+                  {selectedItems.includes(item.id) ? (
+                    <BsCheckCircle className='text-red-500 text-2xl' />
+                  ) : (
+                    <BsCircle className='text-gray-300 text-2xl' />
+                  )}
+                </button>
+              )}
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* Modal */}
       {isModalOpen && (
-        <div className='fixed inset-0 bg-black bg-opacity-50 flex justify-center items-end'>
-          <div className='bg-white rounded-t-lg w-full max-w-[600px] p-4 h-80'>
-            <div className='flex justify-between items-center mb-8'>
-              <h2 className='text-lg font-semibold flex-1 text-center'>
-                아이템 추가하기
-              </h2>
-              <button onClick={toggleModal}>✕</button>
+        <div className='fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center'>
+          <div className='bg-white rounded-lg w-full max-w-[600px] p-6'>
+            <div className='flex justify-between items-center mb-4'>
+              <h2 className='text-lg font-semibold'>아이템 추가하기</h2>
+              <button onClick={() => setIsModalOpen(false)}>✕</button>
             </div>
             <div className='flex flex-col gap-4'>
               <button
                 className='flex items-center gap-6 p-2 text-left font-medium'
                 onClick={() => {
-                  toggleModal();
+                  setIsModalOpen(false);
                   router.push('/closet/camera');
                 }}
               >
@@ -214,46 +230,17 @@ const Closet = () => {
                   type='file'
                   accept='image/*'
                   className='absolute inset-0 opacity-0 cursor-pointer'
-                  onChange={async (e) => {
+                  onChange={(e) => {
                     if (e.target.files && e.target.files[0]) {
-                      const selectedFile = e.target.files[0];
-                      console.log('선택된 파일:', selectedFile); // 선택된 파일 로그 추가
-
-                      try {
-                        const formData = new FormData();
-                        formData.append('file', selectedFile);
-
-                        console.log('FormData:', formData); // FormData 디버깅 로그
-
-                        const response = await axiosInstance.post(
-                          '/clothes/upload',
-                          formData,
-                          {
-                            headers: {
-                              'Content-Type': 'multipart/form-data',
-                            },
-                          }
-                        );
-
-                        console.log('서버 응답 데이터:', response.data); // 서버 응답 확인
-                        router.push(
-                          `/closet/add?data=${encodeURIComponent(JSON.stringify(response.data))}`
-                        );
-                      } catch (err) {
-                        console.error('이미지 업로드 중 오류 발생:', err);
-                        alert('이미지 업로드에 실패했습니다.');
-                      }
-                    } else {
-                      console.log('파일이 선택되지 않았습니다.');
+                      handleGalleryUpload(e.target.files[0]);
                     }
                   }}
                 />
               </button>
-
               <button
                 className='flex items-center gap-6 p-2 text-left font-medium'
                 onClick={() => {
-                  toggleModal();
+                  setIsModalOpen(false);
                   router.push('/feed');
                 }}
               >
@@ -266,43 +253,5 @@ const Closet = () => {
     </div>
   );
 };
-
-const ItemCard = React.memo(
-  ({
-    item,
-    isSelected,
-    isDeleteMode,
-    onSelect,
-  }: {
-    item: ClosetItem;
-    isSelected: boolean;
-    isDeleteMode: boolean;
-    onSelect: (id: number) => void;
-  }) => (
-    <div
-      className={`relative w-full aspect-square border rounded overflow-hidden ${
-        isDeleteMode && isSelected ? 'border-red-500' : 'border-gray-300'
-      }`}
-      onClick={() => isDeleteMode && onSelect(item.id)}
-    >
-      <img
-        src={item.clothes.imgPath}
-        alt={`Item ${item.clothes.id}`}
-        className={`absolute inset-0 w-full h-full object-cover ${
-          isDeleteMode ? 'cursor-pointer' : ''
-        }`}
-      />
-      {isDeleteMode && (
-        <div
-          className={`absolute inset-0 flex justify-center items-center ${
-            isSelected ? 'bg-red-500 bg-opacity-50' : ''
-          }`}
-        >
-          {isSelected && <span className='text-white text-2xl'>✔</span>}
-        </div>
-      )}
-    </div>
-  )
-);
 
 export default Closet;
