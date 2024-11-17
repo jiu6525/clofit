@@ -1,9 +1,13 @@
 package com.clofit.api.fitting.service;
 
+import com.clofit.api.clothes.entity.Clothes;
+import com.clofit.api.clothes.repository.ClothesRepository;
 import com.clofit.api.fitting.entity.Fitting;
 import com.clofit.api.fitting.repository.FittingRepository;
 import com.clofit.api.fitting.request.*;
 import com.clofit.api.fitting.response.FittingRecentDetailResponse;
+import com.clofit.api.member.entity.Member;
+import com.clofit.api.member.repository.MemberRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +34,8 @@ import java.util.zip.ZipInputStream;
 public class FittingServiceImpl implements FittingService {
 
     private final FittingRepository fittingRepository;
+    private final MemberRepository memberRepository;
+    private final ClothesRepository clothesRepository;
     @Value("${ootd.gpu-server}")
     private String gpuServer;
 
@@ -161,6 +167,43 @@ public class FittingServiceImpl implements FittingService {
         System.out.println(Arrays.toString(imageList.toArray()));
 
         return imageList;
+    }
+
+    /**
+     * 피팅 이미지 저장
+     * @param fittingRecentDetailResponse
+     */
+    @Override
+    public void saveFitting(String fittingName, FittingRecentDetailResponse fittingRecentDetailResponse) {
+        Optional<Member> byId = memberRepository.findById(fittingRecentDetailResponse.getMemberId());
+        Fitting fitting = new Fitting();
+
+        if(byId.isPresent()){
+            Member member = byId.get();
+            String imgUrl = fittingRecentDetailResponse.getImgUrl();
+            fitting.setMember(member);
+            fitting.setImgPath(imgUrl);
+            List<String> clothName = fittingRecentDetailResponse.getClothName();
+
+            int category = fittingRecentDetailResponse.getCategory();
+            if(category == 2){
+                Clothes topClothe = clothesRepository.findTopClothe(clothName.getFirst());
+                Clothes bottomClothe = clothesRepository.findBottomClothe(clothName.getLast());
+                fitting.setTop(topClothe);
+                fitting.setBottom(bottomClothe);
+            } else if (category == 0) {
+                Clothes topClothe = clothesRepository.findTopClothe(clothName.getFirst());
+                fitting.setTop(topClothe);
+            }else{
+                Clothes bottomClothe = clothesRepository.findBottomClothe(clothName.getLast());
+                fitting.setBottom(bottomClothe);
+            }
+
+            fitting.setFittingName(fittingName);
+
+            fittingRepository.save(fitting);
+        }
+
     }
 
 
