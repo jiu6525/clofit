@@ -86,7 +86,7 @@ public class SecurityConfig {
                 .userInfoEndpoint(userInfoEndpointConfig -> userInfoEndpointConfig.userService(customOAuth2UserService))
                 .successHandler(customSuccessHandler)
         );
-        http.exceptionHandling((exception) -> exception.authenticationEntryPoint(unauthorizedEntryPoint()));
+//        http.exceptionHandling((exception) -> exception.authenticationEntryPoint(unauthorizedEntryPoint()));
         // 세션 설정: STATELESS
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         
@@ -127,8 +127,8 @@ public class SecurityConfig {
                 "/swagger-ui/**",
                 "/swagger-resources/**",
                 "/v3/api-docs/**",
-                "/test/**",
-                "/member/loginpage"
+                "/test/**"
+//                "/member/loginpage"
 //                "/oauth2/authorization/kakao"
 //               ,"/**"
         );
