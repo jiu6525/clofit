@@ -148,6 +148,7 @@ public class FeedServiceImpl implements FeedService {
         m.setProfileFileName(member.getProfileFileName());
         m.setProfileFilePath(member.getProfileFilePath());
         m.setMemberName(member.getMemberName());
+        m.setRegMemberDttm(member.getRegMemberDttm());
         return m;
     }
 }
