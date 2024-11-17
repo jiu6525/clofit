@@ -15,6 +15,7 @@ import com.clofit.api.fitting.service.FittingService;
 import com.clofit.db.redis.service.RedisService;
 import com.clofit.oauth2.dto.CustomOAuth2User;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.*;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -43,6 +44,7 @@ public class FittingController {
      * @return 등록 성공, 실패 반환
      */
     @PostMapping("clothInsert")
+    @Operation(summary = "의류 파일 등록")
     public ResponseEntity<String> uploadClothFile(
             @RequestParam("category") int category,
             @RequestParam("img") MultipartFile img)
@@ -56,6 +58,7 @@ public class FittingController {
      * @return 등록 성공, 실패 반환
      */
     @PostMapping("modelInsert")
+    @Operation(summary = "전신 이미지 파일 등록")
     public ResponseEntity<String> uploadModelFile(
             @RequestParam("memberId") Long memberId,
             @RequestParam("img") MultipartFile img)
@@ -69,6 +72,7 @@ public class FittingController {
      * @return 삭제 성공, 실패 반환
      */
     @DeleteMapping
+    @Operation(summary = "s3 파일 삭제")
     public ResponseEntity<String> deleteFile(@RequestParam String fileName) {
         awsS3Service.deleteFile(fileName);
         return ResponseEntity.ok(fileName);
@@ -80,6 +84,7 @@ public class FittingController {
      * @return 파일경로 반환, 없을경우 NotFound 동작 추가하기
      */
     @PostMapping("/cloth")
+    @Operation(summary = "s3 의류 주소 조회")
     public ResponseEntity<String> getClothFile(@RequestBody ClothRequest clothRequest) {
         return ResponseEntity.ok(awsS3Service.getClothFile(clothRequest));
     }
@@ -90,6 +95,7 @@ public class FittingController {
      * @return 파일경로 반환, 없을경우 NotFound 동작 추가하기
      */
     @PostMapping("/model")
+    @Operation(summary = "s3 모델 주소 조회")
     public ResponseEntity<String> getModelFile(@RequestBody ModelRequest modelRequest) {
         return ResponseEntity.ok(awsS3Service.getModelFile(modelRequest));
     }
@@ -168,6 +174,7 @@ public class FittingController {
     }
 
     @PostMapping
+    @Operation(summary = "가상 피팅")
     public void fitting(@RequestBody FittingRequest fittingRequest) {
 // 가상 스레드를 사용해 비동기적으로 처리
         Thread.ofVirtual().start(() -> {
@@ -196,6 +203,7 @@ public class FittingController {
      * memberId 값을 입력받으면 redis 에 임시저장된 의류정보와 url 주소를 보내준다.
      */
     @PostMapping("/recent")
+    @Operation(summary = "최근 피팅 조회")
     public ResponseEntity<List<String>> recent(@RequestBody FittingSearchRequest fittingSearchRequest) {
         try {
             // uuid 값이 들어있는 리스트 반환
@@ -218,6 +226,7 @@ public class FittingController {
      * 수정 -> 레디스에 저장된 값을 s3와 사용자 mysql 에 저장
      */
     @PostMapping("/store")
+//    @Operation(summary = "최근 피팅 저장")
     public ResponseEntity<String> storeFile(@ModelAttribute FittingStoreRequest fittingStoreRequest) {
         awsS3Service.uploadFile(fittingStoreRequest);
         return ResponseEntity.ok("File uploaded successfully");
@@ -231,6 +240,7 @@ public class FittingController {
      * List<url>
      */
     @PostMapping("/search")
+    @Operation(summary = "사용자가 저장한 피팅 사진 조회")
     public ResponseEntity<List<FittingSearchResponse>> getFittingImages(@RequestBody FittingSearchRequest fittingSearchRequest) {
         return ResponseEntity.ok(awsS3Service.getFittingImages(fittingSearchRequest));
     }
@@ -243,6 +253,7 @@ public class FittingController {
      * @throws JsonProcessingException
      */
     @GetMapping("/{memberId}/{redisId}")
+    @Operation(summary = "최근 피팅 상세정보 조회")
     public ResponseEntity<FittingRecentDetailResponse> getFittingResult(@PathVariable("memberId") String memberId, @PathVariable("redisId") String redisId) {
         FittingRecentDetailResponse fr = null;
         try {
@@ -264,6 +275,7 @@ public class FittingController {
      * @return
      */
     @GetMapping("/{memberId}")
+    @Operation(summary = "최근 피팅 조회")
     public ResponseEntity<List<FittingRecentResponse>> getFittingResultList(@PathVariable("memberId") String memberId) {
         List<String> objList = redisService.getFittingList(memberId);
         List<FittingRecentResponse> fittingResultList = new ArrayList<>();
@@ -288,6 +300,7 @@ public class FittingController {
      * @throws JsonProcessingException
      */
     @DeleteMapping("/{memberId}/{redisId}")
+    @Operation(summary = "최근 피팅 삭제")
     public ResponseEntity<String> deleteFittingResult(@PathVariable("memberId") String memberId, @PathVariable("redisId") String redisId) {
         try {
             redisService.removeFittingResult(memberId, redisId);
@@ -298,6 +311,7 @@ public class FittingController {
     }
 
     @PutMapping("/{redisId}")
+    @Operation(summary = "최근 피팅 저장")
     public ResponseEntity<String> saveFittingResult(@AuthenticationPrincipal CustomOAuth2User customOAuth2User, @PathVariable("redisId") String redisId) {
 //        String memberId = customOAuth2User.getmemberId().toString();
         String memberId = "1";
