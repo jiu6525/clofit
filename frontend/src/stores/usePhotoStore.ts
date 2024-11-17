@@ -20,10 +20,12 @@ const usePhotoStore = create<PhotoStore>((set) => ({
   photos: [],
   fetchPhotos: async () => {
     try {
-      const response = await axiosInstance.post<ApiResponseItem[]>(
+      const response = await axiosInstance.get<ApiResponseItem[]>(
         '/origin-picture/base-image',
         {
-          memberId: 1, // 적절한 memberId로 대체하세요.
+          params: {
+            memberId: 1, // 적절한 memberId로 대체하세요.
+          },
         }
       );
 

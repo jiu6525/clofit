@@ -31,16 +31,23 @@ export default function MyOriginPicture({
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     if (event.target.files && event.target.files.length > 0) {
-      const file = event.target.files[0];
+      const files = Array.from(event.target.files); // 다중 파일 업로드 지원
       const formData = new FormData();
-      formData.append('memberId', '1');
-      formData.append('files', file);
+
+      files.forEach((file) => {
+        formData.append('files', file);
+      });
 
       try {
-        await axiosInstance.post('/origin-picture/upload', formData, {
-          headers: { 'Content-Type': 'multipart/form-data' },
-        });
-        console.log('업로드 성공');
+        const response = await axiosInstance.post(
+          '/origin-picture/upload',
+          formData,
+          {
+            headers: { 'Content-Type': 'multipart/form-data' },
+          }
+        );
+
+        console.log('업로드 성공:', response.data);
         await fetchPhotos(); // 업로드 후 목록 새로고침
       } catch (error) {
         console.error('업로드 실패:', error);
@@ -81,6 +88,7 @@ export default function MyOriginPicture({
         <input
           type='file'
           accept='image/*'
+          multiple // 다중 파일 업로드 가능
           onChange={handleFileChange}
           className='hidden'
           id='file-upload'
