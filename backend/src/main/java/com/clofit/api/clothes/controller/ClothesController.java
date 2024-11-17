@@ -62,12 +62,13 @@ public class ClothesController {
 
     @PostMapping("/upload")
     @Operation(summary = "개인 의류 등록")
+
     public ResponseEntity<Void> uploadClothes(
             @AuthenticationPrincipal CustomOAuth2User customOAuth2User,
             @RequestParam("file") MultipartFile file
     ) {
         Long memberId = customOAuth2User.getmemberId();
-//        Long memberId = 1L;
+
         String uuid = UUID.randomUUID().toString();
         String imgPath = BASEPATH + memberId + "/" + uuid;
 

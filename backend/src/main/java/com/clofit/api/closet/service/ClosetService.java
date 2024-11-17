@@ -24,18 +24,18 @@ public class ClosetService {
     private final ClothesRepository clothesRepository;
     private final MemberRepository memberRepository;
 
-    public boolean addCloset(ClosetAddRequest closetAddRequest) {
+
+    public boolean addCloset(Long memberId, ClosetAddRequest closetAddRequest) {
         boolean exist = closetRepository.existsByMemberIdAndClothesId(
-                closetAddRequest.getMemberId(), closetAddRequest.getClothesId()
+                memberId, closetAddRequest.getClothesId()
         );
         if (exist) {
             return true;
         }
-
         Closet closet = new Closet();
         Clothes clothes = clothesRepository.findById(closetAddRequest.getClothesId())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid clothes ID"));
-        Member member = memberRepository.findById(closetAddRequest.getMemberId())
+        Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid member ID"));
         closet.setClothes(clothes);
         closet.setMember(member);
@@ -44,9 +44,9 @@ public class ClosetService {
         return false;
     }
 
-    public void deleteCloset(List<Long> closetIds) {
-        List<Closet> closets = closetRepository.findAllById(closetIds);
-        closetRepository.deleteAll(closets);
+    public void deleteCloset(Long memberId, List<Long> closetIds) {
+        List<Long> validClosetIds = closetRepository.findValidClosetIdsByMemberId(memberId, closetIds);
+        closetRepository.deleteAllById(validClosetIds);
     }
 
     public List<Closet> searchCloset(String category) {
