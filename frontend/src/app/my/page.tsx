@@ -20,15 +20,15 @@ export default function MyPage() {
   const { fetchPhotos } = usePhotoStore();
   const { setPersonalColor } = useMemberStore();
 
-  const memberId = 1;
-
   const [activeTab, setActiveTab] = useState<'myPhotos' | 'likedSnaps'>(
     'myPhotos'
   );
   const [isDeleteMode, setIsDeleteMode] = useState(false);
   const [selectedPhotos, setSelectedPhotos] = useState<Set<number>>(new Set());
   const [nickname, setNickname] = useState<string | null>(null);
-  const [profileImageUrl, setProfileImageUrl] = useState<string | null>(null);
+  const [profileImageUrl, setProfileImageUrl] = useState<string>(
+    '/default-profile.png'
+  );
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   useEffect(() => {
@@ -36,7 +36,6 @@ export default function MyPage() {
       try {
         const response =
           await axiosInstance.get<MemberInfoResponse>('/member/mypage');
-
         const { memberName, personalColor, profileFilePath } = response.data;
 
         setNickname(memberName);
@@ -47,7 +46,7 @@ export default function MyPage() {
       }
     };
     fetchMemberInfo();
-  }, [setPersonalColor]);
+  }, []); // 의존성 배열 단순화
 
   const handleTabChange = (tab: 'myPhotos' | 'likedSnaps') => {
     setActiveTab(tab);
@@ -68,7 +67,6 @@ export default function MyPage() {
       return newSelected;
     });
   };
-
   const handleFileChange = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -152,7 +150,7 @@ export default function MyPage() {
       <div className='w-full max-w-[600px] mx-auto relative'>
         <div className='absolute top-4 right-4'>
           <button
-            onClick={() => setIsMenuOpen((prev) => !prev)}
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
             className='text-2xl text-gray-700'
           >
             <HiOutlineMenu />

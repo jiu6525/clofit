@@ -81,19 +81,22 @@ export default function MainPage() {
                   className='object-cover w-full'
                   priority={index === 0} // 첫 번째 슬라이드 이미지 priority
                 />
-                <div className='absolute bottom-9 inset-x-0 flex flex-col items-center text-center'>
-                  <p className='text-sm' style={{ color: slide.textColor }}>
+                <div className='absolute bottom-8 inset-x-0 flex flex-col items-center text-center'>
+                  <p
+                    className='text-sm font-semiboldbold'
+                    style={{ color: slide.textColor }}
+                  >
                     {slide.smallText}
                   </p>
                   <p
-                    className='font-bold text-2xl mb-2'
+                    className='font-bold text-2xl mb-1'
                     style={{ color: slide.textColor }}
                   >
                     {slide.largeText}
                   </p>
                   <button
                     onClick={() => router.push('/closet')}
-                    className={`px-4 py-2 rounded-md text-sm font-regular flex items-center ${
+                    className={`px-4 py-2 rounded-md text-sm flex items-center ${
                       slide.textColor === '#171A1F'
                         ? 'bg-[#171A1F] text-white'
                         : 'bg-white text-[#171A1F]'
