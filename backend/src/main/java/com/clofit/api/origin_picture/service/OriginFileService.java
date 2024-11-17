@@ -23,7 +23,7 @@ public class OriginFileService {
     // S3에 파일 업로드하고 URL 반환(프로필)
     public String uploadFile(Long memberId, MultipartFile file) throws IOException {
         // 고유한 파일 이름 생성
-        String uniqueFileName = "origin_picture/" + memberId + "/" + generateUniqueFileName(file);
+        String uniqueFileName = "model/" + memberId + "/" + generateUniqueFileName(file);
 
         // 메타데이터 설정
         ObjectMetadata metadata = new ObjectMetadata();
