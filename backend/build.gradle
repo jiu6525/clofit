@@ -70,6 +70,12 @@ dependencies {
 
 	//redis
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+	// kafka
+	implementation 'org.springframework.kafka:spring-kafka'
+
+	// webflux
+	implementation 'org.springframework.boot:spring-boot-starter-webflux'
 }
 
 tasks.named('test') {

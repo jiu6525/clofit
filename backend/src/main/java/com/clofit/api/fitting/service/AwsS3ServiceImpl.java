@@ -31,10 +31,10 @@ public class AwsS3ServiceImpl implements AwsS3Service {
     private final AmazonS3 amazonS3;
 
     // 공통된 파일 업로드 메서드
-    private void uploadFile(MultipartFile file, String filePath) {
+    private String uploadFile(MultipartFile file, String filePath) {
         if (file == null || file.isEmpty()) {
             logger.info("업로드 파일이 없거나 비어 있습니다.");
-            return;
+            return null;
         }
 
         String name = createFileName(); // 파일명 생성
@@ -49,27 +49,28 @@ public class AwsS3ServiceImpl implements AwsS3Service {
             amazonS3.putObject(new PutObjectRequest(bucket, fileName, inputStream, objectMetadata)
                     .withCannedAcl(CannedAccessControlList.PublicRead));
             logger.info("파일 업로드가 완료되었습니다.{}", fileName);
+            return fileName;
         } catch (IOException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "파일 업로드에 실패했습니다.");
         }
     }
 
     @Override
-    public void uploadClothFile(ClothInsertRequest clothInsertRequest) {
+    public String uploadClothFile(ClothInsertRequest clothInsertRequest) {
         MultipartFile cloth = clothInsertRequest.getClothImg();
         String category = clothInsertRequest.getCategory() == 0 ? "top" : "bottom";
         String filePath = "cloth/" + category; // 경로 지정
 
-        uploadFile(cloth, filePath);  // 공통 메서드 호출
+        return uploadFile(cloth, filePath);  // 공통 메서드 호출
     }
 
     @Override
-    public void uploadModelFile(ModelInsertRequest modelInsertRequest) {
+    public String uploadModelFile(ModelInsertRequest modelInsertRequest) {
         MultipartFile model = modelInsertRequest.getModelImg();
         Long memberId = modelInsertRequest.getMemberId();
         String filePath = "model/" + memberId; // 경로 지정
 
-        uploadFile(model, filePath);  // 공통 메서드 호출
+        return uploadFile(model, filePath);  // 공통 메서드 호출
     }
 
     /**
@@ -159,6 +160,7 @@ public class AwsS3ServiceImpl implements AwsS3Service {
 
     // 파일명을 난수화하기 위해 UUID 를 활용하여 난수를 돌린다.
     public String createFileName(){
+//        return UUID.randomUUID().toString().concat(".jpg");
         return UUID.randomUUID().toString().concat(".png");
     }
 
@@ -228,9 +230,29 @@ public class AwsS3ServiceImpl implements AwsS3Service {
 
     }
 
+    @Override
+    public String recentFile(Long memberId, byte[] img) {
+        String name = createFileName();
+        String fileName = "fitting/" + memberId + "/tmp/" + name;
+        MultipartFile recentImg = new ByteArrayMultipartFile(name, img);
+
+        ObjectMetadata objectMetadata = new ObjectMetadata();
+        objectMetadata.setContentLength(recentImg.getSize());
+        objectMetadata.setContentType(recentImg.getContentType());
+        objectMetadata.setContentDisposition("inline; filename=\"" + name + "\"");
+
+        try (InputStream inputStream = recentImg.getInputStream()) {
+            amazonS3.putObject(new PutObjectRequest(bucket, fileName, inputStream, objectMetadata)
+                    .withCannedAcl(CannedAccessControlList.PublicRead));
+            logger.info("파일 업로드가 완료되었습니다.{}", fileName);
+        } catch (IOException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "파일 업로드에 실패했습니다.");
+        }
+
 //    public String getFile(String fileName) {
 //        String folderPath = "fitting/" + 3L + "/" + fileName;
 //        return amazonS3.getUrl(bucket, folderPath).toString();
 //    }
-
+        return amazonS3.getUrl(bucket, fileName).toString();
+    }
 }
