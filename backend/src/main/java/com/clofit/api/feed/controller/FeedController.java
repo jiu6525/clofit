@@ -27,8 +27,8 @@ public class FeedController {
     public ResponseEntity<FeedResponse> getFeedsByColor(
             @AuthenticationPrincipal CustomOAuth2User customOAuth2User
             ) {
-        Long memberId = customOAuth2User.getmemberId();
-//        Long memberId = 3L;
+//        Long memberId = customOAuth2User.getmemberId();
+        Long memberId = 1L;
 
         List<Feed> list = feedService.getFeedsByColor(memberId);
 
