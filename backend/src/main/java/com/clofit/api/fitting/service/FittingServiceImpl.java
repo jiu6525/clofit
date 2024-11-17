@@ -208,12 +208,13 @@ public class FittingServiceImpl implements FittingService {
                     
                     // 멤버 id 와 처리된 이미지 파일을 s3에 저장하고 redis에 url 주소를 저장하자
                     template.opsForList().rightPush(String.valueOf(memberId), uuid);
-                    template.opsForValue().set(uuid, new ObjectMapper().writeValueAsString(new FittingRecentDetailResponse()));
+//                    template.opsForValue().set(uuid, new ObjectMapper().writeValueAsString(new FittingRecentDetailResponse()));
 
                     byte[] img = startFitting(result);
                     String imgUrl = awsS3Service.recentFile(memberId, img);
                     FittingRecentDetailResponse fittingRecentDetailResponse = new FittingRecentDetailResponse(fittingRequest, imgUrl);
-                    template.opsForValue().set(uuid, new ObjectMapper().writeValueAsString(fittingRecentDetailResponse));
+//                    template.opsForValue().set(uuid, new ObjectMapper().writeValueAsString(fittingRecentDetailResponse));
+                    template.opsForSet().add(uuid, new ObjectMapper().writeValueAsString(fittingRecentDetailResponse));
 
                     logger.info("Data saved to Redis: memberId = {}", memberId);
                 } catch (Exception e) {

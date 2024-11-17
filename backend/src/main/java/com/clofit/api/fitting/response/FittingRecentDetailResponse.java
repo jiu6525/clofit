@@ -15,7 +15,7 @@ public class FittingRecentDetailResponse {
     private String modelName;
     private List<String> clothName;
     private String imgUrl;
-    private boolean isDone;
+    private boolean done;
 
     public FittingRecentDetailResponse(FittingRequest fittingRequest, String imgUrl) {
         this.memberId = fittingRequest.getMemberId();
@@ -23,6 +23,6 @@ public class FittingRecentDetailResponse {
         this.modelName = fittingRequest.getModelName();
         this.clothName = fittingRequest.getClothName();
         this.imgUrl = imgUrl;
-        this.isDone = true;
+        this.done = true;
     }
 }

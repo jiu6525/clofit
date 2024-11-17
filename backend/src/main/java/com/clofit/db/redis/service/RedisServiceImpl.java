@@ -179,7 +179,10 @@ public class RedisServiceImpl implements RedisService {
             logger.warn("redis fitting: {} is null or empty", redisId);
             throw new RedisException("redis fitting: " + redisId + " is null or empty");
         }
-        FittingRecentDetailResponse fittingRecentDetailResponse = new ObjectMapper().readValue((String) set.iterator().next(), FittingRecentDetailResponse.class);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        FittingRecentDetailResponse fittingRecentDetailResponse = objectMapper.readValue((String) set.iterator().next(), FittingRecentDetailResponse.class);
+        System.out.println(fittingRecentDetailResponse);
 
         return new FittingRecentResponse(redisId, fittingRecentDetailResponse.getImgUrl());
     }
