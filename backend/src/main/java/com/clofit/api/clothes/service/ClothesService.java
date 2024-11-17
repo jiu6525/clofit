@@ -4,6 +4,7 @@ import com.clofit.api.clothes.entity.Clothes;
 import com.clofit.api.clothes.repository.ClothesRepository;
 import com.clofit.api.clothes.request.ClothesRegisterRequest;
 
+import com.clofit.api.clothes.response.ClothesUploadResponse;
 import com.clofit.api.color.entity.Color;
 import com.clofit.api.color.repository.ColorRepository;
 import lombok.RequiredArgsConstructor;
@@ -62,7 +63,7 @@ public class ClothesService {
         clothesRepository.save(clothes);
     }
 
-    public void uploadClothes(String imgPath, String maskedPath, Long colorId, String category, String clothes_type) {
+    public ClothesUploadResponse uploadClothes(String imgPath, String maskedPath, Long colorId, String category, String clothes_type) {
         Color color = colorRepository.findById(colorId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid color id"));
 
@@ -74,6 +75,8 @@ public class ClothesService {
         clothes.setMyClothesYn('Y');
         clothes.setStyle(clothes_type);
 
-        clothesRepository.save(clothes);
+        clothes = clothesRepository.save(clothes);
+
+        return new ClothesUploadResponse(clothes.getId(), clothes.getImgPath(), clothes.getMaskedPath(), clothes.getCategory(), clothes.getStyle(), clothes.getColor().getId());
     }
 }
