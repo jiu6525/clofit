@@ -11,6 +11,7 @@ import Navbar from '@/components/Navbar';
 import Slider from 'react-slick';
 import { IoNotificationsOutline, IoChevronForward } from 'react-icons/io5';
 import ClothesModal from './components/ClothesModal';
+import RecommendedItems from './components/RecommendedItems';
 
 // 타입 정의
 interface MemberInfoResponse {
@@ -184,41 +185,11 @@ export default function MainPage() {
         </div>
 
         {/* 추천 아이템 섹션 */}
-        <section className='w-full'>
-          <h2 className='font-medium text-[#373A3F] ml-3 my-4'>
-            {memberInfo?.memberName || '회원'}님을 위한 아이템 추천
-          </h2>
-          <div className='w-full'>
-            <Slider
-              {...{
-                dots: false,
-                infinite: false,
-                speed: 500,
-                slidesToShow: 3,
-                slidesToScroll: 3,
-                arrows: false,
-              }}
-            >
-              {recommendedItems.map((item, index) => (
-                <div
-                  key={index}
-                  className='px-1 cursor-pointer'
-                  onClick={() => handleItemClick(item)}
-                >
-                  <div className='relative w-full aspect-[3/4] overflow-hidden'>
-                    <Image
-                      src={item.imgPath}
-                      alt={item.item}
-                      width={200}
-                      height={300}
-                      className='object-cover'
-                    />
-                  </div>
-                </div>
-              ))}
-            </Slider>
-          </div>
-        </section>
+        <RecommendedItems
+          memberName={memberInfo?.memberName || null}
+          items={recommendedItems}
+          onItemClick={handleItemClick}
+        />
 
         {/* 모달 컴포넌트 */}
         <ClothesModal
