@@ -118,9 +118,9 @@ export default function MainPage() {
     beforeChange: (_: number, next: number) => setCurrentSlide(next),
   };
 
+  // 추천 아이템 클릭 시 상품 상세 페이지로 이동
   const handleItemClick = (item: ClothesItem) => {
-    setSelectedClothes(item); // 선택된 아이템 설정
-    setIsModalOpen(true); // 모달 열기
+    router.push(`/feed/product/${item.id}`);
   };
 
   return (
