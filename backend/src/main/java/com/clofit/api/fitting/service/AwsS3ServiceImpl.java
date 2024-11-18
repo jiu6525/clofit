@@ -180,8 +180,7 @@ public class AwsS3ServiceImpl implements AwsS3Service {
     }
 
     @Override
-    public List<FittingSearchResponse> getFittingImages(FittingSearchRequest fittingSearchRequest) {
-        Long memberId = fittingSearchRequest.getMemberId();
+    public List<FittingSearchResponse> getFittingImages(Long memberId) {
         String folderPath = "fitting/" + memberId + "/";
 
         ListObjectsV2Request listObjectsV2Request = new ListObjectsV2Request()

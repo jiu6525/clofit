@@ -2,7 +2,7 @@ package com.clofit.api.fitting.service;
 
 import com.clofit.api.fitting.entity.Fitting;
 import com.clofit.api.fitting.request.FittingRequest;
-import com.clofit.api.fitting.request.FittingSearchRequest;
+import com.clofit.api.fitting.response.FittingDetailResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import com.clofit.api.fitting.response.FittingRecentDetailResponse;
@@ -17,4 +17,5 @@ public interface FittingService {
     List<String> recentFitting(Long memberId);
     void saveFitting(Character publicYn, FittingRecentDetailResponse fittingRecentDetailResponse);
 
+    FittingDetailResponse getDetailFitting(Long fittingId);
 }
