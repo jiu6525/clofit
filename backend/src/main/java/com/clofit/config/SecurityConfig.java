@@ -2,6 +2,7 @@ package com.clofit.config;
 
 import com.clofit.jwt.JWTFilter;
 import com.clofit.jwt.JWTUtil;
+import com.clofit.oauth2.hadler.CustomFailureHandler;
 import com.clofit.oauth2.hadler.CustomSuccessHandler;
 import com.clofit.oauth2.service.CustomOAuth2UserService;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,12 +33,14 @@ public class SecurityConfig {
 
     private final CustomOAuth2UserService customOAuth2UserService;
     private final CustomSuccessHandler customSuccessHandler;
+    private final CustomFailureHandler customFailureHandler;
     private final JWTUtil jwtUtil;
     private final String ACCESS_KEY;
 
-    public SecurityConfig(CustomOAuth2UserService customOAuth2UserService, CustomSuccessHandler customSuccessHandler, JWTUtil jwtUtil, @Value("${gpu.access-key}") String ACCESS_KEY) {
+    public SecurityConfig(CustomOAuth2UserService customOAuth2UserService, CustomSuccessHandler customSuccessHandler, CustomFailureHandler customFailureHandler, JWTUtil jwtUtil, @Value("${gpu.access-key}") String ACCESS_KEY) {
         this.customOAuth2UserService = customOAuth2UserService;
         this.customSuccessHandler = customSuccessHandler;
+        this.customFailureHandler = customFailureHandler;
         this.jwtUtil = jwtUtil;
         this.ACCESS_KEY = ACCESS_KEY;
     }
@@ -85,6 +88,7 @@ public class SecurityConfig {
         http.oauth2Login(oauth2 -> oauth2
                 .userInfoEndpoint(userInfoEndpointConfig -> userInfoEndpointConfig.userService(customOAuth2UserService))
                 .successHandler(customSuccessHandler)
+                .failureHandler(customFailureHandler)
         );
 //        http.exceptionHandling((exception) -> exception.authenticationEntryPoint(unauthorizedEntryPoint()));
         // 세션 설정: STATELESS
@@ -130,7 +134,7 @@ public class SecurityConfig {
                 "/test/**"
 //                "/member/loginpage"
 //                "/oauth2/authorization/kakao"
-//               ,"/**"
+               ,"/**"
         );
     }
 

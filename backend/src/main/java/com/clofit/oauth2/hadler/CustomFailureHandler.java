@@ -1,18 +1,29 @@
-package com.clofit.jwt.execption;
+package com.clofit.oauth2.hadler;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.InsufficientAuthenticationException;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
 
-import javax.naming.AuthenticationException;
 import java.io.IOException;
 
 @Component
-public class CustomAuthenticationFailureHandler extends SimpleUrlAuthenticationFailureHandler {
+public class CustomFailureHandler extends SimpleUrlAuthenticationFailureHandler {
+
+    @Value("${front.react-server}")
+    private String FRONT_REACT_SERVER;
+
+    @Override
+    public void onAuthenticationFailure(HttpServletRequest request,
+                                        HttpServletResponse response,
+                                        AuthenticationException exception) throws IOException, ServletException {
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.sendRedirect(FRONT_REACT_SERVER + "/");
+    }
+
 
 //    @Override
 //    public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
