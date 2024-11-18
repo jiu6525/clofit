@@ -12,8 +12,6 @@ import java.util.List;
 public interface FittingService {
     byte[] fitting(FittingRequest fittingRequest) throws Exception;
     void fittingMQ(FittingRequest fittingRequest);
-    List<Fitting> getPublicFittingList();
-    List<Fitting> getPublicFittingListByColor(Long colorId);
     Page<Fitting> getPublicFittingList(Pageable pageable);
     Page<Fitting> getPublicFittingListByColor(Long colorId, Pageable pageable);
     List<String> recentFitting(Long memberId);
