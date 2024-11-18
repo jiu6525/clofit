@@ -12,7 +12,7 @@ public interface AwsS3Service {
     void deleteFile(String fileName);
     String getClothFile(ClothRequest clothRequest);
     String getModelFile(ModelRequest modelRequest);
-    List<FittingSearchResponse> getFittingImages(FittingSearchRequest fittingSearchRequest);
+    List<FittingSearchResponse> getFittingImages(Long memberId);
     void moveFile(String url);
     String recentFile(Long memberId, byte[] img);
 }
