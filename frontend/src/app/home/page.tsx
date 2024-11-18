@@ -11,6 +11,7 @@ import Navbar from '@/components/Navbar';
 import Slider from 'react-slick';
 import { IoNotificationsOutline, IoChevronForward } from 'react-icons/io5';
 import ClothesModal from './components/ClothesModal';
+import RecommendedItems from './components/RecommendedItems';
 
 // 타입 정의
 interface MemberInfoResponse {
@@ -55,7 +56,7 @@ export default function MainPage() {
         const response =
           await axiosInstance.get<MemberInfoResponse>('/member/mypage');
         setMemberInfo(response.data);
-        console.log('memberInfo 저장 성공:', response.data); // 추가 로그
+        console.log('memberInfo 저장 성공:', response.data);
       } catch (error) {
         console.error('memberInfo 불러오기 실패:', error);
       }
@@ -91,9 +92,9 @@ export default function MainPage() {
     {
       id: 2,
       src: '/images/mainslide2.png',
-      smallText: '텍스트 뭐라고 하냐',
-      largeText: '미정입니다',
-      buttonText: '지금 둘러보기',
+      smallText: '다양한 스타일을 한눈에',
+      largeText: '인기 피드 둘러보기',
+      buttonText: '지금 확인하기',
       textColor: '#171A1F',
     },
     {
@@ -151,7 +152,7 @@ export default function MainPage() {
                   width={600}
                   height={300}
                   className='object-cover w-full'
-                  priority={index === 0} // 첫 번째 슬라이드 이미지 priority
+                  priority={index === 0}
                 />
                 <div className='absolute bottom-8 inset-x-0 flex flex-col items-center text-center'>
                   <p
@@ -184,41 +185,11 @@ export default function MainPage() {
         </div>
 
         {/* 추천 아이템 섹션 */}
-        <section className='w-full'>
-          <h2 className='font-medium text-[#373A3F] ml-3 my-4'>
-            {memberInfo?.memberName || '회원'}님을 위한 아이템 추천
-          </h2>
-          <div className='w-full'>
-            <Slider
-              {...{
-                dots: false,
-                infinite: false,
-                speed: 500,
-                slidesToShow: 3,
-                slidesToScroll: 3,
-                arrows: false,
-              }}
-            >
-              {recommendedItems.map((item, index) => (
-                <div
-                  key={index}
-                  className='px-1 cursor-pointer'
-                  onClick={() => handleItemClick(item)}
-                >
-                  <div className='relative w-full aspect-[3/4] overflow-hidden'>
-                    <Image
-                      src={item.imgPath}
-                      alt={item.item}
-                      width={200}
-                      height={300}
-                      className='object-cover'
-                    />
-                  </div>
-                </div>
-              ))}
-            </Slider>
-          </div>
-        </section>
+        <RecommendedItems
+          memberName={memberInfo?.memberName || null}
+          items={recommendedItems}
+          onItemClick={handleItemClick}
+        />
 
         {/* 모달 컴포넌트 */}
         <ClothesModal

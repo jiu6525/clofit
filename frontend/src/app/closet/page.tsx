@@ -176,11 +176,10 @@ const Closet = () => {
             </button>
           )}
         </div>
-
         {/* 옷장 그리드 */}
         <div className='grid grid-cols-3 gap-0'>
           {/* 아이템 추가하기 버튼 */}
-          <div className='relative w-full aspect-[5/6] bg-gray-200 flex items-center justify-center cursor-pointer'>
+          <div className='relative w-full aspect-square bg-gray-200 flex items-center justify-center cursor-pointer'>
             <input
               type='file'
               accept='image/*'
@@ -192,13 +191,17 @@ const Closet = () => {
               }}
             />
             <FiPlus className='text-gray-500 text-4xl' />
+            {/* 추천 문구 */}
+            <p className='absolute bottom-2 text-sm text-gray-400'>
+              1:1 비율의 사진을 권장해요
+            </p>
           </div>
 
           {/* 옷장 항목 */}
           {filteredItems.map((item) => (
             <div
               key={item.id}
-              className='relative w-full aspect-[5/6] bg-gray-200 overflow-hidden cursor-pointer'
+              className='relative w-full aspect-square bg-gray-200 overflow-hidden cursor-pointer'
               onClick={() => {
                 if (!isDeleteMenuOpen) {
                   handleOpenClothesModal(item.clothes);

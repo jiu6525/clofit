@@ -12,18 +12,16 @@ import axiosInstance from '@/api/axiosInstance';
 // 색상 데이터
 const colors = [
   { id: 1, rgb: '0,0,0', colorName: '블랙' },
-  { id: 2, rgb: '139,69,19', colorName: '새들브라운' },
+  { id: 2, rgb: '139,69,19', colorName: '브라운' },
   { id: 3, rgb: '255,165,0', colorName: '오렌지' },
   { id: 4, rgb: '255,255,0', colorName: '옐로우' },
-  { id: 5, rgb: '0,128,0', colorName: '그린' },
-  { id: 6, rgb: '0,0,255', colorName: '블루' },
-  { id: 7, rgb: '255,192,203', colorName: '핑크' },
-  { id: 8, rgb: '255,0,0', colorName: '레드' },
-  { id: 9, rgb: '72,209,204', colorName: '미디엄쿼터즈' },
-  { id: 10, rgb: '50,205,50', colorName: '라임그린' },
-  { id: 11, rgb: '240,230,140', colorName: '카키' },
-  { id: 12, rgb: '192,192,192', colorName: '실버' },
-  { id: 13, rgb: '255,99,71', colorName: '토마토' },
+  { id: 5, rgb: '0,0,255', colorName: '블루' },
+  { id: 6, rgb: '255,192,203', colorName: '핑크' },
+  { id: 7, rgb: '255,0,0', colorName: '레드' },
+  { id: 8, rgb: '255,255,255', colorName: '화이트' },
+  { id: 9, rgb: '50,205,50', colorName: '그린' },
+  { id: 10, rgb: '240,230,140', colorName: '카키' },
+  { id: 11, rgb: '192,192,192', colorName: '실버' },
 ];
 
 function AddClothingContent() {
