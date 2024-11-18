@@ -1,4 +1,5 @@
 import React from 'react';
+import axiosInstance from '@/api/axiosInstance'; // axiosInstance 가져오기
 import { AiOutlineClose } from 'react-icons/ai';
 
 export interface ClothesModalProps {
@@ -26,6 +27,19 @@ const ClothesModal: React.FC<ClothesModalProps> = ({
   const CATEGORY_MAP: { [key: string]: string } = {
     top: '상의',
     bottom: '하의',
+  };
+
+  // 옷장에 넣기 핸들러
+  const handleAddToCloset = async () => {
+    try {
+      const response = await axiosInstance.post('/closet', {
+        clothesId: clothes.id,
+      });
+      alert('옷장에 성공적으로 추가되었습니다!');
+    } catch (error) {
+      console.error('옷장에 넣기 실패:', error);
+      alert('옷장에 추가하는 데 실패했습니다. 다시 시도해 주세요.');
+    }
   };
 
   return (
@@ -61,25 +75,35 @@ const ClothesModal: React.FC<ClothesModalProps> = ({
         </div>
 
         {/* 버튼 */}
-        <div className='mt-6'>
-          {clothes.myClothesYn === 'N' && clothes.itemUrl ? (
+        <div className='mt-6 flex justify-between space-x-2'>
+          {clothes.myClothesYn === 'N' && (
+            <button
+              onClick={handleAddToCloset}
+              className='w-1/2 px-4 py-2 text-center text-white bg-gray-700 rounded-md hover:bg-gray-900'
+            >
+              옷장에 넣기
+            </button>
+          )}
+          {clothes.myClothesYn === 'N' && clothes.itemUrl && (
             <a
               href={clothes.itemUrl}
               target='_blank'
               rel='noopener noreferrer'
-              className='block w-full px-4 py-2 text-center text-white bg-black rounded-md hover:bg-blue-800'
+              className='w-1/2 px-4 py-2 text-center text-white bg-black rounded-md hover:bg-blue-800'
             >
               사러가기
             </a>
-          ) : (
-            <button
-              onClick={onClose}
-              className='block w-full px-4 py-2 text-center text-white bg-black rounded-md'
-            >
-              닫기
-            </button>
           )}
         </div>
+
+        {clothes.myClothesYn !== 'N' && (
+          <button
+            onClick={onClose}
+            className='block w-full px-4 py-2 mt-2 text-center text-white bg-black rounded-md'
+          >
+            닫기
+          </button>
+        )}
       </div>
     </div>
   );
