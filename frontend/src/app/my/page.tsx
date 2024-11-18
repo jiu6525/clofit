@@ -157,7 +157,9 @@ export default function MyPage() {
   return (
     <div className='my-page w-full bg-white text-[#373A3F] min-h-screen'>
       <div className='w-full max-w-[600px] mx-auto relative'>
-        <div className='absolute top-4 right-4'>
+        <div className='absolute top-4 right-4 z-50'>
+          {' '}
+          {/* z-index 추가 */}
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             className='text-2xl text-gray-700'
@@ -165,7 +167,8 @@ export default function MyPage() {
             <HiOutlineMenu />
           </button>
           {isMenuOpen && (
-            <div className='absolute top-8 right-0 bg-white border border-gray-300 rounded-lg shadow-lg p-2 flex flex-col space-y-2'>
+            <div className='absolute top-8 right-0 bg-white border border-gray-300 rounded-lg shadow-lg p-2 flex flex-col space-y-2 z-50'>
+              {/* z-index 추가 */}
               <button
                 onClick={handleLogout}
                 className='text-sm hover:text-gray-600 px-2 py-1 whitespace-nowrap'
@@ -183,7 +186,7 @@ export default function MyPage() {
         </div>
       </div>
 
-      <div className='relative flex flex-col items-center mt-16 mb-6'>
+      <div className='relative flex flex-col items-center mt-16 mb-6 z-10'>
         <div className='relative mb-4'>
           {profileImageUrl ? (
             <img

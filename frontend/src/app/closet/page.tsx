@@ -184,7 +184,6 @@ const Closet = () => {
             <input
               type='file'
               accept='image/*'
-              capture='environment' // 모바일에서 카메라 열기
               className='absolute inset-0 opacity-0 cursor-pointer'
               onChange={(e) => {
                 if (e.target.files && e.target.files[0]) {
