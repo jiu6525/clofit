@@ -7,6 +7,7 @@ import com.clofit.api.feed.dto.Feed;
 import com.clofit.api.feed.dto.FittingFeed;
 import com.clofit.api.fitting.entity.Fitting;
 import com.clofit.api.fitting.service.FittingService;
+import com.clofit.api.member.entity.Member;
 import com.clofit.api.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -37,6 +38,7 @@ public class FeedServiceImpl implements FeedService {
             feedList.add(new ClothesFeed(clothes));
         }
         for(Fitting fitting : fittingList) {
+            fitting.setMember(hideData(fitting.getMember()));
             feedList.add(new FittingFeed(fitting));
         }
 
@@ -57,6 +59,7 @@ public class FeedServiceImpl implements FeedService {
             feedList.add(new ClothesFeed(clothes));
         }
         for(Fitting fitting : fittingList) {
+            fitting.setMember(hideData(fitting.getMember()));
             feedList.add(new FittingFeed(fitting));
         }
 
@@ -111,6 +114,7 @@ public class FeedServiceImpl implements FeedService {
         List<Feed> feedList = new ArrayList<>();
 
         for(Fitting fitting : fittingList) {
+            fitting.setMember(hideData(fitting.getMember()));
             feedList.add(new FittingFeed(fitting));
         }
 
@@ -127,6 +131,7 @@ public class FeedServiceImpl implements FeedService {
         List<Feed> feedList = new ArrayList<>();
 
         for(Fitting fitting : fittingList) {
+            fitting.setMember(hideData(fitting.getMember()));
             feedList.add(new FittingFeed(fitting));
         }
 
@@ -134,5 +139,16 @@ public class FeedServiceImpl implements FeedService {
         Collections.shuffle(feedList);
 
         return feedList;
+    }
+
+    private Member hideData(Member member) {
+        Member m = new Member();
+        m.setId(member.getId());
+        m.setDelMemberYn(member.getDelMemberYn());
+        m.setProfileFileName(member.getProfileFileName());
+        m.setProfileFilePath(member.getProfileFilePath());
+        m.setMemberName(member.getMemberName());
+        m.setRegMemberDttm(member.getRegMemberDttm());
+        return m;
     }
 }
