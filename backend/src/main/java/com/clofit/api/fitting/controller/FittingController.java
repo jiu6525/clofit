@@ -99,8 +99,8 @@ public class FittingController {
     @PostMapping
     @Operation(summary = "가상 피팅")
     public void fitting(@AuthenticationPrincipal CustomOAuth2User customOAuth2User, @RequestBody FittingRequest fittingRequest) {
-        Long memberId = 1L;
-//        Long memberId = customOAuth2User.getmemberId();
+//        Long memberId = 1L;
+        Long memberId = customOAuth2User.getmemberId();
         fittingRequest.setMemberId(memberId);
         // 가상 스레드를 사용해 비동기적으로 처리
         Thread.ofVirtual().start(() -> {
