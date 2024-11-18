@@ -222,7 +222,9 @@ public class AwsS3ServiceImpl implements AwsS3Service {
         String result = null;
         if (index != -1) {
             result = url.substring(index + com.length());
-            amazonS3.copyObject(bucket, result, bucket, result.replace("/tmp", ""));
+            CopyObjectRequest copyObjectRequest = new CopyObjectRequest(bucket, result, bucket, result.replace("/tmp", "")).withCannedAccessControlList(CannedAccessControlList.PublicRead);
+//            amazonS3.copyObject(bucket, result, bucket, result.replace("/tmp", ""));
+            amazonS3.copyObject(copyObjectRequest);
             amazonS3.deleteObject(bucket, result);
         } else {
             logger.warn("Keyword not found in the URL.");
