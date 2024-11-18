@@ -17,6 +17,8 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -144,13 +146,13 @@ public class FittingServiceImpl implements FittingService {
     }
 
     @Override
-    public List<Fitting> getPublicFittingList() {
-        return fittingRepository.findAllPublicYn();
+    public Page<Fitting> getPublicFittingList(Pageable pageable) {
+        return fittingRepository.findAllPublicYn(pageable);
     }
 
     @Override
-    public List<Fitting> getPublicFittingListByColor(Long colorId) {
-        return fittingRepository.findAllPublicYnByColorId(colorId);
+    public Page<Fitting> getPublicFittingListByColor(Long colorId, Pageable pageable) {
+        return fittingRepository.findAllPublicYnByColorId(colorId, pageable);
     }
 
     @Override

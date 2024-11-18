@@ -1,6 +1,8 @@
 package com.clofit.api.clothes.repository;
 
 import com.clofit.api.clothes.entity.Clothes;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -31,8 +33,8 @@ public interface ClothesRepository extends JpaRepository<Clothes, Long> {
     Clothes findDetailClothes(@Param("clothesId") Long clothesId);
 
     @Query("SELECT DISTINCT c FROM Clothes c JOIN FETCH c.color WHERE c.myClothesYn = 'N' ")
-    List<Clothes> findAllPublicClothes();
+    Page<Clothes> findAllPublicClothes(Pageable pageable);
 
     @Query("SELECT DISTINCT c FROM Clothes c JOIN FETCH c.color WHERE c.myClothesYn = 'N' AND c.color.id = :colorId ")
-    List<Clothes> findAllPublicClothesByColor(@Param("colorId") Long colorId);
+    Page<Clothes> findAllPublicClothesByColor(@Param("colorId") Long colorId, Pageable pageable);
 }
