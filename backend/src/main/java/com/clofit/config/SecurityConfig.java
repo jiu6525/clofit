@@ -133,8 +133,8 @@ public class SecurityConfig {
                 "/v3/api-docs/**",
                 "/test/**"
 //                "/member/loginpage"
-//                "/oauth2/authorization/kakao"
-               ,"/**"
+                ,"/oauth2/authorization/kakao"
+//               ,"/**"
         );
     }
 
