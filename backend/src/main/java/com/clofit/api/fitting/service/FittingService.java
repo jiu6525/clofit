@@ -3,6 +3,7 @@ package com.clofit.api.fitting.service;
 import com.clofit.api.fitting.entity.Fitting;
 import com.clofit.api.fitting.request.FittingRequest;
 import com.clofit.api.fitting.response.FittingDetailResponse;
+import com.clofit.api.fitting.response.FittingSearchResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import com.clofit.api.fitting.response.FittingRecentDetailResponse;
@@ -16,6 +17,6 @@ public interface FittingService {
     Page<Fitting> getPublicFittingListByColor(Long colorId, Pageable pageable);
     List<String> recentFitting(Long memberId);
     void saveFitting(Character publicYn, FittingRecentDetailResponse fittingRecentDetailResponse);
-
+    List<FittingSearchResponse> getFittingImages(Long memberId);
     FittingDetailResponse getDetailFitting(Long fittingId);
 }

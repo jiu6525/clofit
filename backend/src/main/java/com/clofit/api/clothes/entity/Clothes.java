@@ -4,6 +4,7 @@ import com.clofit.api.closet.entity.Closet;
 import com.clofit.api.color.entity.Color;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -15,6 +16,7 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Clothes {
 
     @Id
@@ -69,7 +71,7 @@ public class Clothes {
 //    private String mainColor;
 
     @Column(name = "my_clothes_yn")
-    private char myClothesYn;
+    private Character myClothesYn;
 
 //    @ColumnDefault("N")
     @Column(name = "del_clothes_yn")
