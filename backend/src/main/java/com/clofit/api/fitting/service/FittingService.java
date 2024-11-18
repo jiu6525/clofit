@@ -15,6 +15,7 @@ public interface FittingService {
     Page<Fitting> getPublicFittingList(Pageable pageable);
     Page<Fitting> getPublicFittingListByColor(Long colorId, Pageable pageable);
     List<String> recentFitting(Long memberId);
-    FittingDetailResponse getDetailFitting(Long fittingId);
     void saveFitting(Character publicYn, FittingRecentDetailResponse fittingRecentDetailResponse);
+
+    FittingDetailResponse getDetailFitting(Long fittingId);
 }

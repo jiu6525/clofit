@@ -6,6 +6,9 @@ import com.clofit.api.fitting.entity.FittingResult;
 import com.clofit.api.fitting.request.FittingRequest;
 import com.clofit.api.fitting.request.FittingSearchRequest;
 import com.clofit.api.fitting.request.*;
+import com.clofit.api.fitting.response.FittingRecentDetailResponse;
+import com.clofit.api.fitting.response.FittingRecentResponse;
+import com.clofit.api.fitting.response.FittingSearchResponse;
 import com.clofit.api.fitting.response.*;
 import com.clofit.api.fitting.service.AwsS3Service;
 import com.clofit.api.fitting.service.FittingService;
@@ -135,16 +138,15 @@ public class FittingController {
 
     /**
      *
-     * @param fittingSearchRequest
      * memberId 값을 통해 s3에 경로에 저장되어있는 사진들을 불러와서 리스트 형식으로 뿌려줌
      * @return
      * List<url>
      */
     @PostMapping("/search")
     @Operation(summary = "사용자가 저장한 피팅 사진 조회")
-    public ResponseEntity<List<FittingSearchResponse>> getFittingImages(@AuthenticationPrincipal CustomOAuth2User customOAuth2User, @RequestBody FittingSearchRequest fittingSearchRequest) {
-        fittingSearchRequest.setMemberId(customOAuth2User.getmemberId());
-        List<FittingSearchResponse> fittingImages = awsS3Service.getFittingImages(fittingSearchRequest);
+    public ResponseEntity<List<FittingSearchResponse>> getFittingImages(@AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
+        Long memberId = customOAuth2User.getmemberId();
+        List<FittingSearchResponse> fittingImages = awsS3Service.getFittingImages(memberId);
         return ResponseEntity.ok(fittingImages);
     }
 
