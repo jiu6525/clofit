@@ -94,11 +94,11 @@ public class RedisServiceImpl implements RedisService {
 
     @Override
     public void storeFitting(FittingResult fittingResult, String memberId) throws JsonProcessingException {
-        ListOperations<String, Object> list =  redisTemplate.opsForList();
-        ValueOperations<String, Object> value = redisTemplate.opsForValue();
-
-        value.set(fittingResultKey(fittingResult.getMemberId()), objectMapper.writeValueAsString(fittingResult));
-        list.rightPush(fittingListKey(memberId), objectMapper.writeValueAsString(fittingResult.getMemberId()));
+//        ListOperations<String, Object> list =  redisTemplate.opsForList();
+//        ValueOperations<String, Object> value = redisTemplate.opsForValue();
+//
+//        value.set(fittingResultKey(fittingResult.getMemberId()), objectMapper.writeValueAsString(fittingResult));
+//        list.rightPush(fittingListKey(memberId), objectMapper.writeValueAsString(fittingResult.getMemberId()));
     }
 
     /**
@@ -143,7 +143,7 @@ public class RedisServiceImpl implements RedisService {
      */
     @Override
     public void removeFittingResult(Long memberId, String redisId) throws JsonProcessingException {
-        redisTemplate.delete(fittingResultKey(redisId));
+        redisTemplate.delete(redisId);
         redisTemplate.opsForList().remove(fittingListKey(String.valueOf(memberId)), 1, objectMapper.writeValueAsString(redisId));
     }
 
@@ -230,7 +230,5 @@ public class RedisServiceImpl implements RedisService {
     private String fittingListKey(String memberId) {
         return "fitting:" + memberId;
     }
-    private String fittingResultKey(String redisId) {
-        return "fitting_result:" + redisId;
-    }
+
 }
