@@ -4,15 +4,14 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class FittingStoreRequest {
+public class FittingSaveRequest {
 
-    private Long memberId;
-    private MultipartFile fittingImg;
+    private String redisId;
+    private String fittingName;
 
 }
