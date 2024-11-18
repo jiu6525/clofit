@@ -192,8 +192,10 @@ const Closet = () => {
             />
             <FiPlus className='text-gray-500 text-4xl' />
             {/* 추천 문구 */}
-            <p className='absolute bottom-2 text-sm text-gray-400'>
-              1:1 비율의 사진을 권장해요
+            <p className='absolute bottom-2 text-sm text-gray-400 text-center'>
+              1:1 비율의 사진을
+              <br />
+              권장해요
             </p>
           </div>
 
