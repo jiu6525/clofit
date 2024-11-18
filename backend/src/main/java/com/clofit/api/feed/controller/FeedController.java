@@ -27,7 +27,7 @@ public class FeedController {
     @GetMapping("/byColor")
     @Operation(summary = "색상 기반 피드 조회")
     public ResponseEntity<FeedResponse> getFeedsByColor(
-//            @AuthenticationPrincipal CustomOAuth2User customOAuth2User
+            @AuthenticationPrincipal CustomOAuth2User customOAuth2User
             ) {
         Long memberId = customOAuth2User.getmemberId();
 //        Long memberId = 1L;

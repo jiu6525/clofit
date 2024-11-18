@@ -143,7 +143,7 @@ public class RedisServiceImpl implements RedisService {
      */
     @Override
     public void removeFittingResult(Long memberId, String redisId) throws JsonProcessingException {
-        redisTemplate.delete(fittingResultKey(redisId));
+        redisTemplate.delete(redisId);
         redisTemplate.opsForList().remove(fittingListKey(String.valueOf(memberId)), 1, objectMapper.writeValueAsString(redisId));
     }
 
