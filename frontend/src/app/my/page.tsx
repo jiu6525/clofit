@@ -18,7 +18,7 @@ interface MemberInfoResponse {
 
 export default function MyPage() {
   const { fetchPhotos } = usePhotoStore();
-  const { setPersonalColor } = useMemberStore();
+  const { memberInfo, setMemberInfo, clearMemberInfo } = useMemberStore();
 
   const [activeTab, setActiveTab] = useState<'myPhotos' | 'likedSnaps'>(
     'myPhotos'
@@ -38,15 +38,21 @@ export default function MyPage() {
           await axiosInstance.get<MemberInfoResponse>('/member/mypage');
         const { memberName, personalColor, profileFilePath } = response.data;
 
+        // 스토어에 사용자 정보 저장
+        setMemberInfo({
+          memberName,
+          personalColor,
+          profileFilePath,
+        });
+
         setNickname(memberName);
         setProfileImageUrl(profileFilePath || '/default-profile.png');
-        setPersonalColor(personalColor);
       } catch (error) {
         console.error('사용자 정보 불러오기 실패:', error);
       }
     };
     fetchMemberInfo();
-  }, []); // 의존성 배열 단순화
+  }, [setMemberInfo]); // 의존성 배열에 setMemberInfo 추가
 
   const handleTabChange = (tab: 'myPhotos' | 'likedSnaps') => {
     setActiveTab(tab);
@@ -67,6 +73,7 @@ export default function MyPage() {
       return newSelected;
     });
   };
+
   const handleFileChange = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -97,12 +104,13 @@ export default function MyPage() {
       console.error('프로필 이미지 업데이트 실패:', error);
       alert('프로필 이미지 업데이트에 실패했습니다.');
     }
-  }; // 여기가 문제였던 부분: handleFileChange 닫힘 추가
+  };
 
   const handleLogout = async () => {
     try {
       await axiosInstance.post('/member/logout');
       alert('로그아웃되었습니다.');
+      clearMemberInfo(); // 로그아웃 시 스토어의 사용자 정보 초기화
     } catch (error) {
       console.error('로그아웃 실패:', error);
       alert('로그아웃에 실패했습니다.');
@@ -113,6 +121,7 @@ export default function MyPage() {
     try {
       await axiosInstance.put('/member/resign');
       alert('회원 탈퇴가 완료되었습니다.');
+      clearMemberInfo(); // 탈퇴 시 스토어의 사용자 정보 초기화
     } catch (error) {
       console.error('회원 탈퇴 실패:', error);
       alert('회원 탈퇴에 실패했습니다.');
@@ -156,7 +165,7 @@ export default function MyPage() {
             <HiOutlineMenu />
           </button>
           {isMenuOpen && (
-            <div className='absolute top-8 right-0 bg-white border border-gray-300 rounded-lg shadow-lg p-2 flex flex-col space-y-2'>
+            <div className='absolute top-8 right-0 bg-white border border-gray-300 rounded-lg shadow-lg p-2 flex flex-col space-y-2 z-50'>
               <button
                 onClick={handleLogout}
                 className='text-sm hover:text-gray-600 px-2 py-1 whitespace-nowrap'
