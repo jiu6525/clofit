@@ -1,8 +1,5 @@
 package com.clofit.api.origin_picture.service;
 
-import com.clofit.api.member.entity.Member;
-import com.clofit.api.member.repository.MemberRepository;
-import com.clofit.api.member.service.FileService;
 import com.clofit.api.member.service.MemberService;
 import com.clofit.api.origin_picture.entity.OriginPicture;
 import com.clofit.api.origin_picture.repository.OriginPictureRepository;
@@ -14,14 +11,13 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class OriginPictureService {
 
     private final OriginPictureRepository originPictureRepository;
-    private final FileService fileService;
+    private final OriginFileService fileService;
     private final MemberService memberService;
 
     public List<String> uploadOriginPictures(Long memberId, List<MultipartFile> files) throws IOException {
@@ -35,7 +31,7 @@ public class OriginPictureService {
         for (MultipartFile file : files) {
             // 파일 업로드 및 DB 저장 로직
             // 함수 호출
-            String fileUrl = fileService.uploadFile(file);
+            String fileUrl = fileService.uploadFile(memberId,file);
             OriginPicture originPicture = new OriginPicture();
             originPicture.setMember(memberService.findMemberById(memberId));
             originPicture.setFilePath(fileUrl);
@@ -81,6 +77,13 @@ public class OriginPictureService {
 
     // 저장된 원본 사진 가져오기
     public List<OriginPicture> getBaseOriginPictures(Long memberId) {
+
+        List<OriginPicture> originPictures = originPictureRepository.findAllByMemberIdAndDelPicYn(memberId, 'N');
+        // 유효성 검사: memberId와 매핑된 데이터만 처리 - 애초에 가져온 다음에 처리하기
+        if (originPictures.isEmpty()) {
+            throw new IllegalStateException("로그인 유저와 관련된 데이터가 없음");
+        }
+
         return originPictureRepository.findAllByMemberIdAndDelPicYn(memberId, 'N');
     }
 }

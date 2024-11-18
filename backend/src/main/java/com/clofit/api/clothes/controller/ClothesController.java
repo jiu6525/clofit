@@ -2,6 +2,8 @@ package com.clofit.api.clothes.controller;
 
 import com.clofit.api.clothes.entity.Clothes;
 import com.clofit.api.clothes.request.ClothesRegisterRequest;
+import com.clofit.api.clothes.request.ClothesUpdateRequest;
+import com.clofit.api.clothes.response.ClothesUploadResponse;
 import com.clofit.api.clothes.service.ClothesService;
 import com.clofit.api.gpu.service.GPUService;
 import com.clofit.oauth2.dto.CustomOAuth2User;
@@ -63,22 +65,30 @@ public class ClothesController {
     @PostMapping("/upload")
     @Operation(summary = "개인 의류 등록")
 
-    public ResponseEntity<Void> uploadClothes(
+    public ResponseEntity<ClothesUploadResponse> uploadClothes(
             @AuthenticationPrincipal CustomOAuth2User customOAuth2User,
             @RequestParam("file") MultipartFile file
     ) {
         Long memberId = customOAuth2User.getmemberId();
+//        Long memberId = 3L;
 
         String uuid = UUID.randomUUID().toString();
         String imgPath = BASEPATH + memberId + "/" + uuid;
 
-        gpuService.upload2(memberId, imgPath, FILETYPE, file);
+        ClothesUploadResponse res = gpuService.upload2(memberId, imgPath, FILETYPE, file);
 
 //        String maskedPath = "masked_path";
 //        String color_id = "color_id";
 //        String category = "category";
 //
 //        clothesService.uploadClothes(imgPath, maskedPath, color_id, category);
+        return ResponseEntity.ok(res);
+    }
+
+    @PutMapping("/{clothesId}")
+    @Operation(summary = "의류 정보 수정")
+    public ResponseEntity<Void> updateClothes(@PathVariable Long clothesId, @RequestBody ClothesUpdateRequest clothesUpdateRequest) {
+        clothesService.updateClothes(clothesId, clothesUpdateRequest);
         return ResponseEntity.ok().build();
     }
 
