@@ -46,12 +46,11 @@ export default function LikedSnaps() {
         // 좋아요 취소 요청
         console.log('좋아요 취소 요청 데이터:', { fittingId: id });
 
-        // DELETE 요청 본문 포함
         const response = await axiosInstance.request({
           url: '/likes/like',
           method: 'DELETE',
           headers: { 'Content-Type': 'application/json' },
-          data: { fittingId: id }, // 요청 본문
+          data: { fittingId: id },
         });
 
         console.log('좋아요 취소 응답:', response.data);

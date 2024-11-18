@@ -159,7 +159,6 @@ export default function MyPage() {
       <div className='w-full max-w-[600px] mx-auto relative'>
         <div className='absolute top-4 right-4 z-50'>
           {' '}
-          {/* z-index 추가 */}
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             className='text-2xl text-gray-700'
