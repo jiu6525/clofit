@@ -10,7 +10,7 @@ export default function Navbar() {
   const pathname = usePathname();
 
   // 특정 경로에서는 네브바 숨기기
-  const hiddenPaths = ['/closet/camera', '/closet/add'];
+  const hiddenPaths = ['/closet/camera', '/closet/add', '/'];
   if (hiddenPaths.includes(pathname)) return null;
 
   const tabs = [
