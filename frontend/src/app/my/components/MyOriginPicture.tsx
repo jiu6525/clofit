@@ -58,6 +58,22 @@ export default function MyOriginPicture({
 
   return (
     <div className='grid grid-cols-3 w-full'>
+      {/* 추가 버튼을 가장 왼쪽에 렌더링 */}
+      <div className='aspect-[5/6] flex items-center justify-center bg-gray-200 cursor-pointer'>
+        <input
+          type='file'
+          accept='image/*'
+          multiple // 다중 파일 업로드 가능
+          onChange={handleFileChange}
+          className='hidden'
+          id='file-upload'
+        />
+        <label htmlFor='file-upload' className='cursor-pointer'>
+          <AiOutlinePlus className='text-4xl text-gray-500' />
+        </label>
+      </div>
+
+      {/* 사진 목록 */}
       {photos.map((photo) => (
         <div
           key={photo.id}
@@ -68,7 +84,6 @@ export default function MyOriginPicture({
             alt={`Photo ${photo.id}`}
             className='w-full h-full object-cover'
           />
-
           {isDeleteMode && (
             <button
               onClick={() => toggleSelectPhoto(photo.id)}
@@ -83,20 +98,6 @@ export default function MyOriginPicture({
           )}
         </div>
       ))}
-
-      <div className='aspect-[5/6] flex items-center justify-center bg-gray-200 cursor-pointer'>
-        <input
-          type='file'
-          accept='image/*'
-          multiple // 다중 파일 업로드 가능
-          onChange={handleFileChange}
-          className='hidden'
-          id='file-upload'
-        />
-        <label htmlFor='file-upload' className='cursor-pointer'>
-          <AiOutlinePlus className='text-4xl text-gray-500' />
-        </label>
-      </div>
     </div>
   );
 }
