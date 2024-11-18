@@ -146,7 +146,7 @@ public class FittingController {
     @Operation(summary = "사용자가 저장한 피팅 사진 조회")
     public ResponseEntity<List<FittingSearchResponse>> getFittingImages(@AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
         Long memberId = customOAuth2User.getmemberId();
-        List<FittingSearchResponse> fittingImages = awsS3Service.getFittingImages(memberId);
+        List<FittingSearchResponse> fittingImages = fittingService.getFittingImages(memberId);
         return ResponseEntity.ok(fittingImages);
     }
 

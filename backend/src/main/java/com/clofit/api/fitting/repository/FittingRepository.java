@@ -19,4 +19,5 @@ public interface FittingRepository extends JpaRepository<Fitting, Long> {
     @Query("SELECT DISTINCT f FROM Fitting f JOIN FETCH f.member JOIN FETCH f.top JOIN FETCH f.bottom WHERE f.publicYn = 'Y' AND f.top.color.id = :colorId OR f.bottom.color.id = :colorId ")
     Page<Fitting> findAllPublicYnByColorId(@Param("colorId") Long colorId, Pageable pageable);
 
+    List<Fitting> findByMemberId(Long memberId);
 }

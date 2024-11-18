@@ -180,24 +180,6 @@ public class AwsS3ServiceImpl implements AwsS3Service {
     }
 
     @Override
-    public List<FittingSearchResponse> getFittingImages(Long memberId) {
-        String folderPath = "fitting/" + memberId + "/";
-
-        ListObjectsV2Request listObjectsV2Request = new ListObjectsV2Request()
-                .withBucketName(bucket)
-                .withPrefix(folderPath);
-
-        List<FittingSearchResponse> fileUrls = new ArrayList<>();
-        amazonS3.listObjectsV2(listObjectsV2Request).getObjectSummaries()
-                .forEach(s3ObjectSummary -> {
-                    String fileUrl = amazonS3.getUrl(bucket, s3ObjectSummary.getKey()).toString();
-                    fileUrls.add(new FittingSearchResponse(fileUrl));
-                });
-
-        return fileUrls;
-    }
-
-    @Override
     public String getClothFile(ClothRequest clothRequest) {
         int category = clothRequest.getCategory();
         String folderPath = "cloth/" + (category == 0 || category == 2 ? "top" : "bottom") + "/" + clothRequest.getClothImg();
