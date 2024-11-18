@@ -23,7 +23,6 @@ const ClothesModal: React.FC<ClothesModalProps> = ({
 }) => {
   if (!isOpen || !clothes) return null;
 
-  // 카테고리 매핑
   const CATEGORY_MAP: { [key: string]: string } = {
     top: '상의',
     bottom: '하의',

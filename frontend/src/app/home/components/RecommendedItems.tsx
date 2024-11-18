@@ -19,9 +19,9 @@ interface ClothesItem {
 }
 
 interface RecommendedItemsProps {
-  memberName: string | null; // 추가: 회원 이름
-  items: ClothesItem[]; // 추천 아이템 리스트
-  onItemClick: (item: ClothesItem) => void; // 아이템 클릭 핸들러
+  memberName: string | null;
+  items: ClothesItem[];
+  onItemClick: (item: ClothesItem) => void;
 }
 
 const colorMapping = [

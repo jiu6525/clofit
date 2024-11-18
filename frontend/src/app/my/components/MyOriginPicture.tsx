@@ -31,7 +31,7 @@ export default function MyOriginPicture({
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     if (event.target.files && event.target.files.length > 0) {
-      const files = Array.from(event.target.files); // 다중 파일 업로드 지원
+      const files = Array.from(event.target.files);
       const formData = new FormData();
 
       files.forEach((file) => {
@@ -58,12 +58,10 @@ export default function MyOriginPicture({
 
   return (
     <div className='grid grid-cols-3 w-full'>
-      {/* 추가 버튼을 가장 왼쪽에 렌더링 */}
-      <div className='aspect-[5/6] flex items-center justify-center bg-gray-200 cursor-pointer'>
+      <div className='relative aspect-[3/4] flex items-center justify-center bg-gray-200 cursor-pointer'>
         <input
           type='file'
           accept='image/*'
-          multiple // 다중 파일 업로드 가능
           onChange={handleFileChange}
           className='hidden'
           id='file-upload'
@@ -71,13 +69,16 @@ export default function MyOriginPicture({
         <label htmlFor='file-upload' className='cursor-pointer'>
           <AiOutlinePlus className='text-4xl text-gray-500' />
         </label>
+        <p className='absolute bottom-2 text-sm text-gray-400'>
+          3:4 비율의 사진을 권장해요
+        </p>
       </div>
 
       {/* 사진 목록 */}
       {photos.map((photo) => (
         <div
           key={photo.id}
-          className='relative w-full aspect-[5/6] bg-gray-200 overflow-hidden'
+          className='relative w-full aspect-[3/4] bg-gray-200 overflow-hidden'
         >
           <img
             src={photo.imageUrl}
