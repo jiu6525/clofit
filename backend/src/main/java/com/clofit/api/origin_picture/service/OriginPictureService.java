@@ -80,9 +80,9 @@ public class OriginPictureService {
 
         List<OriginPicture> originPictures = originPictureRepository.findAllByMemberIdAndDelPicYn(memberId, 'N');
         // 유효성 검사: memberId와 매핑된 데이터만 처리 - 애초에 가져온 다음에 처리하기
-        if (originPictures.isEmpty()) {
-            throw new IllegalStateException("로그인 유저와 관련된 데이터가 없음");
-        }
+//        if (originPictures.isEmpty()) {
+//            throw new IllegalStateException("로그인 유저와 관련된 데이터가 없음");
+//        }
 
         return originPictureRepository.findAllByMemberIdAndDelPicYn(memberId, 'N');
     }

@@ -27,7 +27,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class MemberController {
 
-    private static final Logger log = LoggerFactory.getLogger(MemberController.class);
+    private static final Logger logger = LoggerFactory.getLogger(MemberController.class);
     private final MemberService memberService;
     private final MultipartProperties multipartProperties;
 
@@ -39,12 +39,13 @@ public class MemberController {
             @ApiResponse(responseCode = "400", description = "Bad Request"),})
     @PostMapping("logout")
     public ResponseEntity<String> logout(HttpServletRequest request, HttpServletResponse response){
-        System.out.println("로그아웃 관련 처리");
+//        System.out.println("로그아웃 관련 처리");
+        logger.info("logout");
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
-                System.out.println(cookie);
-                if ("customUserDetails".equals(cookie.getName())) {
+//                System.out.println(cookie);
+                if ("Authorization".equals(cookie.getName())) {
                     cookie.setValue(null);
                     cookie.setMaxAge(0);
                     cookie.setPath("/");
@@ -59,7 +60,8 @@ public class MemberController {
 
     @PutMapping("resign")
     public ResponseEntity<String> resign(@AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
-        System.out.println("회원탈퇴 관련 처리");
+//        System.out.println("회원탈퇴 관련 처리");
+        logger.info("resign");
         Long memberId = customOAuth2User.getmemberId();
         boolean isDeleted = memberService.deleteMember(memberId);
 
