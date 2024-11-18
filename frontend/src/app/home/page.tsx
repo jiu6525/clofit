@@ -1,6 +1,8 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import useMemberStore from '@/stores/useMemberStore';
+import axiosInstance from '@/api/axiosInstance';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import Image from 'next/image';
@@ -8,10 +10,74 @@ import { useRouter } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import Slider from 'react-slick';
 import { IoNotificationsOutline, IoChevronForward } from 'react-icons/io5';
+import ClothesModal from './components/ClothesModal';
+
+// 타입 정의
+interface MemberInfoResponse {
+  memberName: string;
+  personalColor: string;
+  profileFilePath: string;
+}
+
+interface ClothesItem {
+  id: number;
+  imgPath: string;
+  item: string;
+  price: number;
+  style: string;
+  season: string;
+  category: string;
+  itemUrl: string;
+  myClothesYn: string;
+}
+
+interface RecommendedItemsResponse {
+  feeds: {
+    type: string;
+    clothes: ClothesItem;
+  }[];
+}
 
 export default function MainPage() {
   const router = useRouter();
   const [currentSlide, setCurrentSlide] = useState(0);
+  const { memberInfo, setMemberInfo } = useMemberStore(); // 스토어 사용
+  const [recommendedItems, setRecommendedItems] = useState<ClothesItem[]>([]); // 추천 아이템 상태
+  const [isModalOpen, setIsModalOpen] = useState(false); // 모달 열림 상태
+  const [selectedClothes, setSelectedClothes] = useState<ClothesItem | null>(
+    null
+  ); // 선택된 아이템 데이터
+
+  useEffect(() => {
+    // 회원 정보 가져오기
+    const fetchMemberInfo = async () => {
+      try {
+        const response =
+          await axiosInstance.get<MemberInfoResponse>('/member/mypage');
+        setMemberInfo(response.data);
+        console.log('memberInfo 저장 성공:', response.data); // 추가 로그
+      } catch (error) {
+        console.error('memberInfo 불러오기 실패:', error);
+      }
+    };
+
+    // 추천 아이템 가져오기
+    const fetchRecommendedItems = async () => {
+      try {
+        const response = await axiosInstance.get<RecommendedItemsResponse>(
+          '/feed/items/byColor'
+        );
+        const items = response.data.feeds.map((feed) => feed.clothes);
+        setRecommendedItems(items);
+        console.log('추천 아이템 불러오기 성공:', items);
+      } catch (error) {
+        console.error('추천 아이템 불러오기 실패:', error);
+      }
+    };
+
+    fetchMemberInfo();
+    fetchRecommendedItems();
+  }, []);
 
   const slides = [
     {
@@ -51,9 +117,15 @@ export default function MainPage() {
     beforeChange: (_: number, next: number) => setCurrentSlide(next),
   };
 
+  const handleItemClick = (item: ClothesItem) => {
+    setSelectedClothes(item); // 선택된 아이템 설정
+    setIsModalOpen(true); // 모달 열기
+  };
+
   return (
     <div className='w-full min-h-screen bg-white flex justify-center'>
       <div className='w-full max-w-[600px] flex flex-col items-center'>
+        {/* 헤더 */}
         <header className='w-full flex items-center justify-between py-4 px-6 mt-6'>
           <Image
             src='/logo.svg'
@@ -83,7 +155,7 @@ export default function MainPage() {
                 />
                 <div className='absolute bottom-8 inset-x-0 flex flex-col items-center text-center'>
                   <p
-                    className='text-sm font-semiboldbold'
+                    className='text-sm font-semibold'
                     style={{ color: slide.textColor }}
                   >
                     {slide.smallText}
@@ -109,39 +181,51 @@ export default function MainPage() {
               </div>
             ))}
           </Slider>
-
-          {/* 개별 프로그레스 바 */}
-          <div className='absolute bottom-4 left-0 w-full h-1 flex justify-between px-4'>
-            {slides.map((_, index) => (
-              <div
-                key={index}
-                className={`h-full flex-1 ${
-                  currentSlide === index ? 'bg-white' : 'bg-[#B8B7AC]'
-                }`}
-              />
-            ))}
-          </div>
         </div>
 
         {/* 추천 아이템 섹션 */}
         <section className='w-full'>
           <h2 className='font-medium text-[#373A3F] ml-3 my-4'>
-            강현후님을 위한 아이템 추천
+            {memberInfo?.memberName || '회원'}님을 위한 아이템 추천
           </h2>
-          <div className='grid grid-cols-3 gap-0'>
-            {Array.from({ length: 3 }).map((_, index) => (
-              <div key={index} className='relative w-full aspect-[3/4]'>
-                <Image
-                  src='/snap1.webp'
-                  alt={`추천 아이템 ${index + 1}`}
-                  fill
-                  sizes='(max-width: 600px) 33vw'
-                  className='object-cover'
-                />
-              </div>
-            ))}
+          <div className='w-full'>
+            <Slider
+              {...{
+                dots: false,
+                infinite: false,
+                speed: 500,
+                slidesToShow: 3,
+                slidesToScroll: 3,
+                arrows: false,
+              }}
+            >
+              {recommendedItems.map((item, index) => (
+                <div
+                  key={index}
+                  className='px-1 cursor-pointer'
+                  onClick={() => handleItemClick(item)}
+                >
+                  <div className='relative w-full aspect-[3/4] overflow-hidden'>
+                    <Image
+                      src={item.imgPath}
+                      alt={item.item}
+                      width={200}
+                      height={300}
+                      className='object-cover'
+                    />
+                  </div>
+                </div>
+              ))}
+            </Slider>
           </div>
         </section>
+
+        {/* 모달 컴포넌트 */}
+        <ClothesModal
+          isOpen={isModalOpen}
+          clothes={selectedClothes}
+          onClose={() => setIsModalOpen(false)}
+        />
 
         {/* 하단 네비게이션 */}
         <Navbar />
