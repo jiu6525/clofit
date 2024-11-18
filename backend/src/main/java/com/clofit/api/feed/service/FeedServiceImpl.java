@@ -34,7 +34,7 @@ public class FeedServiceImpl implements FeedService {
         String color = memberService.getColor(memberId);
         Long colorId = Long.parseLong(color);
 
-        Pageable pageable = PageRequest.of(0, 1000);
+        Pageable pageable = PageRequest.of(0, 200);
         Page<Clothes> clothesList = clothesService.getPublicClothesListByColor(colorId, pageable);
         Page<Fitting> fittingList = fittingService.getPublicFittingListByColor(colorId, pageable);
 
@@ -51,12 +51,12 @@ public class FeedServiceImpl implements FeedService {
         // 랜덤하게 섞기
         Collections.shuffle(feedList);
 
-        return feedList.subList(0, Math.min(feedList.size(), 99));
+        return feedList.subList(0, Math.min(feedList.size(), 30));
     }
 
     @Override
     public List<Feed> getFeeds(Long memberId) {
-        Pageable pageable = PageRequest.of(0, 1000);
+        Pageable pageable = PageRequest.of(0, 200);
 
         Page<Clothes> clothesList = clothesService.getPublicClothesList(pageable);
         Page<Fitting> fittingList = fittingService.getPublicFittingList(pageable);
@@ -74,7 +74,7 @@ public class FeedServiceImpl implements FeedService {
         // 랜덤하게 섞기
         Collections.shuffle(feedList);
 
-        return feedList.subList(0, Math.min(feedList.size(), 99));
+        return feedList.subList(0, Math.min(feedList.size(), 30));
     }
 
     @Override
@@ -82,7 +82,7 @@ public class FeedServiceImpl implements FeedService {
         String color = memberService.getColor(memberId);
         Long colorId = Long.parseLong(color);
 
-        Pageable pageable = PageRequest.of(0, 1000);
+        Pageable pageable = PageRequest.of(0, 200);
 
         Page<Clothes> clothesList = clothesService.getPublicClothesListByColor(colorId, pageable);
 
@@ -95,12 +95,12 @@ public class FeedServiceImpl implements FeedService {
         // 랜덤하게 섞기
         Collections.shuffle(feedList);
 
-        return feedList.subList(0, Math.min(feedList.size(), 99));
+        return feedList.subList(0, Math.min(feedList.size(), 30));
     }
 
     @Override
     public List<Feed> getItems(Long memberId) {
-        Pageable pageable = PageRequest.of(0, 1000);
+        Pageable pageable = PageRequest.of(0, 200);
 
         Page<Clothes> clothesList = clothesService.getPublicClothesList(pageable);
 
@@ -113,7 +113,7 @@ public class FeedServiceImpl implements FeedService {
         // 랜덤하게 섞기
         Collections.shuffle(feedList);
 
-        return feedList.subList(0, Math.min(feedList.size(), 99));
+        return feedList.subList(0, Math.min(feedList.size(), 30));
     }
 
     @Override
@@ -121,7 +121,7 @@ public class FeedServiceImpl implements FeedService {
         String color = memberService.getColor(memberId);
         Long colorId = Long.parseLong(color);
 
-        Pageable pageable = PageRequest.of(0, 1000);
+        Pageable pageable = PageRequest.of(0, 200);
 
         Page<Fitting> fittingList = fittingService.getPublicFittingListByColor(colorId, pageable);
 
@@ -135,12 +135,12 @@ public class FeedServiceImpl implements FeedService {
         // 랜덤하게 섞기
         Collections.shuffle(feedList);
 
-        return feedList.subList(0, Math.min(feedList.size(), 99));
+        return feedList.subList(0, Math.min(feedList.size(), 30));
     }
 
     @Override
     public List<Feed> getSnaps(Long memberId) {
-        Pageable pageable = PageRequest.of(0, 1000);
+        Pageable pageable = PageRequest.of(0, 200);
 
         Page<Fitting> fittingList = fittingService.getPublicFittingList(pageable);
 
@@ -154,7 +154,7 @@ public class FeedServiceImpl implements FeedService {
         // 랜덤하게 섞기
         Collections.shuffle(feedList);
 
-        return feedList.subList(0, Math.min(feedList.size(), 99));
+        return feedList.subList(0, Math.min(feedList.size(), 30));
     }
 
     private Member hideData(Member member) {
