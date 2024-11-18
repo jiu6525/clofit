@@ -1,0 +1,10 @@
+numpy==1.23.5
+opencv_contrib_python==4.10.0.84
+opencv_python==4.10.0.84
+Pillow==11.0.0
+ultralytics==8.2.87
+
+requests~=2.32.3
+opencv-python~=4.10.0.84
+scikit-image~=0.24.0
+rembg~=2.0.59

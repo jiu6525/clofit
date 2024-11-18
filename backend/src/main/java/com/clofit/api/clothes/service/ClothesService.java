@@ -8,6 +8,8 @@ import com.clofit.api.clothes.response.ClothesUploadResponse;
 import com.clofit.api.color.entity.Color;
 import com.clofit.api.color.repository.ColorRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,11 +38,9 @@ public class ClothesService {
         return clothesRepository.findDetailClothes(clothesId);
     }
 
-    public List<Clothes> getPublicClothesList() { return clothesRepository.findAllPublicClothes(); }
+    public Page<Clothes> getPublicClothesList(Pageable pageable) { return clothesRepository.findAllPublicClothes(pageable); }
 
-    public List<Clothes> getPublicClothesListByColor(Long colorId) {
-        return clothesRepository.findAllPublicClothesByColor(colorId);
-    }
+    public Page<Clothes> getPublicClothesListByColor(Long colorId, Pageable pageable) { return clothesRepository.findAllPublicClothesByColor(colorId, pageable); }
 
     public void registClothes(ClothesRegisterRequest clothesRegisterRequest) {
         Clothes clothes = new Clothes();
