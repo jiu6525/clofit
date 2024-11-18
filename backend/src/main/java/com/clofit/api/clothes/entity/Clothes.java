@@ -71,7 +71,7 @@ public class Clothes {
     @Column(name = "my_clothes_yn")
     private char myClothesYn;
 
-    @ColumnDefault("N")
+//    @ColumnDefault("N")
     @Column(name = "del_clothes_yn")
     private Character delClothesYn;
 }

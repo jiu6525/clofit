@@ -10,6 +10,8 @@ import lombok.ToString;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 
+import java.time.LocalDateTime;
+
 
 @Getter
 @Setter
@@ -31,18 +33,18 @@ public class Fitting {
     @Column(name = "img_path")
     private String imgPath;
 
-    @CreationTimestamp
+//    @CreationTimestamp
     @Column(name = "reg_fitting_dttm")
     private String regFittingDttm;
 
-    @ColumnDefault("N")
+//    @ColumnDefault("N")
     @Column(name = "favorite_yn")
     private Character favoriteYn;
 
     @Column(name = "fitting_name")
     private String fittingName;
 
-    @ColumnDefault("N")
+//    @ColumnDefault("N")
     @Column(name = "public_yn")
     private Character publicYn;
 

@@ -9,6 +9,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Getter
 @Setter
@@ -29,7 +31,7 @@ public class Closet {
     @JsonManagedReference
     private Member member;
 
-    @CreationTimestamp
+//    @CreationTimestamp
     @Column(name = "reg_closet_dttm")
     private String reg_closet_dttm;
 }
