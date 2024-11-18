@@ -1,6 +1,9 @@
+'use client';
+
 import './globals.css';
 import localFont from 'next/font/local';
 import ClientLayout from '../components/ClientLayout';
+import React, { useEffect } from 'react';
 
 const pretendard = localFont({
   src: './fonts/PretendardVariable.woff2',
@@ -18,6 +21,32 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  useEffect(() => {
+    // SSE 연결 시작
+    const eventSource = new EventSource('/sse/connect');
+
+    eventSource.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      console.log('SSE message received:', data);
+
+      // 데이터를 업데이트할 UI 요소
+      const resultDiv = document.getElementById('fitting-result');
+      if (resultDiv) {
+        resultDiv.innerHTML = `<img src="${data.imgUrl}" alt="Fitting Result" />`;
+        resultDiv.style.display = 'block'; // 표시
+      }
+    };
+
+    eventSource.onerror = (error) => {
+      console.error('SSE error:', error);
+      eventSource.close(); // 에러 발생 시 연결 종료
+    };
+
+    return () => {
+      eventSource.close(); // 컴포넌트 언마운트 시 연결 종료
+    };
+  }, []);
+
   return (
     <html lang='en'>
       <head>
@@ -34,7 +63,14 @@ export default function RootLayout({
       </head>
 
       <body className={pretendard.className}>
-        {' '}
+        {/* 알림 UI */}
+        <div
+          id='fitting-result'
+          className='hidden fixed top-4 right-4 bg-white p-4 shadow-lg rounded-lg'
+          style={{ display: 'none', zIndex: 1000 }}
+        >
+          {/* 알림 메시지는 여기 업데이트됨 */}
+        </div>
         <ClientLayout>{children}</ClientLayout>
       </body>
     </html>
