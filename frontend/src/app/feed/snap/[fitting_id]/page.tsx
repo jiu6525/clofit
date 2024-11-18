@@ -1,12 +1,44 @@
 'use client';
 
+import { useEffect, useState } from 'react';
+import { useParams, useRouter } from 'next/navigation';
+import axiosInstance from '@/api/axiosInstance';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
 
 export default function SnapDetailPage() {
+  const { fitting_id } = useParams(); // 경로 매개변수 fitting_id
   const router = useRouter();
-  const image = '/snap1.png'; // 단일 이미지 경로
-  const productImage = '/product.jpg'; // 제품 이미지 경로
+  const [snap, setSnap] = useState(null);
+  const [error, setError] = useState<string | null>(null);
+
+  // 스냅 데이터 가져오기
+  useEffect(() => {
+    if (fitting_id) {
+      axiosInstance
+        .get(`/fitting/${fitting_id}`) // API 호출
+        .then((response) => setSnap(response.data))
+        .catch((err) => {
+          console.error('Error fetching snap:', err);
+          setError('스냅 정보를 불러오는 중 문제가 발생했습니다.');
+        });
+    }
+  }, [fitting_id]);
+
+  if (error) {
+    return (
+      <div className='flex items-center justify-center h-full'>
+        <p className='text-red-500'>{error}</p>
+      </div>
+    );
+  }
+
+  if (!snap) {
+    return (
+      <div className='flex items-center justify-center h-full'>
+        <div className='animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-blue-500'></div>
+      </div>
+    );
+  }
 
   return (
     <div className='h-full flex flex-col bg-gray-100 overflow-hidden w-full'>
@@ -20,7 +52,6 @@ export default function SnapDetailPage() {
             fill='none'
             xmlns='http://www.w3.org/2000/svg'
             className='stroke-black'
-            stroke='black'
           >
             <path
               d='M11.5 15.5L6.212 10.212a.3.3 0 0 1 0-.424L11.5 4.5'
@@ -31,39 +62,26 @@ export default function SnapDetailPage() {
         </button>
       </div>
 
-      {/* 상단 프로필 및 팔로우 버튼 */}
+      {/* 상단 프로필 */}
       <header className='flex items-center justify-between px-4 py-3 bg-white shadow-md h-14 w-full'>
         <div className='flex items-center space-x-2'>
-          {/* 프로필 이미지 */}
           <div className='w-8 h-8 bg-gray-200 rounded-full'></div>
-          {/* 유저 이름 */}
           <div>
-            <span className='text-[#000000] font-medium'>써비노</span>
+            <span className='text-[#000000] font-medium'>
+              {snap.member.memberName}
+            </span>
           </div>
         </div>
       </header>
 
       {/* 메인 이미지 */}
       <div className='w-full aspect-[5/6] bg-gray-200 relative overflow-hidden'>
-        <Image src={image} alt='Snap Image' fill className='object-cover' />
-      </div>
-
-      {/* 제품 정보 카드 */}
-      <div className='h-24 flex items-center space-x-4 w-full px-4 mt-4 bg-white'>
         <Image
-          src={productImage}
-          alt='Product Image'
-          width={60}
-          height={60}
-          className='object-cover rounded-lg'
+          src={snap.imgPath}
+          alt={snap.fittingName}
+          fill
+          className='object-cover'
         />
-        <div className='flex-1'>
-          <p className='text-sm font-semibold'>패디드 워크 자켓 FADED BLACK</p>
-          <p className='text-xs text-gray-500'>
-            <span className='text-red-500 font-semibold'>10%</span> 219,000원
-          </p>
-        </div>
-        <button className='text-gray-400 text-xl'>♡</button>
       </div>
     </div>
   );
