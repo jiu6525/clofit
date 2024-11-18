@@ -99,7 +99,6 @@ public class FittingController {
     @PostMapping
     @Operation(summary = "가상 피팅")
     public void fitting(@AuthenticationPrincipal CustomOAuth2User customOAuth2User, @RequestBody FittingRequest fittingRequest) {
-//        Long memberId = 1L;
         Long memberId = customOAuth2User.getmemberId();
         fittingRequest.setMemberId(memberId);
         // 가상 스레드를 사용해 비동기적으로 처리
@@ -153,7 +152,6 @@ public class FittingController {
     @GetMapping("/recent")
     @Operation(summary = "최신 피팅 불러오기")
     public ResponseEntity<List<FittingRecentResponse>> getFittingResultList(@AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
-//        Long memberId = 1L;
         Long memberId = customOAuth2User.getmemberId();
         List<String> objList = redisService.getFittingList(memberId);
         List<FittingRecentResponse> fittingResultList = new ArrayList<>();
@@ -212,8 +210,7 @@ public class FittingController {
     @PutMapping
     @Operation(summary = "최신 피팅 결과 저장")
     public ResponseEntity<String> saveFittingResult(@AuthenticationPrincipal CustomOAuth2User customOAuth2User, @RequestBody FittingSaveRequest fittingSaveRequest) {
-//        Long memberId = customOAuth2User.getmemberId();
-        Long memberId = 1L;
+        Long memberId = customOAuth2User.getmemberId();
         FittingRecentDetailResponse fittingResult;
         try {
             fittingResult = redisService.getFittingDetailResult(fittingSaveRequest.getRedisId());
