@@ -23,6 +23,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -105,6 +106,7 @@ public class FittingController {
     @PostMapping
     @Operation(summary = "가상 피팅")
     public void fitting(@AuthenticationPrincipal CustomOAuth2User customOAuth2User, @RequestBody FittingRequest fittingRequest) {
+//        Long memberId = 3L;
         Long memberId = customOAuth2User.getmemberId();
         fittingRequest.setMemberId(memberId);
         // 가상 스레드를 사용해 비동기적으로 처리
@@ -120,15 +122,23 @@ public class FittingController {
      */
     @PostMapping("/recent")
     @Operation(summary = "최신 피팅 불러오기")
-    public ResponseEntity<List<String>> recent(@AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
+    public ResponseEntity<List<FittingRecentResponse>> recent(@AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
         try {
             // uuid 값이 들어있는 리스트 반환
+//            Long memberId = 3L;
+            Long memberId = customOAuth2User.getmemberId();
+            List<FittingRecentResponse> fittingRecentResponseList = new ArrayList<>();
+            List<String> redisIdList = fittingService.recentFitting(memberId );
+            for (String redisId : redisIdList) {
+                FittingRecentResponse fittingResult = redisService.getFittingResult(redisId);
+                fittingRecentResponseList.add(fittingResult);
+            }
 
-            List<String> imageList = fittingService.recentFitting(customOAuth2User.getmemberId());
-
-            return ResponseEntity.ok(imageList);
+            return ResponseEntity.ok(fittingRecentResponseList);
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -141,6 +151,7 @@ public class FittingController {
     @PostMapping("/search")
     @Operation(summary = "사용자가 저장한 피팅 사진 조회")
     public ResponseEntity<List<FittingSearchResponse>> getFittingImages(@AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
+//        Long memberId = 3L;
         Long memberId = customOAuth2User.getmemberId();
         List<FittingSearchResponse> fittingImages = fittingService.getFittingImages(memberId);
         return ResponseEntity.ok(fittingImages);
@@ -153,19 +164,23 @@ public class FittingController {
     @GetMapping("/recent")
     @Operation(summary = "최신 피팅 불러오기")
     public ResponseEntity<List<FittingRecentResponse>> getFittingResultList(@AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
-        Long memberId = customOAuth2User.getmemberId();
-        List<String> objList = redisService.getFittingList(memberId);
-        List<FittingRecentResponse> fittingResultList = new ArrayList<>();
-
-        for(String obj : objList) {
-            try {
-                fittingResultList.add(redisService.getFittingResult(obj));
-            } catch (JsonProcessingException e) {
-                throw new RuntimeException(e);
+        try {
+            // uuid 값이 들어있는 리스트 반환
+//            Long memberId = 3L;
+            Long memberId = customOAuth2User.getmemberId();
+            List<FittingRecentResponse> fittingRecentResponseList = new ArrayList<>();
+            List<String> redisIdList = fittingService.recentFitting(memberId );
+            for (String redisId : redisIdList) {
+                FittingRecentResponse fittingResult = redisService.getFittingResult(redisId);
+                fittingRecentResponseList.add(fittingResult);
             }
-        }
 
-        return ResponseEntity.ok(fittingResultList);
+            return ResponseEntity.ok(fittingRecentResponseList);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -211,6 +226,7 @@ public class FittingController {
     @PutMapping
     @Operation(summary = "최신 피팅 결과 저장")
     public ResponseEntity<String> saveFittingResult(@AuthenticationPrincipal CustomOAuth2User customOAuth2User, @RequestBody FittingSaveRequest fittingSaveRequest) {
+//        Long memberId = 3L;
         Long memberId = customOAuth2User.getmemberId();
         FittingRecentDetailResponse fittingResult;
         try {
@@ -222,15 +238,10 @@ public class FittingController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Fitting not found");
         }
 
-        awsS3Service.moveFile(fittingResult.getImgUrl());
-
-        try {
-            redisService.removeFittingResult(memberId, fittingSaveRequest.getRedisId());
-            fittingService.saveFitting(fittingSaveRequest.getPublicYn(), fittingResult);
-
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
+//        URL url = awsS3Service.moveFile(fittingResult.getImgUrl());
+//        fittingResult.setImgUrl(String.valueOf(url));
+//            redisService.removeFittingResult(memberId, fittingSaveRequest.getRedisId());
+        fittingService.saveFitting(fittingSaveRequest.getPublicYn(), fittingResult);
 
         return ResponseEntity.ok("Saved");
     }

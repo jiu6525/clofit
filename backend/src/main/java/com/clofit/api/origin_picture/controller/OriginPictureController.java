@@ -58,6 +58,7 @@ public class OriginPictureController {
 
     @GetMapping("/base-image")
     public ResponseEntity<List<OriginPictureResponse>> getBaseOriginPictures(@AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
+//        Long memberId = 3L;
         Long memberId = customOAuth2User.getmemberId();
         List<OriginPicture> availablePictures = originPictureService.getBaseOriginPictures(memberId);
 

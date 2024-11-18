@@ -3,6 +3,7 @@ package com.clofit.api.fitting.service;
 import com.clofit.api.fitting.request.*;
 import com.clofit.api.fitting.response.FittingSearchResponse;
 
+import java.net.URL;
 import java.util.List;
 
 public interface AwsS3Service {
@@ -12,6 +13,6 @@ public interface AwsS3Service {
     void deleteFile(String fileName);
     String getClothFile(ClothRequest clothRequest);
     String getModelFile(ModelRequest modelRequest);
-    void moveFile(String url);
+    URL moveFile(String url);
     String recentFile(Long memberId, byte[] img);
 }

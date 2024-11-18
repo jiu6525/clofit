@@ -50,7 +50,7 @@ public class ClosetController {
 
     @GetMapping("/search/{category}")
     @Operation(summary = "의류 검색")
-    public ResponseEntity<List<Closet>> searchCloset(@PathVariable String category) {
+    public ResponseEntity<List<Closet>> searchCloset(@PathVariable("category") String category) {
         List<Closet> list = closetService.searchCloset(category);
         return ResponseEntity.ok(list);
     }

@@ -204,11 +204,11 @@ public class FittingServiceImpl implements FittingService {
                 fitting.setTop(topClothe);
                 fitting.setBottom(bottomClothe);
             } else if (category == 0) { // 상의 피팅이니까 bottom 에 대한 nullItem 값을 가져와서 id로 넣어주자
-                fitting.setTop(clothesRepository.findTopClothe(clothName.getFirst()));
+                fitting.setTop(clothesRepository.findTopClothe(clothName.getFirst().replace(".png","")));
                 fitting.setBottom(clothesRepository.findBottomNullColor());
             }else{
                 fitting.setTop(clothesRepository.findTopNullColor());
-                fitting.setBottom(clothesRepository.findBottomClothe(clothName.getLast()));
+                fitting.setBottom(clothesRepository.findBottomClothe(clothName.getLast().replace(".png","")));
             }
 
             fitting.setPublicYn(publicYn);
@@ -300,6 +300,7 @@ public class FittingServiceImpl implements FittingService {
                     FittingRecentDetailResponse fittingRecentDetailResponse = new FittingRecentDetailResponse(fittingRequest, imgUrl);
                     // 멤버 id 와 처리된 이미지 파일을 s3에 저장하고 redis에 url 주소를 저장하자
                     template.opsForList().rightPush(String.valueOf(memberId), uuid);
+                    template.expire(String.valueOf(memberId), Duration.ofSeconds(600));
                     template.opsForSet().add(uuid, new ObjectMapper().writeValueAsString(fittingRecentDetailResponse));
 
                     logger.info("Data saved to Redis: memberId = {}", memberId);

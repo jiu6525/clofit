@@ -15,6 +15,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -197,18 +198,23 @@ public class AwsS3ServiceImpl implements AwsS3Service {
      * @param url
      */
     @Override
-    public void moveFile(String url) {
+    public URL moveFile(String url) {
         String com = ".com/";
         int index = url.indexOf(com);
         String result = null;
         if (index != -1) {
             result = url.substring(index + com.length());
-            CopyObjectRequest copyObjectRequest = new CopyObjectRequest(bucket, result, bucket, result.replace("/tmp", "")).withCannedAccessControlList(CannedAccessControlList.PublicRead);
+            String replace = result.replace("/tmp", "");
+//            CopyObjectRequest copyObjectRequest = new CopyObjectRequest(bucket, result, bucket, replace).withCannedAccessControlList(CannedAccessControlList.PublicRead);
 //            amazonS3.copyObject(bucket, result, bucket, result.replace("/tmp", ""));
-            amazonS3.copyObject(copyObjectRequest);
-            amazonS3.deleteObject(bucket, result);
+
+//            amazonS3.copyObject(copyObjectRequest);
+//            amazonS3.deleteObject(bucket, result);
+
+            return amazonS3.getUrl(bucket, replace);
         } else {
             logger.warn("Keyword not found in the URL.");
+            return null;
         }
 
     }

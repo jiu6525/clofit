@@ -49,7 +49,7 @@ public class JWTFilter extends OncePerRequestFilter {
         }
 
 //         로컬에서 테스트할 때 아래 키 값 넣을 것
-//        authorization = "";
+//        authorization = "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6Iuqwle2YhO2bhCIsIm5hbWUiOiLqsJXtmITtm4QiLCJyb2xlIjoiUk9MRV9VU0VSIiwibWVtYmVySWQiOjEsImlhdCI6MTczMTk0NzExOSwiZXhwIjoxNzMyMTYzMTE5fQ.eD8uFR2XZjwcD6-iL7aBmZidjvZM0hdf3CQck0KK7NM";
 
         //Authorization 헤더 검증
         if (authorization == null) {

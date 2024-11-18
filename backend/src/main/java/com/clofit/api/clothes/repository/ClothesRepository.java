@@ -22,16 +22,16 @@ public interface ClothesRepository extends JpaRepository<Clothes, Long> {
     @Query("SELECT DISTINCT c FROM Clothes c JOIN FETCH c.color WHERE c.category = 'bottom' ")
     List<Clothes> findBottomClothes();
 
-    @Query("SELECT c FROM Clothes c JOIN FETCH c.color WHERE c.category = 'top' AND c.item = :top")
+    @Query("SELECT c FROM Clothes c JOIN FETCH c.color WHERE c.category = 'top' AND c.id = :top")
     Clothes findTopClothe(@Param("top") String top);
 
-    @Query("SELECT c FROM Clothes c JOIN FETCH c.color WHERE c.category = 'bottom' AND c.item = :bottom")
+    @Query("SELECT c FROM Clothes c JOIN FETCH c.color WHERE c.category = 'bottom' AND c.id = :bottom")
     Clothes findBottomClothe(@Param("bottom") String bottom);
 
-    @Query("SELECT c FROM Clothes c WHERE c.item = 'null_clothes' AND c.item = 'top'")
+    @Query("SELECT c FROM Clothes c WHERE c.item = 'null_clothes' AND c.category = 'top'")
     Clothes findTopNullColor();
 
-    @Query("SELECT c FROM Clothes c WHERE c.item = 'null_clothes' AND c.item = 'bottom'")
+    @Query("SELECT c FROM Clothes c WHERE c.item = 'null_clothes' AND c.category = 'bottom'")
     Clothes findBottomNullColor();
 
 //    @Query("SELECT DISTINCT c FROM Clothes c JOIN FETCH c.brand WHERE c.id = :clothesId")
