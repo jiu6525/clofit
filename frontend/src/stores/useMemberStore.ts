@@ -1,13 +1,21 @@
 import { create } from 'zustand';
 
-interface MemberState {
+interface MemberInfoResponse {
+  memberName: string;
   personalColor: string;
-  setPersonalColor: (color: string) => void;
+  profileFilePath: string;
 }
 
-const useMemberStore = create<MemberState>((set) => ({
-  personalColor: '',
-  setPersonalColor: (color) => set({ personalColor: color }),
+interface MemberStore {
+  memberInfo: MemberInfoResponse | null;
+  setMemberInfo: (info: MemberInfoResponse) => void;
+  clearMemberInfo: () => void;
+}
+
+const useMemberStore = create<MemberStore>((set) => ({
+  memberInfo: null,
+  setMemberInfo: (info) => set({ memberInfo: info }),
+  clearMemberInfo: () => set({ memberInfo: null }),
 }));
 
 export default useMemberStore;
