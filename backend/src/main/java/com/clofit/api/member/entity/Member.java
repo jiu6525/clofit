@@ -58,7 +58,7 @@ public class Member {
     private LocalDateTime regMemberDttm;
 
     @Column(name = "personal_color")
-    private String personalColor;
+    private String personalColor = "1";
 
     @Column(name = "profile_file_path")
     private String profileFilePath;
