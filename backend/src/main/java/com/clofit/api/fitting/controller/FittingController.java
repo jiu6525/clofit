@@ -1,15 +1,13 @@
 package com.clofit.api.fitting.controller;
 
 import com.clofit.api.fitting.entity.ByteMultiPart;
+import com.clofit.api.fitting.entity.Fitting;
 import com.clofit.api.fitting.entity.FittingResult;
 import com.clofit.api.fitting.request.FittingRequest;
 import com.clofit.api.fitting.request.FittingSearchRequest;
 import com.clofit.api.fitting.request.FittingStoreRequest;
 import com.clofit.api.fitting.request.*;
-import com.clofit.api.fitting.response.FittingIDResponse;
-import com.clofit.api.fitting.response.FittingRecentDetailResponse;
-import com.clofit.api.fitting.response.FittingRecentResponse;
-import com.clofit.api.fitting.response.FittingSearchResponse;
+import com.clofit.api.fitting.response.*;
 import com.clofit.api.fitting.service.AwsS3Service;
 import com.clofit.api.fitting.service.FittingService;
 import com.clofit.db.redis.service.RedisService;
@@ -290,6 +288,13 @@ public class FittingController {
         }
 
         return ResponseEntity.ok("Saved");
+    }
+
+    @GetMapping("/{fittingId}")
+    @Operation(summary = "피팅 상세 조회")
+    public ResponseEntity<FittingDetailResponse> getFittingDetail(@PathVariable("fittingId") Long fittingId) {
+        FittingDetailResponse fittingDetailResponse = fittingService.getDetailFitting(fittingId);
+        return ResponseEntity.ok(fittingDetailResponse);
     }
 
 }
