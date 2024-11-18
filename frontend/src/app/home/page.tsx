@@ -56,7 +56,7 @@ export default function MainPage() {
         const response =
           await axiosInstance.get<MemberInfoResponse>('/member/mypage');
         setMemberInfo(response.data);
-        console.log('memberInfo 저장 성공:', response.data); // 추가 로그
+        console.log('memberInfo 저장 성공:', response.data);
       } catch (error) {
         console.error('memberInfo 불러오기 실패:', error);
       }
@@ -152,7 +152,7 @@ export default function MainPage() {
                   width={600}
                   height={300}
                   className='object-cover w-full'
-                  priority={index === 0} // 첫 번째 슬라이드 이미지 priority
+                  priority={index === 0}
                 />
                 <div className='absolute bottom-8 inset-x-0 flex flex-col items-center text-center'>
                   <p
