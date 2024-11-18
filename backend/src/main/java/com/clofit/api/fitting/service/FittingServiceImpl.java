@@ -275,7 +275,7 @@ public class FittingServiceImpl implements FittingService {
                     logger.info("Data saved to Redis: memberId = {}", memberId);
 
                     // SSE 이벤트 전송
-                    sendSseEvent(memberId, fittingRecentDetailResponse);
+//                    sendSseEvent(memberId, fittingRecentDetailResponse);
                 } catch (Exception e) {
                     logger.error("Error saving data to Redis: {}", e.getMessage());
                 }
@@ -310,6 +310,7 @@ public class FittingServiceImpl implements FittingService {
         int category = fittingRequest.getCategory();
 
         String modelFile = awsS3Service.getModelFile(new ModelRequest(memberId, modelName));
+
 
         if(category == 2){
             List<String> clothList = fittingRequest.getClothName();
