@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
 
 import java.util.List;
 
@@ -70,6 +71,7 @@ public class Clothes {
     @Column(name = "my_clothes_yn")
     private char myClothesYn;
 
+    @ColumnDefault("N")
     @Column(name = "del_clothes_yn")
     private Character delClothesYn;
 }
