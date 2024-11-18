@@ -10,6 +10,7 @@ import com.clofit.api.fitting.request.ClothRequest;
 import com.clofit.api.fitting.request.FittingRequest;
 import com.clofit.api.fitting.request.ModelRequest;
 import com.clofit.api.fitting.response.FittingRecentDetailResponse;
+import com.clofit.api.fitting.response.FittingSearchResponse;
 import com.clofit.api.member.entity.Member;
 import com.clofit.api.member.repository.MemberRepository;
 import com.clofit.config.SseEmitterManager;
@@ -35,6 +36,7 @@ import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -214,6 +216,24 @@ public class FittingServiceImpl implements FittingService {
             fittingRepository.save(fitting);
         }
 
+    }
+
+    @Override
+    public List<FittingSearchResponse> getFittingImages(Long memberId) {
+        List<Fitting> fit = fittingRepository.findByMemberId(memberId);
+        return fit.stream()
+                .map(fitting -> new FittingSearchResponse(
+                        fitting.getId(),
+                        fitting.getMember().getId(),
+                        fitting.getImgPath(),
+                        fitting.getRegFittingDttm(),
+                        fitting.getFavoriteYn(),
+                        fitting.getFittingName(),
+                        fitting.getPublicYn(),
+                        fitting.getTop().getId(),
+                        fitting.getBottom().getId()
+                ))
+                .collect(Collectors.toList());
     }
 
 
@@ -460,20 +480,28 @@ public class FittingServiceImpl implements FittingService {
 
     @Override
     public FittingDetailResponse getDetailFitting(Long fittingId) {
-        Fitting fitting = fittingRepository.findById(fittingId).orElse(null);
+        Optional<Fitting> getFitting = fittingRepository.findById(fittingId);
 
-        FittingDetailResponse fittingDetailResponse = new FittingDetailResponse(
-                fitting.getId(),
-                fitting.getImgPath(),
-                fitting.getRegFittingDttm(),
-                fitting.getFavoriteYn(),
-                fitting.getFittingName(),
-                fitting.getPublicYn(),
-                fitting.getTop(),
-                fitting.getBottom()
-        );
+        if(getFitting.isPresent()){
+            Fitting fitting = getFitting.get();
+            Member member = fitting.getMember();
+            System.out.println(member.toString());
 
-        return fittingDetailResponse;
+            return new FittingDetailResponse(
+                    fitting.getId(),
+                    fitting.getImgPath(),
+                    fitting.getRegFittingDttm(),
+                    fitting.getFavoriteYn(),
+                    fitting.getFittingName(),
+                    fitting.getPublicYn(),
+                    fitting.getTop(),
+                    fitting.getBottom()
+            );
+
+        }else{
+            throw new NoSuchElementException("해당 피팅 정보를 찾을 수 없습니다. ID: " + fittingId);
+        }
+
     }
 
 
