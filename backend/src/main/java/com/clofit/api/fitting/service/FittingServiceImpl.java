@@ -1,9 +1,16 @@
 package com.clofit.api.fitting.service;
 
+import com.clofit.api.clothes.entity.Clothes;
+import com.clofit.api.clothes.repository.ClothesRepository;
 import com.clofit.api.fitting.entity.Fitting;
 import com.clofit.api.fitting.repository.FittingRepository;
-import com.clofit.api.fitting.request.*;
+import com.clofit.api.fitting.request.ClothRequest;
+import com.clofit.api.fitting.request.FittingRequest;
+import com.clofit.api.fitting.request.ModelRequest;
 import com.clofit.api.fitting.response.FittingRecentDetailResponse;
+import com.clofit.api.member.entity.Member;
+import com.clofit.api.member.repository.MemberRepository;
+import com.clofit.config.SseEmitterManager;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +29,8 @@ import reactor.core.publisher.Mono;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.zip.ZipEntry;
@@ -32,6 +41,9 @@ import java.util.zip.ZipInputStream;
 public class FittingServiceImpl implements FittingService {
 
     private final FittingRepository fittingRepository;
+    private final MemberRepository memberRepository;
+    private final ClothesRepository clothesRepository;
+    private final SseEmitterManager sseEmitterManager;
     @Value("${ootd.gpu-server}")
     private String gpuServer;
 
@@ -116,8 +128,8 @@ public class FittingServiceImpl implements FittingService {
 //    }
 
     @Override
-    public CompletableFuture<byte[]> fittingMQ(FittingRequest fittingRequest){
-        return CompletableFuture.supplyAsync(() -> {
+    public void fittingMQ(FittingRequest fittingRequest){
+        CompletableFuture.supplyAsync(() -> {
             System.out.println("가상 스레드 시작: " + Thread.currentThread().getName());
             try {
                 byte[] bytes = new byte[0];
@@ -165,6 +177,43 @@ public class FittingServiceImpl implements FittingService {
         return imageList;
     }
 
+    /**
+     * 피팅 이미지 저장
+     */
+    @Override
+    public void saveFitting(Character publicYn, FittingRecentDetailResponse fittingRecentDetailResponse) {
+        Optional<Member> byId = memberRepository.findById(fittingRecentDetailResponse.getMemberId());
+        Fitting fitting = new Fitting();
+
+        // 널 아이템에 대한 저장 진행하기
+        if(byId.isPresent()){
+            Member member = byId.get();
+            String imgUrl = fittingRecentDetailResponse.getImgUrl();
+            fitting.setMember(member);
+            fitting.setImgPath(imgUrl);
+            List<String> clothName = fittingRecentDetailResponse.getClothName();
+
+            int category = fittingRecentDetailResponse.getCategory();
+            if(category == 2){
+                Clothes topClothe = clothesRepository.findTopClothe(clothName.getFirst());
+                Clothes bottomClothe = clothesRepository.findBottomClothe(clothName.getLast());
+                fitting.setTop(topClothe);
+                fitting.setBottom(bottomClothe);
+            } else if (category == 0) { // 상의 피팅이니까 bottom 에 대한 nullItem 값을 가져와서 id로 넣어주자
+                fitting.setTop(clothesRepository.findTopClothe(clothName.getFirst()));
+                fitting.setBottom(clothesRepository.findBottomNullColor());
+            }else{
+                fitting.setTop(clothesRepository.findTopNullColor());
+                fitting.setBottom(clothesRepository.findBottomClothe(clothName.getLast()));
+            }
+
+            fitting.setPublicYn(publicYn);
+
+            fittingRepository.save(fitting);
+        }
+
+    }
+
 
     private byte[] startFitting(fitting result) throws IOException {
         try {
@@ -175,8 +224,9 @@ public class FittingServiceImpl implements FittingService {
 //            headers.setContentType(MediaType.APPLICATION_JSON);
 //            HttpEntity<String> entity = new HttpEntity<>(payload, headers);
 //
+//            logger.warn("!!!!!GPU SEND !!!!!");
 //            ResponseEntity<byte[]> responseEntity = restTemplate.postForEntity(url, entity, byte[].class);
-//
+//            logger.warn("!!!!!GPU SEND END !!!!!");
 //            byte[] imgFile = responseEntity.getBody();
 
             // WebClient 요청 보내기
@@ -189,7 +239,10 @@ public class FittingServiceImpl implements FittingService {
                     .toEntity(byte[].class); // 응답을 byte[]로 처리
 
             // 응답을 기다림
-            ResponseEntity<byte[]> responseEntity = responseMono.block(); // block()으로 응답 기다림
+//            logger.warn("!!!!!!!!!!!!!!! GPU SEND  !!!!!!!!!!!!!!!");
+            ResponseEntity<byte[]> responseEntity = responseMono.block(Duration.of(4, ChronoUnit.MINUTES)); // block()으로 응답 기다림
+//            logger.warn(responseEntity == null ? "ENTITY IS NULL" : "ENTITY IS NOT NULL");
+//            logger.warn(responseEntity.getStatusCode().toString());
             byte[] imgFile = responseEntity != null ? responseEntity.getBody() : null;
 
             logger.info("연산 완료");
@@ -216,7 +269,6 @@ public class FittingServiceImpl implements FittingService {
                 try {
                     String uuid = UUID.randomUUID().toString();
                     Long memberId = result.fittingRequest.getMemberId();
-                    
 
 //                    template.opsForValue().set(uuid, new ObjectMapper().writeValueAsString(new FittingRecentDetailResponse()));
 
@@ -228,6 +280,9 @@ public class FittingServiceImpl implements FittingService {
                     template.opsForSet().add(uuid, new ObjectMapper().writeValueAsString(fittingRecentDetailResponse));
 
                     logger.info("Data saved to Redis: memberId = {}", memberId);
+
+                    // SSE 이벤트 전송
+//                    sendSseEvent(memberId, fittingRecentDetailResponse);
                 } catch (Exception e) {
                     logger.error("Error saving data to Redis: {}", e.getMessage());
                 }
@@ -242,6 +297,15 @@ public class FittingServiceImpl implements FittingService {
         }
     }
 
+    private void sendSseEvent(Long memberId, FittingRecentDetailResponse fittingRecentDetailResponse) {
+        try {
+            sseEmitterManager.sendEvent(memberId, fittingRecentDetailResponse);
+            logger.info("SSE event sent to client: memberId = {}", memberId);
+        } catch (Exception e) {
+            logger.error("Error sending SSE event: {}", e.getMessage());
+        }
+    }
+
     private fitting getFitting(FittingRequest fittingRequest) throws Exception {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -253,6 +317,7 @@ public class FittingServiceImpl implements FittingService {
         int category = fittingRequest.getCategory();
 
         String modelFile = awsS3Service.getModelFile(new ModelRequest(memberId, modelName));
+
 
         if(category == 2){
             List<String> clothList = fittingRequest.getClothName();

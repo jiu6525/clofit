@@ -1,12 +1,6 @@
 package com.clofit.api.fitting.controller;
 
-import com.clofit.api.fitting.entity.ByteMultiPart;
-import com.clofit.api.fitting.entity.FittingResult;
-import com.clofit.api.fitting.request.FittingRequest;
-import com.clofit.api.fitting.request.FittingSearchRequest;
-import com.clofit.api.fitting.request.FittingStoreRequest;
 import com.clofit.api.fitting.request.*;
-import com.clofit.api.fitting.response.FittingIDResponse;
 import com.clofit.api.fitting.response.FittingRecentDetailResponse;
 import com.clofit.api.fitting.response.FittingRecentResponse;
 import com.clofit.api.fitting.response.FittingSearchResponse;
@@ -17,12 +11,14 @@ import com.clofit.oauth2.dto.CustomOAuth2User;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -100,70 +96,15 @@ public class FittingController {
         return ResponseEntity.ok(awsS3Service.getModelFile(modelRequest));
     }
 
-//    /**
-//     * Virtual Thread를 사용한 피팅
-//     * @param fittingRequest 프론트에게 모델 이미지의 이름과 의류 사진을 요청받아서
-//     *                       s3에 저장된 이미지 파일의 경로를 얻어와서 gpu 서버에 전송한 뒤
-//     *                       결과물인 zip 파일을 얻어와서 redis 에 등록 후 프론트에 응답해줌
-//     * @return 결과를 저장할 FittingResult의 ID
-//     */
-//    @PostMapping("/thread")
-//    public ResponseEntity<FittingIDResponse> fitting2(@RequestBody FittingRequest fittingRequest) {
-//        try {
-//            // 서비스에서 비즈니스 로직 처리 후 이미지 파일 반환
-////            byte[] imageBytes = fittingService.fitting(fittingRequest);
-//            FittingResult fittingResult = new FittingResult();
-//            fittingResult.setMemberId(UUID.randomUUID().toString());
-//            fittingResult.setDone(false);
-//
-//            redisService.storeFitting(fittingResult, fittingRequest.getMemberId().toString());
-//
-//            Thread.ofVirtual().start(() -> {
-//                try {
-//                    byte[] imageBytes = fittingService.fitting(fittingRequest);
-//
-//                    String url = awsS3Service.uploadFile(new FittingStoreRequest(
-//                            fittingRequest.getMemberId(),
-//                            new ByteMultiPart(imageBytes, "test")),
-//                            fittingResult.getMemberId()
-//                    );
-//
-//                    redisService.updateFitting(fittingRequest.getMemberId(), fittingResult.getMemberId(), url);
-//
-//                } catch (Exception e) {
-//                    throw new RuntimeException(e);
-//                }
-//            });
-//
-//            return new ResponseEntity<>(new FittingIDResponse(fittingResult.getMemberId()), HttpStatus.OK);
-//        } catch (Exception e) {
-//            e.printStackTrace();  // 예외 디버깅용 출력
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-//        }
-//    }
-
     @PostMapping
     @Operation(summary = "가상 피팅")
-    public void fitting(@AuthenticationPrincipal CustomOAuth2User customOAuth2User,@RequestBody FittingRequest fittingRequest) {
-        fittingRequest.setMemberId(customOAuth2User.getmemberId());
+    public void fitting(@AuthenticationPrincipal CustomOAuth2User customOAuth2User, @RequestBody FittingRequest fittingRequest) {
+        Long memberId = customOAuth2User.getmemberId();
+        fittingRequest.setMemberId(memberId);
         // 가상 스레드를 사용해 비동기적으로 처리
         Thread.ofVirtual().start(() -> {
             // 비동기적으로 메시지를 큐에 푸시
-            CompletableFuture<byte[]> resultFuture = fittingService.fittingMQ(fittingRequest);
-
-            // CompletableFuture가 완료될 때마다 결과를 처리
-            resultFuture.whenComplete((result, throwable) -> {
-                if (throwable != null) {
-                    // 에러 발생 시 처리
-                    System.err.println("Error processing GPU task: " + throwable.getMessage());
-                } else {
-                    // 작업이 성공적으로 완료된 경우
-                    System.out.println("Task completed successfully: " + new String(result));
-                    // GPU 작업이 완료된 후 처리된 결과를 서버로 전송하거나 후속 작업을 진행
-                }
-            });
-
-            // 비동기적으로 처리된 작업의 결과를 기다리지 않고 바로 리턴되도록 할 수 있음
+            fittingService.fittingMQ(fittingRequest);
         });
     }
 
@@ -200,7 +141,8 @@ public class FittingController {
     @Operation(summary = "사용자가 저장한 피팅 사진 조회")
     public ResponseEntity<List<FittingSearchResponse>> getFittingImages(@AuthenticationPrincipal CustomOAuth2User customOAuth2User, @RequestBody FittingSearchRequest fittingSearchRequest) {
         fittingSearchRequest.setMemberId(customOAuth2User.getmemberId());
-        return ResponseEntity.ok(awsS3Service.getFittingImages(fittingSearchRequest));
+        List<FittingSearchResponse> fittingImages = awsS3Service.getFittingImages(fittingSearchRequest);
+        return ResponseEntity.ok(fittingImages);
     }
 
     /**
@@ -210,7 +152,8 @@ public class FittingController {
     @GetMapping("/recent")
     @Operation(summary = "최신 피팅 불러오기")
     public ResponseEntity<List<FittingRecentResponse>> getFittingResultList(@AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
-        List<String> objList = redisService.getFittingList(customOAuth2User.getmemberId());
+        Long memberId = customOAuth2User.getmemberId();
+        List<String> objList = redisService.getFittingList(memberId);
         List<FittingRecentResponse> fittingResultList = new ArrayList<>();
 
         for(String obj : objList) {
@@ -264,13 +207,13 @@ public class FittingController {
         return ResponseEntity.ok("Deleted");
     }
 
-    @PutMapping("/{redisId}")
+    @PutMapping
     @Operation(summary = "최신 피팅 결과 저장")
-    public ResponseEntity<String> saveFittingResult(@AuthenticationPrincipal CustomOAuth2User customOAuth2User, @PathVariable("redisId") String redisId) {
+    public ResponseEntity<String> saveFittingResult(@AuthenticationPrincipal CustomOAuth2User customOAuth2User, @RequestBody FittingSaveRequest fittingSaveRequest) {
         Long memberId = customOAuth2User.getmemberId();
         FittingRecentDetailResponse fittingResult;
         try {
-            fittingResult = redisService.getFittingDetailResult(redisId);
+            fittingResult = redisService.getFittingDetailResult(fittingSaveRequest.getRedisId());
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
@@ -281,9 +224,8 @@ public class FittingController {
         awsS3Service.moveFile(fittingResult.getImgUrl());
 
         try {
-            redisService.removeFittingResult(memberId, redisId);
-            FittingRecentDetailResponse fittingDetailResult = redisService.getFittingDetailResult(redisId);
-
+            redisService.removeFittingResult(memberId, fittingSaveRequest.getRedisId());
+            fittingService.saveFitting(fittingSaveRequest.getPublicYn(), fittingResult);
 
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);

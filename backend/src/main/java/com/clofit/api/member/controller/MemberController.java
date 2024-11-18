@@ -59,11 +59,24 @@ public class MemberController {
 
 
     @PutMapping("resign")
-    public ResponseEntity<String> resign(@AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
+    public ResponseEntity<String> resign(@AuthenticationPrincipal CustomOAuth2User customOAuth2User, HttpServletRequest request, HttpServletResponse response) {
 //        System.out.println("회원탈퇴 관련 처리");
         logger.info("resign");
         Long memberId = customOAuth2User.getmemberId();
         boolean isDeleted = memberService.deleteMember(memberId);
+
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+//                System.out.println(cookie);
+                if ("Authorization".equals(cookie.getName())) {
+                    cookie.setValue(null);
+                    cookie.setMaxAge(0);
+                    cookie.setPath("/");
+                    response.addCookie(cookie);
+                }
+            }
+        }
 
         if (isDeleted) {
             return ResponseEntity.ok("회원 탈퇴 처리 완료");
