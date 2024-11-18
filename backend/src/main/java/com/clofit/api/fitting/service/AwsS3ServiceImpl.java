@@ -222,8 +222,19 @@ public class AwsS3ServiceImpl implements AwsS3Service {
         String result = null;
         if (index != -1) {
             result = url.substring(index + com.length());
-            amazonS3.copyObject(bucket, result, bucket, result.replace("/tmp", ""));
-            amazonS3.deleteObject(bucket, result);
+            System.out.println(result);
+            System.out.println(result.replace("/tmp", ""));
+            S3Object s3Object = amazonS3.getObject(bucket, result);
+
+            // 객체의 InputStream을 가져옴
+            InputStream inputStream = s3Object.getObjectContent();
+
+            // 새로운 경로로 파일을 업로드
+            amazonS3.putObject(new PutObjectRequest(bucket, result.replace("/tmp", ""), inputStream, new ObjectMetadata()));
+
+
+//            amazonS3.copyObject(bucket, result, bucket, result.replace("/tmp", ""));
+//            amazonS3.deleteObject(bucket, result);
         } else {
             logger.warn("Keyword not found in the URL.");
         }

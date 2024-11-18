@@ -98,26 +98,14 @@ public class FittingController {
 
     @PostMapping
     @Operation(summary = "가상 피팅")
-    public void fitting(@AuthenticationPrincipal CustomOAuth2User customOAuth2User,@RequestBody FittingRequest fittingRequest) {
-        fittingRequest.setMemberId(customOAuth2User.getmemberId());
+    public void fitting(@AuthenticationPrincipal CustomOAuth2User customOAuth2User, @RequestBody FittingRequest fittingRequest) {
+        Long memberId = 1L;
+//        Long memberId = customOAuth2User.getmemberId();
+        fittingRequest.setMemberId(memberId);
         // 가상 스레드를 사용해 비동기적으로 처리
         Thread.ofVirtual().start(() -> {
             // 비동기적으로 메시지를 큐에 푸시
-            CompletableFuture<byte[]> resultFuture = fittingService.fittingMQ(fittingRequest);
-
-            // CompletableFuture가 완료될 때마다 결과를 처리
-            resultFuture.whenComplete((result, throwable) -> {
-                if (throwable != null) {
-                    // 에러 발생 시 처리
-                    System.err.println("Error processing GPU task: " + throwable.getMessage());
-                } else {
-                    // 작업이 성공적으로 완료된 경우
-                    System.out.println("Task completed successfully: " + new String(result));
-                    // GPU 작업이 완료된 후 처리된 결과를 서버로 전송하거나 후속 작업을 진행
-                }
-            });
-
-            // 비동기적으로 처리된 작업의 결과를 기다리지 않고 바로 리턴되도록 할 수 있음
+            fittingService.fittingMQ(fittingRequest);
         });
     }
 
@@ -164,7 +152,9 @@ public class FittingController {
     @GetMapping("/recent")
     @Operation(summary = "최신 피팅 불러오기")
     public ResponseEntity<List<FittingRecentResponse>> getFittingResultList(@AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
-        List<String> objList = redisService.getFittingList(customOAuth2User.getmemberId());
+        Long memberId = 1L;
+//        Long memberId = customOAuth2User.getmemberId();
+        List<String> objList = redisService.getFittingList(memberId);
         List<FittingRecentResponse> fittingResultList = new ArrayList<>();
 
         for(String obj : objList) {
@@ -221,7 +211,8 @@ public class FittingController {
     @PutMapping
     @Operation(summary = "최신 피팅 결과 저장")
     public ResponseEntity<String> saveFittingResult(@AuthenticationPrincipal CustomOAuth2User customOAuth2User, @RequestBody FittingSaveRequest fittingSaveRequest) {
-        Long memberId = customOAuth2User.getmemberId();
+//        Long memberId = customOAuth2User.getmemberId();
+        Long memberId = 1L;
         FittingRecentDetailResponse fittingResult;
         try {
             fittingResult = redisService.getFittingDetailResult(fittingSaveRequest.getRedisId());
@@ -236,7 +227,7 @@ public class FittingController {
 
         try {
             redisService.removeFittingResult(memberId, fittingSaveRequest.getRedisId());
-            fittingService.saveFitting(fittingSaveRequest.getFittingName(), redisService.getFittingDetailResult(fittingSaveRequest.getRedisId()));
+            fittingService.saveFitting(fittingSaveRequest.getFittingName(), fittingResult);
 
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
