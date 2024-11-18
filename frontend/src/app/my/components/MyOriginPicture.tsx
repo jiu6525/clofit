@@ -69,8 +69,10 @@ export default function MyOriginPicture({
         <label htmlFor='file-upload' className='cursor-pointer'>
           <AiOutlinePlus className='text-4xl text-gray-500' />
         </label>
-        <p className='absolute bottom-2 text-sm text-gray-400'>
-          3:4 비율의 사진을 권장해요
+        <p className='absolute bottom-2 text-sm text-gray-400 text-center'>
+          3:4 비율의 사진을
+          <br />
+          권장해요
         </p>
       </div>
 

@@ -7,11 +7,18 @@ import RecentFittingModal from './components/RecentFittingModal';
 import { IoAddCircleOutline } from 'react-icons/io5';
 
 type RecentFittingResponse = { uuid: string; imgUrl: string }; // 최신 추가된 피팅 데이터 타입
-type SavedFittingResponse = { imgUrl: string }; // 저장된 피팅 데이터 타입
+type SavedFittingResponse = {
+  id: number;
+  imgPath: string;
+  regFittingDttm: string;
+  favoriteYn: string;
+  fittingName: string;
+  publicYn: string;
+}; // 저장된 피팅 데이터 타입
 
 export default function FittingPage() {
   const [recentImages, setRecentImages] = useState<RecentFittingResponse[]>([]);
-  const [savedImages, setSavedImages] = useState<string[]>([]);
+  const [savedImages, setSavedImages] = useState<SavedFittingResponse[]>([]);
   const [loading, setLoading] = useState({ recent: true, saved: true });
   const [error, setError] = useState({ recent: null, saved: null });
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
@@ -60,9 +67,8 @@ export default function FittingPage() {
     fetchData(
       '/fitting/search',
       'POST',
-      { member_id: 1 },
-      (data: SavedFittingResponse[]) =>
-        setSavedImages(data.map((item) => item.imgUrl)),
+      { member_id: 1 }, // 필요한 body 데이터
+      (data: SavedFittingResponse[]) => setSavedImages(data),
       'saved',
       'saved'
     );
@@ -86,6 +92,11 @@ export default function FittingPage() {
     setSelectedImage(null);
     setSelectedUuid(null); // 선택된 redisId 초기화
     setIsModalOpen(false);
+  };
+
+  // 저장된 피팅 아이템 클릭 시 스냅 상세 페이지로 이동
+  const handleFittingClick = (fittingId: number) => {
+    router.push(`/feed/snap/${fittingId}`); // 경로 수정
   };
 
   // 모달에서 "저장" 또는 "삭제"를 클릭했을 때 호출되는 핸들러
@@ -137,7 +148,9 @@ export default function FittingPage() {
         <div className='w-full mb-4'>
           <h2 className='text-lg font-medium mb-2'>최근 완성된 피팅</h2>
           {loading.recent ? (
-            <p className='text-gray-500 text-sm'>로딩 중...</p>
+            <div className='flex justify-center items-center'>
+              <div className='animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-blue-500'></div>
+            </div>
           ) : error.recent ? (
             <p className='text-red-500 text-sm'>{error.recent}</p>
           ) : recentImages.length === 0 ? (
@@ -167,9 +180,13 @@ export default function FittingPage() {
         <div className='w-full'>
           <h2 className='text-lg font-medium mb-2'>저장한 피팅 목록</h2>
           {loading.saved ? (
-            <p className='text-gray-500 text-sm'>로딩 중...</p>
+            <div className='flex justify-center items-center'>
+              <div className='animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-blue-500'></div>
+            </div>
           ) : error.saved ? (
             <p className='text-red-500 text-sm'>{error.saved}</p>
+          ) : savedImages.length === 0 ? (
+            <p className='text-gray-500 text-sm'>저장된 피팅이 없습니다!</p>
           ) : (
             <div className='grid grid-cols-3 gap-4 w-full'>
               <div
@@ -178,14 +195,15 @@ export default function FittingPage() {
               >
                 <IoAddCircleOutline size={48} className='text-gray-400' />
               </div>
-              {savedImages.map((image, index) => (
+              {savedImages.map((item) => (
                 <div
-                  key={index}
-                  className='relative w-24 h-24 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0'
+                  key={item.id}
+                  className='relative w-24 h-24 bg-gray-100 rounded-md overflow-hidden flex-shrink-0 cursor-pointer'
+                  onClick={() => handleFittingClick(item.id)} // 스냅 상세 페이지로 이동
                 >
                   <img
-                    src={image}
-                    alt={`저장된 피팅 이미지 ${index + 1}`}
+                    src={item.imgPath}
+                    alt={item.fittingName || `저장된 피팅 이미지`}
                     className='object-cover w-full h-full'
                   />
                 </div>
