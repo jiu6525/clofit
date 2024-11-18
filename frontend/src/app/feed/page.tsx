@@ -87,7 +87,7 @@ export default function FeedPage() {
       if (item.type === 'clothes' && item.clothes) {
         router.push(`/feed/product/${item.clothes.id}`);
       } else if (item.type === 'fitting' && item.fitting) {
-        router.push(`/feed/fitting/${item.fitting.id}`);
+        router.push(`/feed/snap/${item.fitting.id}`);
       }
     },
     [router]

@@ -3,7 +3,7 @@
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useState } from 'react';
 import axiosInstance from '@/api/axiosInstance';
-
+import ButtonRectangular from '@/components/ButtonRectangular';
 type ConfirmFittingProps = {
   params?: Record<string, string>;
   searchParams?: Record<string, string | undefined>;
@@ -38,7 +38,7 @@ export default function ConfirmFitting({
     try {
       const response = await axiosInstance.post('/fitting', requestData);
       console.log('Fitting Request Success:', response.data);
-      alert('가상 피팅이 성공적으로 완료되었습니다.');
+      alert('가상 피팅을 만들기 시작했습니다!');
       router.push('/fitting');
     } catch (err) {
       console.error('Fitting Request Error:', err);
@@ -84,17 +84,14 @@ export default function ConfirmFitting({
           </div>
         )}
 
-        <button
-          onClick={handleFittingRequest}
-          disabled={loading}
-          className={`mt-6 px-4 py-2 ${
-            loading
-              ? 'bg-gray-300 cursor-not-allowed'
-              : 'bg-blue-500 hover:bg-blue-600'
-          } text-white rounded-lg`}
-        >
-          {loading ? '요청 중...' : '요청하기'}
-        </button>
+        {/* 버튼 영역 */}
+        <div className='mt-6 flex justify-center w-full'>
+          <ButtonRectangular
+            text={loading ? '피팅 중...' : '피팅하기'}
+            onClick={handleFittingRequest}
+            disabled={loading}
+          />
+        </div>
       </div>
     </div>
   );
