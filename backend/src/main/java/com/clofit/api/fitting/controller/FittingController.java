@@ -1,5 +1,10 @@
 package com.clofit.api.fitting.controller;
 
+import com.clofit.api.fitting.entity.ByteMultiPart;
+import com.clofit.api.fitting.entity.Fitting;
+import com.clofit.api.fitting.entity.FittingResult;
+import com.clofit.api.fitting.request.FittingRequest;
+import com.clofit.api.fitting.request.FittingSearchRequest;
 import com.clofit.api.fitting.request.*;
 import com.clofit.api.fitting.response.FittingRecentDetailResponse;
 import com.clofit.api.fitting.response.FittingRecentResponse;
