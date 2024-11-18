@@ -6,7 +6,6 @@ import { useRouter } from 'next/navigation';
 import { HiDotsVertical } from 'react-icons/hi';
 import { FiPlus } from 'react-icons/fi';
 import { BsCheckCircle, BsCircle } from 'react-icons/bs';
-import AddItemModal from './components/AddItemModal';
 import ClothesModal from './components/ClothesModal';
 
 // Closet API 응답 타입
@@ -17,8 +16,8 @@ interface ClosetItem {
     imgPath: string;
     style: string;
     category: string;
-    price: number | null; // 추가
-    itemUrl: string | null; // 추가
+    price: number | null;
+    itemUrl: string | null;
     myClothesYn: string;
   };
 }
@@ -33,7 +32,6 @@ const CATEGORY_MAP: { [key: string]: string } = {
 const Closet = () => {
   const [closetItems, setClosetItems] = useState<ClosetItem[]>([]);
   const [activeTab, setActiveTab] = useState('전체'); // 현재 탭 ('전체', '상의', '하의')
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isClothesModalOpen, setIsClothesModalOpen] = useState(false);
   const [selectedClothes, setSelectedClothes] = useState<
     ClosetItem['clothes'] | null
@@ -180,13 +178,19 @@ const Closet = () => {
         </div>
 
         {/* 옷장 그리드 */}
-
         <div className='grid grid-cols-3 gap-0'>
           {/* 아이템 추가하기 버튼 */}
-          <div
-            className='relative w-full aspect-[5/6] bg-gray-200 flex items-center justify-center cursor-pointer'
-            onClick={() => setIsAddModalOpen(true)}
-          >
+          <div className='relative w-full aspect-[5/6] bg-gray-200 flex items-center justify-center cursor-pointer'>
+            <input
+              type='file'
+              accept='image/*'
+              className='absolute inset-0 opacity-0 cursor-pointer'
+              onChange={(e) => {
+                if (e.target.files && e.target.files[0]) {
+                  handleGalleryUpload(e.target.files[0]);
+                }
+              }}
+            />
             <FiPlus className='text-gray-500 text-4xl' />
           </div>
 
@@ -231,29 +235,10 @@ const Closet = () => {
         </div>
       </div>
 
-      {/* 아이템 추가하기 모달 */}
-      <AddItemModal
-        isOpen={isAddModalOpen}
-        onClose={() => setIsAddModalOpen(false)}
-        onFileUpload={handleGalleryUpload}
-      />
-
       {/* 옷 상세정보 모달 */}
       <ClothesModal
         isOpen={isClothesModalOpen}
-        clothes={
-          selectedClothes
-            ? {
-                id: selectedClothes.id,
-                imgPath: selectedClothes.imgPath,
-                style: selectedClothes.style || '',
-                category: selectedClothes.category || '',
-                price: selectedClothes.price || null,
-                itemUrl: selectedClothes.itemUrl || null,
-                myClothesYn: selectedClothes.myClothesYn || 'N',
-              }
-            : null
-        }
+        clothes={selectedClothes}
         onClose={handleCloseClothesModal}
       />
 
