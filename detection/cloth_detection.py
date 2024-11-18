@@ -58,6 +58,13 @@ class ClothesFinder:
 
         original = self.s3.get(url) if httpIdx != -1 else cv2.imread(url)
 
+        # 최대 크기 설정
+        max_width = 760
+        max_height = 1200
+
+        # 크기 조정
+        original = self.resize_by_step(original, max_width, max_height)
+
         pred = self.predict(original)
 
         idx = 0
@@ -113,6 +120,12 @@ class ClothesFinder:
         # 투명 배경으로 바꾸기
         # tmp[:, :, 3] = mask
 
+        # height, width = masked_image.shape[:2]
+
+        # 가로가 더 길다면 90도 시계 방향으로 회전
+        # if width > height:
+        #     image = cv2.rotate(masked_image, cv2.ROTATE_90_CLOCKWISE)
+
         # bgr_com = (color_com[2], color_com[1], color_com[0])
         # bgr = (color[2], color[1], color[0])
 
@@ -161,3 +174,19 @@ class ClothesFinder:
         # Wait until a key is pressed and then close the image window
         cv2.waitKey(0)
         cv2.destroyAllWindows()
+
+    def resize_by_step(self, image, max_width, max_height, scale_factor=0.8):
+        """
+        PIL 이미지를 주어진 크기 이하로 축소합니다.
+        scale_factor를 적용하여 이미지를 줄입니다. 이미지 크기가 max_width, max_height 이하가 될 때까지 반복합니다.
+        """
+        if isinstance(image, Image.Image):  # PIL 이미지인지 확인
+            # 이미지 크기가 max_width, max_height보다 클 때마다 scale_factor만큼 줄임
+            while image.width > max_width or image.height > max_height:
+                new_width = int(image.width * scale_factor)
+                new_height = int(image.height * scale_factor)
+                image = image.resize((new_width, new_height), Image.Resampling.LANCZOS)
+        else:
+            raise ValueError("이미지가 PIL 형식이어야 합니다.")
+
+        return image

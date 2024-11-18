@@ -111,8 +111,8 @@ public class MemberController {
     }
 
     @PutMapping("/personal-color/{color_id}")
-    public ResponseEntity<Void> setPersonalColor(@AuthenticationPrincipal CustomOAuth2User principal, @PathVariable("color_id") Long color_id) {
-//        memberService.setColor(principal.get);
+    public ResponseEntity<Void> setPersonalColor(@AuthenticationPrincipal CustomOAuth2User principal, @PathVariable("color_id") String color_id) {
+        memberService.setColor(principal.getmemberId(), color_id);
         return ResponseEntity.ok().build();
     }
 

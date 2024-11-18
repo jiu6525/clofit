@@ -5,7 +5,6 @@ import com.clofit.api.fitting.entity.Fitting;
 import com.clofit.api.fitting.entity.FittingResult;
 import com.clofit.api.fitting.request.FittingRequest;
 import com.clofit.api.fitting.request.FittingSearchRequest;
-import com.clofit.api.fitting.request.FittingStoreRequest;
 import com.clofit.api.fitting.request.*;
 import com.clofit.api.fitting.response.*;
 import com.clofit.api.fitting.service.AwsS3Service;
