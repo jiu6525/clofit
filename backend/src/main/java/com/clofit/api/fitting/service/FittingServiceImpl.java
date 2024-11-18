@@ -216,33 +216,33 @@ public class FittingServiceImpl implements FittingService {
 
     private byte[] startFitting(fitting result) throws IOException {
         try {
-            String url = result.url;
-            String payload = result.jsonPayload;
-
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
-            HttpEntity<String> entity = new HttpEntity<>(payload, headers);
-
-            logger.warn("!!!!!GPU SEND !!!!!");
-            ResponseEntity<byte[]> responseEntity = restTemplate.postForEntity(url, entity, byte[].class);
-            logger.warn("!!!!!GPU SEND END !!!!!");
-            byte[] imgFile = responseEntity.getBody();
+//            String url = result.url;
+//            String payload = result.jsonPayload;
+//
+//            HttpHeaders headers = new HttpHeaders();
+//            headers.setContentType(MediaType.APPLICATION_JSON);
+//            HttpEntity<String> entity = new HttpEntity<>(payload, headers);
+//
+//            logger.warn("!!!!!GPU SEND !!!!!");
+//            ResponseEntity<byte[]> responseEntity = restTemplate.postForEntity(url, entity, byte[].class);
+//            logger.warn("!!!!!GPU SEND END !!!!!");
+//            byte[] imgFile = responseEntity.getBody();
 
             // WebClient 요청 보내기
-//            Mono<ResponseEntity<byte[]>> responseMono = webClient.post()
-//                    .uri(result.url()) // URL 설정
-//                    .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE) // Content-Type 설정
-//                    .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE) // Accept 헤더 추가
-//                    .bodyValue(result.jsonPayload) // JSON 본문 설정
-//                    .retrieve() // 요청 보내기
-//                    .toEntity(byte[].class); // 응답을 byte[]로 처리
-//
-//            // 응답을 기다림
+            Mono<ResponseEntity<byte[]>> responseMono = webClient.post()
+                    .uri(result.url()) // URL 설정
+                    .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE) // Content-Type 설정
+                    .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE) // Accept 헤더 추가
+                    .bodyValue(result.jsonPayload) // JSON 본문 설정
+                    .retrieve() // 요청 보내기
+                    .toEntity(byte[].class); // 응답을 byte[]로 처리
+
+            // 응답을 기다림
 //            logger.warn("!!!!!!!!!!!!!!! GPU SEND  !!!!!!!!!!!!!!!");
-//            ResponseEntity<byte[]> responseEntity = responseMono.block(Duration.of(4, ChronoUnit.MINUTES)); // block()으로 응답 기다림
+            ResponseEntity<byte[]> responseEntity = responseMono.block(Duration.of(4, ChronoUnit.MINUTES)); // block()으로 응답 기다림
 //            logger.warn(responseEntity == null ? "ENTITY IS NULL" : "ENTITY IS NOT NULL");
 //            logger.warn(responseEntity.getStatusCode().toString());
-//            byte[] imgFile = responseEntity != null ? responseEntity.getBody() : null;
+            byte[] imgFile = responseEntity != null ? responseEntity.getBody() : null;
 
             logger.info("연산 완료");
             logger.info("Request sent to GPU server.");
