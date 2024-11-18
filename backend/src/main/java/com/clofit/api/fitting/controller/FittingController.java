@@ -126,10 +126,6 @@ public class FittingController {
 
             List<String> imageList = fittingService.recentFitting(customOAuth2User.getmemberId());
 
-            if (imageList.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-            }
-
             return ResponseEntity.ok(imageList);
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
