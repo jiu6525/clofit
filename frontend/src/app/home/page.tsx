@@ -92,9 +92,9 @@ export default function MainPage() {
     {
       id: 2,
       src: '/images/mainslide2.png',
-      smallText: '텍스트 뭐라고 하냐',
-      largeText: '미정입니다',
-      buttonText: '지금 둘러보기',
+      smallText: '다양한 스타일을 한눈에',
+      largeText: '인기 피드 둘러보기',
+      buttonText: '지금 확인하기',
       textColor: '#171A1F',
     },
     {
