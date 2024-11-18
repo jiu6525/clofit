@@ -168,7 +168,6 @@ export default function MyPage() {
           </button>
           {isMenuOpen && (
             <div className='absolute top-8 right-0 bg-white border border-gray-300 rounded-lg shadow-lg p-2 flex flex-col space-y-2 z-50'>
-              {/* z-index 추가 */}
               <button
                 onClick={handleLogout}
                 className='text-sm hover:text-gray-600 px-2 py-1 whitespace-nowrap'
