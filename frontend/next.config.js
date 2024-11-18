@@ -8,7 +8,20 @@ const withPWA = require('next-pwa')({
 
 module.exports = withPWA({
   images: {
-    domains: ['clofit-s3-bucket.s3.amazonaws.com'], // 외부 이미지 도메인 추가
+    remotePatterns: [
+      {
+        protocol: 'https', // 첫 번째 도메인
+        hostname: 'clofit-s3-bucket.s3.amazonaws.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https', // 두 번째 도메인
+        hostname: 'clofit-s3-bucket.s3.ap-southeast-2.amazonaws.com',
+        port: '',
+        pathname: '/**',
+      },
+    ],
   },
   // 기타 next.js 설정
 });
