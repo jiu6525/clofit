@@ -66,11 +66,11 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
 
-        String customUserDetailsJson = objectMapper.writeValueAsString(isExistingUser);
-        Cookie userCookie = new Cookie("customUserDetails", URLEncoder.encode(customUserDetailsJson, StandardCharsets.UTF_8));
-        userCookie.setMaxAge(60 * 60 * 24);
-        userCookie.setPath("/");
-        response.addCookie(userCookie);
+//        String customUserDetailsJson = objectMapper.writeValueAsString(isExistingUser);
+//        Cookie userCookie = new Cookie("customUserDetails", URLEncoder.encode(customUserDetailsJson, StandardCharsets.UTF_8));
+//        userCookie.setMaxAge(60 * 60 * 24);
+//        userCookie.setPath("/");
+//        response.addCookie(userCookie);
 
         response.sendRedirect(reactServer + "/home");
     }

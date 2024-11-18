@@ -7,6 +7,9 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -28,6 +31,7 @@ public class Closet {
     @JsonManagedReference
     private Member member;
 
+//    @CreationTimestamp
     @Column(name = "reg_closet_dttm")
     private String reg_closet_dttm;
 }
