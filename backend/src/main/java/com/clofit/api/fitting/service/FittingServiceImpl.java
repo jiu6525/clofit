@@ -29,6 +29,8 @@ import reactor.core.publisher.Mono;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.zip.ZipEntry;
@@ -236,7 +238,8 @@ public class FittingServiceImpl implements FittingService {
 
             // 응답을 기다림
             logger.warn("!!!!!!!!!!!!!!! GPU SEND  !!!!!!!!!!!!!!!");
-            ResponseEntity<byte[]> responseEntity = responseMono.block(); // block()으로 응답 기다림
+            ResponseEntity<byte[]> responseEntity = responseMono.block(Duration.of(4, ChronoUnit.MINUTES)); // block()으로 응답 기다림
+            logger.warn(responseEntity == null ? "ENTITY IS NULL" : "ENTITY IS NOT NULL");
             logger.warn(responseEntity.getStatusCode().toString());
             byte[] imgFile = responseEntity != null ? responseEntity.getBody() : null;
 
