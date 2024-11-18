@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
@@ -30,6 +31,7 @@ public class OriginPicture {
     @Column(name = "file_name")
     private String fileName;
 
+    @CreationTimestamp
     @Column(name = "reg_pic_dttm")
     private LocalDateTime regPicDttm;
 
