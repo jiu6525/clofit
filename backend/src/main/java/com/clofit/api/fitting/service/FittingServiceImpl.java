@@ -4,9 +4,8 @@ import com.clofit.api.clothes.entity.Clothes;
 import com.clofit.api.clothes.repository.ClothesRepository;
 import com.clofit.api.fitting.entity.Fitting;
 import com.clofit.api.fitting.repository.FittingRepository;
-import com.clofit.api.fitting.request.ClothRequest;
-import com.clofit.api.fitting.request.FittingRequest;
-import com.clofit.api.fitting.request.ModelRequest;
+import com.clofit.api.fitting.request.*;
+import com.clofit.api.fitting.response.FittingDetailResponse;
 import com.clofit.api.fitting.response.FittingRecentDetailResponse;
 import com.clofit.api.member.entity.Member;
 import com.clofit.api.member.repository.MemberRepository;
@@ -270,6 +269,7 @@ public class FittingServiceImpl implements FittingService {
                     String uuid = UUID.randomUUID().toString();
                     Long memberId = result.fittingRequest.getMemberId();
 
+
 //                    template.opsForValue().set(uuid, new ObjectMapper().writeValueAsString(new FittingRecentDetailResponse()));
 
                     byte[] img = startFitting(result);
@@ -453,6 +453,24 @@ public class FittingServiceImpl implements FittingService {
             logger.error("오류 발생: {}", e.getMessage(), e); // 구체적인 오류 메시지 및 스택 트레이스 로깅
             throw new RuntimeException("API 요청 중 오류 발생", e); // 예외를 던져서 컨트롤러에서 처리하도록 함
         }
+    }
+
+    @Override
+    public FittingDetailResponse getDetailFitting(Long fittingId) {
+        Fitting fitting = fittingRepository.findById(fittingId).orElse(null);
+
+        FittingDetailResponse fittingDetailResponse = new FittingDetailResponse(
+                fitting.getId(),
+                fitting.getImgPath(),
+                fitting.getRegFittingDttm(),
+                fitting.getFavoriteYn(),
+                fitting.getFittingName(),
+                fitting.getPublicYn(),
+                fitting.getTop(),
+                fitting.getBottom()
+        );
+
+        return fittingDetailResponse;
     }
 
 
