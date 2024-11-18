@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.Setter;
 import net.minidev.json.annotate.JsonIgnore;
 import lombok.ToString;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.CreationTimestamp;
 
 
 @Getter
@@ -29,15 +31,18 @@ public class Fitting {
     @Column(name = "img_path")
     private String imgPath;
 
+    @CreationTimestamp
     @Column(name = "reg_fitting_dttm")
     private String regFittingDttm;
 
+    @ColumnDefault("N")
     @Column(name = "favorite_yn")
     private Character favoriteYn;
 
     @Column(name = "fitting_name")
     private String fittingName;
 
+    @ColumnDefault("N")
     @Column(name = "public_yn")
     private Character publicYn;
 
