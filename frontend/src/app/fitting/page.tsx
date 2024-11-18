@@ -3,16 +3,21 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import axiosInstance from '@/api/axiosInstance';
+import RecentFittingModal from './components/RecentFittingModal';
 import { IoAddCircleOutline } from 'react-icons/io5';
 
 type RecentFittingResponse = { uuid: string; imgUrl: string }; // 최신 추가된 피팅 데이터 타입
 type SavedFittingResponse = { imgUrl: string }; // 저장된 피팅 데이터 타입
 
 export default function FittingPage() {
-  const [recentImages, setRecentImages] = useState<string[]>([]);
+  const [recentImages, setRecentImages] = useState<RecentFittingResponse[]>([]);
   const [savedImages, setSavedImages] = useState<string[]>([]);
   const [loading, setLoading] = useState({ recent: true, saved: true });
   const [error, setError] = useState({ recent: null, saved: null });
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [selectedUuid, setSelectedUuid] = useState<string | null>(null); // redisId로 매핑
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const router = useRouter();
 
   // API 호출 함수
@@ -48,8 +53,7 @@ export default function FittingPage() {
       '/fitting/recent',
       'GET',
       null,
-      (data: RecentFittingResponse[]) =>
-        setRecentImages(data.map((item) => item.imgUrl)),
+      (data: RecentFittingResponse[]) => setRecentImages(data),
       'recent',
       'recent'
     );
@@ -69,6 +73,58 @@ export default function FittingPage() {
     router.push('/fitting/add/select');
   };
 
+  // 모달 열기
+  const openModal = (imageUrl: string, uuid: string) => {
+    console.log('Open Modal - UUID:', uuid);
+    setSelectedImage(imageUrl);
+    setSelectedUuid(uuid);
+    setIsModalOpen(true);
+  };
+
+  // 모달 닫기
+  const closeModal = () => {
+    setSelectedImage(null);
+    setSelectedUuid(null); // 선택된 redisId 초기화
+    setIsModalOpen(false);
+  };
+
+  // 모달에서 "저장" 또는 "삭제"를 클릭했을 때 호출되는 핸들러
+  const handleConfirm = (action: 'save' | 'delete', publicYn?: 'Y' | 'N') => {
+    if (action === 'save' && selectedUuid) {
+      axiosInstance
+        .put('/fitting', {
+          redisId: selectedUuid,
+          publicYn,
+        })
+        .then(() => {
+          console.log('피팅 공개 여부 저장 성공:', publicYn);
+          alert('피팅 공개 여부가 저장되었습니다.');
+        })
+        .catch((err) => {
+          console.error('피팅 공개 여부 저장 실패:', err);
+          alert('저장 중 문제가 발생했습니다.');
+        });
+    }
+
+    if (action === 'delete' && selectedUuid) {
+      axiosInstance
+        .delete(`/fitting/${selectedUuid}`)
+        .then(() => {
+          console.log('피팅 삭제 성공');
+          alert('피팅이 삭제되었습니다.');
+          setRecentImages((prev) =>
+            prev.filter((item) => item.uuid !== selectedUuid)
+          );
+        })
+        .catch((err) => {
+          console.error('피팅 삭제 실패:', err);
+          alert('삭제 중 문제가 발생했습니다.');
+        });
+    }
+
+    closeModal();
+  };
+
   return (
     <div className='relative flex flex-col items-center w-full min-h-screen bg-white'>
       <div className='relative flex flex-col items-center w-full max-w-[600px] p-4'>
@@ -78,86 +134,75 @@ export default function FittingPage() {
         </header>
 
         {/* 최근 추가한 피팅 섹션 */}
-        <FittingSection
-          title='최근 추가한 피팅'
-          images={recentImages}
-          loading={loading.recent}
-          error={error.recent}
-        />
+        <div className='w-full mb-4'>
+          <h2 className='text-lg font-medium mb-2'>최근 완성된 피팅</h2>
+          {loading.recent ? (
+            <p className='text-gray-500 text-sm'>로딩 중...</p>
+          ) : error.recent ? (
+            <p className='text-red-500 text-sm'>{error.recent}</p>
+          ) : recentImages.length === 0 ? (
+            <p className='text-gray-500 text-sm'>
+              최근 완성된 피팅이 없습니다!
+            </p>
+          ) : (
+            <div className='flex overflow-x-auto space-x-4'>
+              {recentImages.map((item) => (
+                <div
+                  key={item.uuid}
+                  className='relative w-24 h-24 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0 cursor-pointer'
+                  onClick={() => openModal(item.imgUrl, item.uuid)} // redisId 전달
+                >
+                  <img
+                    src={item.imgUrl}
+                    alt={`최근 피팅 이미지`}
+                    className='object-cover w-full h-full'
+                  />
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
 
         {/* 저장된 피팅 섹션 */}
         <div className='w-full'>
-          <h2 className='text-lg font-medium mb-2'>저장된 피팅 목록</h2>
+          <h2 className='text-lg font-medium mb-2'>저장한 피팅 목록</h2>
           {loading.saved ? (
             <p className='text-gray-500 text-sm'>로딩 중...</p>
           ) : error.saved ? (
             <p className='text-red-500 text-sm'>{error.saved}</p>
           ) : (
             <div className='grid grid-cols-3 gap-4 w-full'>
-              {/* 피팅 추가 버튼 */}
               <div
                 className='flex items-center justify-center border border-dashed border-gray-300 rounded-lg aspect-square cursor-pointer hover:bg-gray-100'
                 onClick={handleStartFitting}
               >
                 <IoAddCircleOutline size={48} className='text-gray-400' />
               </div>
-              {/* 저장된 피팅 썸네일 */}
               {savedImages.map((image, index) => (
-                <Thumbnail
+                <div
                   key={index}
-                  image={image}
-                  altText={`저장된 피팅 이미지 ${index + 1}`}
-                />
+                  className='relative w-24 h-24 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0'
+                >
+                  <img
+                    src={image}
+                    alt={`저장된 피팅 이미지 ${index + 1}`}
+                    className='object-cover w-full h-full'
+                  />
+                </div>
               ))}
             </div>
           )}
         </div>
       </div>
-    </div>
-  );
-}
 
-// 개별 섹션 컴포넌트
-function FittingSection({
-  title,
-  images,
-  loading,
-  error,
-}: {
-  title: string;
-  images: string[];
-  loading: boolean;
-  error: string | null;
-}) {
-  return (
-    <div className='w-full mb-4'>
-      <h2 className='text-lg font-medium mb-2'>{title}</h2>
-      {error ? (
-        <p className='text-red-500 text-sm'>{error}</p>
-      ) : loading ? (
-        <p className='text-gray-500 text-sm'>로딩 중...</p>
-      ) : images.length > 0 ? (
-        <div className='flex overflow-x-auto space-x-4'>
-          {images.map((image, index) => (
-            <Thumbnail
-              key={index}
-              image={image}
-              altText={`${title} 이미지 ${index + 1}`}
-            />
-          ))}
-        </div>
-      ) : (
-        <p className='text-gray-500 text-sm'>피팅 기록이 없습니다.</p>
-      )}
-    </div>
-  );
-}
-
-// 썸네일 컴포넌트
-function Thumbnail({ image, altText }: { image: string; altText: string }) {
-  return (
-    <div className='relative w-24 h-24 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0'>
-      <img src={image} alt={altText} className='object-cover w-full h-full' />
+      {/* RecentFittingModal */}
+      <RecentFittingModal
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        imageUrl={selectedImage}
+        uuid={selectedUuid} // redisId 전달
+        onConfirm={handleConfirm}
+      />
     </div>
   );
 }

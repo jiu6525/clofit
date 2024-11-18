@@ -3,7 +3,6 @@
 import { useRouter } from 'next/navigation';
 import { IoShirtOutline, IoBodyOutline, IoBagOutline } from 'react-icons/io5';
 import { useState } from 'react';
-import ButtonRectangular from '@/components/ButtonRectangular';
 
 // 합성 방식 타입
 type FittingType = 'top' | 'bottom' | 'fullbody';

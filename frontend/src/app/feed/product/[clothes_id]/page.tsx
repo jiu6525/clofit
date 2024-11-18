@@ -9,49 +9,58 @@ export default function ProductDetailPage() {
   const { clothes_id } = useParams();
   const router = useRouter();
   const [product, setProduct] = useState(null);
+  const [error, setError] = useState<string | null>(null);
+  const [addedToCloset, setAddedToCloset] = useState(false);
 
   useEffect(() => {
     if (clothes_id) {
       axiosInstance
         .get(`/clothes/${clothes_id}`)
         .then((response) => setProduct(response.data))
-        .catch((err) =>
-          console.error('상품 정보를 불러오는 중 문제가 발생했습니다.', err)
-        );
+        .catch((err) => {
+          console.error('Error fetching product:', err);
+          setError(
+            '상품 정보를 불러오는데 문제가 발생했습니다. 다시 시도해주세요.'
+          );
+        });
     }
   }, [clothes_id]);
 
-  if (!product) return <div>로딩 중...</div>;
+  if (error) {
+    return (
+      <div className='flex items-center justify-center w-full h-full'>
+        <p className='text-red-500'>{error}</p>
+      </div>
+    );
+  }
+
+  if (!product) {
+    return (
+      <div className='flex items-center justify-center w-full h-full'>
+        <div className='animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-blue-500'></div>
+      </div>
+    );
+  }
 
   const handleAddToCloset = () => {
     axiosInstance
-      .post('/closet', {
-        clothesId: product.id, // 상품 ID만 전달
-      })
+      .post('/closet', { clothesId: product.id })
       .then(() => {
-        // 성공 메시지 표시
+        setAddedToCloset(true);
         alert(`옷장에 '${product.item}'이(가) 추가되었습니다.`);
       })
       .catch((err) => {
         if (err.response?.status === 409) {
-          // 409 Conflict: 이미 옷장에 존재하는 경우
-          console.warn('이미 등록된 아이템:', product.item);
-          alert(`이미 옷장에 등록된 아이템입니다.`);
+          alert('이미 옷장에 등록된 아이템입니다.');
         } else {
-          // 다른 오류 처리
-          console.error('옷장에 추가하는 중 문제가 발생했습니다.', err);
-          alert('옷장에 추가하지 못했습니다. 다시 시도해주세요.');
+          console.error('Error adding to closet:', err);
+          alert('옷장에 추가하는 중 문제가 발생했습니다. 다시 시도해주세요.');
         }
       });
   };
 
-  const handleGoToProduct = () => {
-    window.open(product.itemUrl, '_blank'); // 상품 페이지로 이동
-  };
-
   return (
-    <div className='flex flex-col h-[calc(100vh-76px)] overflow-hidden'>
-      {/* 상단 탑바 */}
+    <div className='flex flex-col w-full h-full overflow-hidden'>
       <div className='w-full h-14 bg-white flex items-center px-4 shadow'>
         <button onClick={() => router.back()} className='text-gray-500'>
           <svg
@@ -71,7 +80,6 @@ export default function ProductDetailPage() {
         </button>
       </div>
 
-      {/* 메인 이미지 */}
       <div className='flex-shrink-0 w-full aspect-[5/6] relative overflow-hidden'>
         <Image
           src={product.imgPath}
@@ -81,36 +89,37 @@ export default function ProductDetailPage() {
         />
       </div>
 
-      {/* 상품 정보 */}
       <div className='flex-grow flex flex-col p-4'>
-        <div className='flex justify-between items-center'>
-          <h1 className='text-lg font-medium'>{product.item}</h1>
-        </div>
+        <h1 className='text-lg font-medium'>{product.item}</h1>
         <p className='text-gray-500 text-xs mt-1'>
           {product.style || '카테고리 정보 없음'}
         </p>
-
-        {/* 가격 정보 */}
         <div className='flex items-center mt-4'>
           <span className='text-2xl font-semibold text-gray-900'>
             {product.price.toLocaleString()}원
           </span>
         </div>
 
-        {/* 버튼 영역 */}
         <div className='flex w-full mt-auto'>
           <button
-            className='w-1/2 bg-gray-200 text-black py-3 text-center font-semibold'
+            className={`w-1/2 py-3 text-center font-semibold ${
+              addedToCloset
+                ? 'bg-gray-500 text-white'
+                : 'bg-gray-200 text-black'
+            }`}
             onClick={handleAddToCloset}
+            disabled={addedToCloset}
           >
-            옷장에 추가하기
+            {addedToCloset ? '이미 추가됨' : '옷장에 추가하기'}
           </button>
-          <button
+          <a
+            href={product.itemUrl}
+            target='_blank'
+            rel='noopener noreferrer'
             className='w-1/2 bg-black text-white py-3 text-center font-semibold'
-            onClick={handleGoToProduct}
           >
             상품 보러 가기
-          </button>
+          </a>
         </div>
       </div>
     </div>
