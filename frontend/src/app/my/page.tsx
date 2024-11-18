@@ -247,7 +247,7 @@ export default function MyPage() {
             </button>
             <button
               onClick={handleDeletePhotos}
-              className='px-2 py-1 bg-red-500 text-white rounded-md'
+              className='px-2 py-1 bg-red-600 text-white rounded-md'
             >
               삭제
             </button>
