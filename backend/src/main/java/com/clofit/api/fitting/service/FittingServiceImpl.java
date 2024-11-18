@@ -235,7 +235,9 @@ public class FittingServiceImpl implements FittingService {
                     .toEntity(byte[].class); // 응답을 byte[]로 처리
 
             // 응답을 기다림
+            logger.warn("!!!!!!!!!!!!!!! GPU SEND  !!!!!!!!!!!!!!!");
             ResponseEntity<byte[]> responseEntity = responseMono.block(); // block()으로 응답 기다림
+            logger.warn(responseEntity.getStatusCode().toString());
             byte[] imgFile = responseEntity != null ? responseEntity.getBody() : null;
 
             logger.info("연산 완료");
