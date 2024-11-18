@@ -212,8 +212,8 @@ public class FittingController {
     @PutMapping
     @Operation(summary = "최신 피팅 결과 저장")
     public ResponseEntity<String> saveFittingResult(@AuthenticationPrincipal CustomOAuth2User customOAuth2User, @RequestBody FittingSaveRequest fittingSaveRequest) {
-        Long memberId = customOAuth2User.getmemberId();
-//        Long memberId = 1L;
+//        Long memberId = customOAuth2User.getmemberId();
+        Long memberId = 1L;
         FittingRecentDetailResponse fittingResult;
         try {
             fittingResult = redisService.getFittingDetailResult(fittingSaveRequest.getRedisId());
@@ -228,7 +228,7 @@ public class FittingController {
 
         try {
             redisService.removeFittingResult(memberId, fittingSaveRequest.getRedisId());
-            fittingService.saveFitting(fittingSaveRequest.getFittingName(), fittingResult);
+            fittingService.saveFitting(fittingSaveRequest.getPublicYn(), fittingResult);
 
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);

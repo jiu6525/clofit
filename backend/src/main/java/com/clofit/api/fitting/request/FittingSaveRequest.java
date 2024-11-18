@@ -12,6 +12,6 @@ import lombok.Setter;
 public class FittingSaveRequest {
 
     private String redisId;
-    private String fittingName;
+    private Character publicYn;
 
 }

@@ -181,10 +181,11 @@ public class FittingServiceImpl implements FittingService {
      * 피팅 이미지 저장
      */
     @Override
-    public void saveFitting(String fittingName, FittingRecentDetailResponse fittingRecentDetailResponse) {
+    public void saveFitting(Character publicYn, FittingRecentDetailResponse fittingRecentDetailResponse) {
         Optional<Member> byId = memberRepository.findById(fittingRecentDetailResponse.getMemberId());
         Fitting fitting = new Fitting();
 
+        // 널 아이템에 대한 저장 진행하기
         if(byId.isPresent()){
             Member member = byId.get();
             String imgUrl = fittingRecentDetailResponse.getImgUrl();
@@ -198,15 +199,15 @@ public class FittingServiceImpl implements FittingService {
                 Clothes bottomClothe = clothesRepository.findBottomClothe(clothName.getLast());
                 fitting.setTop(topClothe);
                 fitting.setBottom(bottomClothe);
-            } else if (category == 0) {
-                Clothes topClothe = clothesRepository.findTopClothe(clothName.getFirst());
-                fitting.setTop(topClothe);
+            } else if (category == 0) { // 상의 피팅이니까 bottom 에 대한 nullItem 값을 가져와서 id로 넣어주자
+                fitting.setTop(clothesRepository.findTopClothe(clothName.getFirst()));
+                fitting.setBottom(clothesRepository.findBottomNullColor());
             }else{
-                Clothes bottomClothe = clothesRepository.findBottomClothe(clothName.getLast());
-                fitting.setBottom(bottomClothe);
+                fitting.setTop(clothesRepository.findTopNullColor());
+                fitting.setBottom(clothesRepository.findBottomClothe(clothName.getLast()));
             }
 
-            fitting.setFittingName(fittingName);
+            fitting.setPublicYn(publicYn);
 
             fittingRepository.save(fitting);
         }
