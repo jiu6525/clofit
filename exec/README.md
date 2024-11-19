@@ -1,0 +1,759 @@
+# 목차
+1. 사용 도구
+2. 개발 도구
+3. 개발 환경
+4. 환경 변수 형태
+5. CI/CD 구축
+
+
+# 1. 사용 도구
+- 이슈 관리 : Jira
+- 형상 관리 : GitLab, Git Bash
+- 커뮤니케이션 : Notion, MatterMost
+- 디자인 : Figma
+- CI/CD : Jenkins
+- Container : Docker
+
+# 2. 개발 도구
+- Visual Studio Code
+- IntelliJ
+- Pycharm
+
+
+# 3. 개발 환경
+### Frontend 
+- Next.js  
+- Node: 20   
+
+---
+### Backend
+- JDK: 21  
+- Spring Boot: 3.3.6  
+- Python: 3.9  
+- Fast API
+
+---
+### OOTDiffusion
+- Python: 3.9  
+- OpenCV: 4.10.0  
+- Yolo v8  
+
+---
+### Server    
+- AWS EC2  
+- CPU: Intel(R) Xeon(R) CPU E5-2686 v4 @ 2.30Gz(4 Core, 4 thread)  
+- Disk: 311GB  
+- Ram: 16GB
+
+---
+### Service
+- nginx: 1.26.2    
+- jenkins: 2.462.2     
+- Docker: 27.2.1  
+- Docker-compose: 2.29.2
+- MySQL: 8.0.37  
+- Redis: 7.4.1
+
+# 4. 환경 변수 형태
+### Backend
+- application.yml
+
+```
+    spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          kakao:
+            client-name: Kakao
+            client-id: <secret>
+            client-secret: <secret>
+            # redirect-uri: https://k11b307.p.ssafy.io/api/login/oauth2/code/kakao
+            redirect-uri: https://clofit.co.kr/api/login/oauth2/code/kakao
+            authorization-grant-type: authorization_code
+            client-authentication-method: client_secret_post
+            scope:
+              - profile_nickname
+        provider:
+          kakao:
+            authorization-uri: https://kauth.kakao.com/oauth/authorize
+            token-uri: https://kauth.kakao.com/oauth/token
+            user-info-uri: https://kapi.kakao.com/v2/user/me
+            user-name-attribute: id
+  jpa:
+    hibernate:
+      ddl-auto: update
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+        format_sql: 'true'
+    show-sql: 'true'
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    password: <secret>
+    username: root
+    url: jdbc:mysql://dev_mysql:3306/clofit
+  application:
+    name: clofit
+  jwt:
+    secret: <secret>
+  data:
+    redis:
+      host: 172.19.0.3
+      port: 6379
+      password: <secret>
+  threads:
+    virtual:
+      enabled: true
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB 
+  codec:
+    max-in-memory-size: 10MB
+server:
+  servlet:
+    context-path: /api
+  # address: localhost
+front:
+  react-server: https://clofit.co.kr
+ootd:
+  gpu-server: http://222.107.238.124:10823/
+background_remover:
+  # gpu-server: http://222.107.238.124:2222/
+  gpu-server: http://detection_py:2222/
+  
+logging:
+  level:
+    org:
+      springframework: TRACE 
+cloud:
+  aws:
+    region:
+      static: ap-southeast-2
+    s3:
+      bucket: clofit-s3-bucket
+    stack:
+      auto: false
+    credentials:
+        access-key: <secret>
+        secret-key: <secret>
+gpu:
+  access-key: 1234
+  
+```
+
+### Frontend
+- .env  
+
+```
+# 카카오 REST API 키
+NEXT_PUBLIC_KAKAO_REST_API_KEY=secret
+
+# 카카오 리다이렉트 URI
+# NEXT_PUBLIC_KAKAO_REDIRECT_URI=https://k11b307.p.ssafy.io/api/oauth2/authorization/kakao
+NEXT_PUBLIC_KAKAO_REDIRECT_URI=https://clofit.co.kr/api/oauth2/authorization/kakao
+
+# 로컬 백엔드 API_BASE_URL
+# NEXT_PUBLIC_API_BASE_URL=https://k11b307.p.ssafy.io/api
+NEXT_PUBLIC_API_BASE_URL=https://clofit.co.kr/api
+```
+---
+
+# 5. CI/CD 구축
+### 1. UFW 방화벽 설정
+```
+sudo apt-get update
+
+sudo ufw status
+sudo ufw allow 22
+sudo ufw allow 80
+sudo ufw allow 443
+sudo ufw enable
+sudo ufw status numbered
+```
+### 2. Docker 설치
+```
+# Add Docker's official GPG key:
+sudo apt-get update
+sudo apt-get install ca-certificates curl
+sudo install -m 0755 -d /etc/apt/keyrings
+sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+sudo chmod a+r /etc/apt/keyrings/docker.asc
+
+# Add the repository to Apt sources:
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+sudo apt-get update
+
+sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+```
+* 다음 명령어로 설치 확인
+```
+sudo docker run hello-world
+```
+
+
+### 3. Docker-compose 설치
+```
+sudo curl -SL https://github.com/docker/compose/releases/download/v2.29.2/docker-compose-linux-x86_64 -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
+```
+* 설치 확인
+```
+docker-compose -v
+```
+### 4. jenkins 설치
+* docker-compose.yml
+```
+services:
+  jenkins:
+    image: jenkins/jenkins:lts
+    restart: unless-stopped
+    container_name: compose-jenkins
+    user: root
+    volumes:
+      # jenkins 제거시에도 관련 설정 유지
+      - ./jenkins:/var/jenkins_home
+      # DooD 구성을 위한 도커 소켓 연결
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /usr/local/bin/docker-compose:/usr/local/bin/docker-compose
+      - /usr/bin/docker:/usr/bin/docker
+      # 데이터베이스 마운트
+      - /home/ubuntu/DataBase:/shared
+    environment:
+      # port 번호 설정
+      JENKINS_OPTS: --prefix=/jenkins --httpPort=9090
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "1"
+    networks:
+      - jenkins-network
+    expose:
+      - "9090"
+      - "50000"
+
+networks:
+  jenkins-network:
+    external: true
+```
+* 컨테이너 실행
+```
+sudo docker-compose up -d
+```
+### 5. Nginx 설치
+* Dockerfile
+```
+FROM nginx:1.26.2-alpine
+
+RUN apk add python3 python3-dev py3-pip build-base libressl-dev musl-dev libffi-dev rust cargo
+RUN apk add certbot-nginx
+RUN mkdir /etc/letsencrypt
+``` 
+
+* docker-compose.yml
+```
+services:
+  nginx:
+    image: nginx:custom
+    restart: unless-stopped
+    container_name: compose-nginx
+    volumes:
+      - ./proxy:/etc/nginx/conf.d
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./cert:/etc/ssl
+      - /etc/letsencrypt:/etc/letsencrypt
+      - ./validation:/var/validation
+    networks:
+      - jenkins-network
+      - backend-network
+      - frontend-network
+    ports:
+      - "80:80"
+      - "443:443"
+
+networks:
+  jenkins-network:
+    external: true
+
+  backend-network:
+    external: true
+
+  frontend-network:
+    external: true
+```
+
+* default.conf
+```
+# Your App
+
+upstream dev-backend {
+    server clofit-dev-backend:8080;
+}
+
+#upstream dev-frontend {
+#    server clofit-dev-frontend:3000;
+#}
+
+upstream jenkins {
+    server compose-jenkins:9090;
+}
+
+#upstream redis-insight {
+#    server redis-insight:5540;
+#}
+
+server {
+    listen 80;
+    listen [::]:80;
+    server_name k11b307.p.ssafy.io;
+    
+    # Redirect to https
+    location / {
+        rewrite ^(.*) https://k11b307.p.ssafy.io:443$1 permanent;
+    }
+
+    # SSL    
+    location /.well-known/acme-challenge {
+        default_type "text/plain";
+        root /var/validation;
+        try_files $uri $uri/ =404;
+    }
+
+
+    location /nginx_status {
+        stub_status;
+        allow 127.0.0.1;        #only allow requests from localhost
+        deny all;               #deny all other hosts
+    }
+}
+
+server {
+    listen 443 ssl;                   #ip v4
+    listen [::]:443 ssl;              #ip v6
+    server_name k11b307.p.ssafy.io;
+
+    ssl_certificate /etc/letsencrypt/live/k11b307.p.ssafy.io/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/k11b307.p.ssafy.io/privkey.pem;
+    include /etc/letsencrypt/options-ssl-nginx.conf;
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
+
+    access_log   /var/log/nginx/nginx.vhost.access.log;
+    error_log    /var/log/nginx/nginx.vhost.error.log;
+    
+    ###########
+    # Jenkins #
+    ###########
+    location /jenkins {
+      proxy_pass http://jenkins;     
+    }     
+
+    # Proxy
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_set_header X-Forwarded-Proto https;
+    proxy_headers_hash_bucket_size 512;
+    proxy_redirect off;
+
+    # Websockets
+    #proxy_http_version 1.1;
+    #proxy_set_header Upgrade $http_upgrade;
+    #proxy_set_header Connection "upgrade";
+   
+    location / {                                      
+      rewrite ^(.*) https://clofit.co.kr:443$1 permanent;                  
+    } 
+ 
+    # application.yml context path /api
+    location /api {
+      #rewrite ^/api(/.*)$ $1 break;
+      proxy_pass http://dev-backend;
+    }
+    #location /redis {
+    #  proxy_pass http://redis-insight;
+    #}
+
+    #location / {                                      
+    #   rewrite ^(.*) https://clofit.co.kr:443$1 permanent;                  
+    #} 
+}
+```
+
+* clofit.conf
+```
+# Your App
+
+upstream dev-frontend {
+    server clofit-dev-frontend:3000;
+}
+
+server {
+    listen 80;
+    listen [::]:80;
+    server_name clofit.co.kr;
+    
+    # Redirect to https
+    location / {
+        rewrite ^(.*) https://clofit.co.kr:443$1 permanent;
+    }
+}
+
+server {
+    listen 443 ssl;                   #ip v4
+    listen [::]:443 ssl;              #ip v6
+    server_name clofit.co.kr;
+
+    ssl_certificate /etc/letsencrypt/live/clofit.co.kr/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/clofit.co.kr/privkey.pem;
+    include /etc/letsencrypt/options-ssl-nginx.conf;
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
+
+    access_log   /var/log/nginx/nginx.vhost.access.log;
+    error_log    /var/log/nginx/nginx.vhost.error.log;
+    
+    # Proxy
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_set_header X-Forwarded-Proto https;
+    proxy_headers_hash_bucket_size 512;
+    proxy_redirect off;
+
+    # Websockets
+    #proxy_http_version 1.1;
+    #proxy_set_header Upgrade $http_upgrade;
+    #proxy_set_header Connection "upgrade";
+    
+    location / {
+      proxy_pass http://dev-frontend;
+    }
+    
+    location /api {
+      proxy_pass http://dev-backend;
+    }
+    
+}
+```
+
+* size.conf
+```
+client_max_body_size 30M;
+```  
+
+
+# 6. 서비스 설정
+
+### 1. Backend
+* Dockerfile
+```
+FROM amazoncorretto:21-alpine AS build
+
+WORKDIR /app
+
+# 의존성 설치 및 빌드
+COPY build.gradle settings.gradle gradlew ./
+COPY gradle ./gradle
+COPY src ./src
+RUN ./gradlew build --no-daemon
+
+# 빌드 결과물을 실행 이미지로 복사
+FROM amazoncorretto:21-alpine
+
+WORKDIR /app
+
+COPY --from=build /app/build/libs/clofit-0.0.1-SNAPSHOT.jar /app/clofit-0.0.1-SNAPSHOT.jar
+
+CMD ["java", "-jar", "/app/clofit-0.0.1-SNAPSHOT.jar"]
+```
+* docker-compose.yml
+```
+services:
+  backend:
+    image: clofit-dev-backend:latest
+    container_name: clofit-dev-backend
+    networks:
+      - backend-network
+    # restart: unless-stopped
+    expose:
+      - "8080"
+
+networks:
+  backend-network:
+    external: true
+```
+* Jenkinsfile
+```
+pipeline {
+    agent any
+
+    environment {
+        TARGET_BRANCH='develop/be'
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                script {
+                     checkout scm
+                }
+            }
+        }
+        stage('Build') {
+            steps {
+                dir('backend') {
+                    withCredentials([file(credentialsId: 'APPLICATION_YML', variable: 'application_yml')]) {
+                        sh 'cp $application_yml ./src/main/resources/application.yml'
+                    }
+                    sh 'chmod +x ./gradlew'
+                    // sh './gradlew clean build --no-daemon' // 디버깅을 위해 캐시하지 않기
+                    // sh './gradlew test -i'
+                }
+            }
+        }
+        stage('Build Docker Image') {
+            steps {
+                script {
+                     sh 'docker build -t clofit-dev-backend:latest ./backend'
+                }
+            }
+        }
+        stage('Depoly') {
+            steps {
+                dir ('backend') {
+                    script {
+                         sh 'docker-compose up -d'
+                    }
+                }
+
+            }
+        }
+        stage('Remove old Image') {
+            steps {
+                script {
+                    sh 'docker image prune -f'
+                }
+            }
+        }
+
+    }
+    post {
+        success {
+            script {
+                def Author_ID = sh(script: "git show -s --pretty=%an", returnStdout: true).trim()
+                def Author_Name = sh(script: "git show -s --pretty=%ae", returnStdout: true).trim()
+                mattermostSend (color: 'good',
+                message: "**빌드 성공** \n _Backend_ \n ${env.JOB_NAME} #${env.BUILD_NUMBER} by ${Author_ID}(${Author_Name})\n(<${env.BUILD_URL}|Details>)\n :white_check_mark: ",
+                endpoint: 'https://meeting.ssafy.com/hooks/stt1fc57q7rdubgcy9ursfrxbo',
+                channel: 'B307_Build'
+                )
+            }
+        }
+        failure {
+            script {
+                def Author_ID = sh(script: "git show -s --pretty=%an", returnStdout: true).trim()
+                def Author_Name = sh(script: "git show -s --pretty=%ae", returnStdout: true).trim()
+                mattermostSend (color: 'danger',
+                message: "**빌드 실패** \n _Backend_ \n ${env.JOB_NAME} #${env.BUILD_NUMBER} by ${Author_ID}(${Author_Name})\n(<${env.BUILD_URL}|Details>)\n :no_entry_sign: ",
+                endpoint: 'https://meeting.ssafy.com/hooks/stt1fc57q7rdubgcy9ursfrxbo',
+                channel: 'B307_Build'
+                )
+            }
+        }
+    }
+}
+```
+
+### 2. Frontend
+* Dockerfile
+```
+FROM node:20 AS build
+
+RUN mkdir /next
+
+WORKDIR /next
+
+COPY . .
+
+RUN npm install
+
+RUN npm run build
+
+# 컨테이너 실행 시 서버 시작, RUN으로 실행 시 빌드 무한루프 발생
+CMD [ "npm", "run", "start" ]
+```
+* docker-compose.yml
+```
+services:
+  frontend:
+    image: clofit-dev-frontend:latest
+    container_name: clofit-dev-frontend
+    networks:
+      - frontend-network
+    # restart: unless-stopped
+    expose:
+      - "3000" # 프론트가 nginx를 가지고 있으므로 컨테이너에서는 80포트를 연 상태
+
+networks:
+  frontend-network:
+    external: true
+```
+* Jenkinsfile
+```
+pipeline {
+    agent any
+
+    environment {
+        TARGET_BRANCH='develop/fe'
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                script {
+                    // def branch = env.gitlabSourceBranch ?: 'develop/fe'
+                    // if(branch != env.TARGET_BRANCH) {
+                    //     error "This build is only for the '${env.TARGET_BRANCH}' branch, but was run on '${branch}'"
+                    // }
+
+                    checkout scm
+                }
+            }
+        }
+
+        stage('Set .ENV File') {
+            steps {
+                dir('frontend') {
+                    withCredentials([file(credentialsId: 'ENV', variable: 'env_file')]) {
+                        sh 'cp $env_file ./.env'
+                    }
+                }
+            }
+        }
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    sh 'docker build --no-cache -t clofit-dev-frontend:latest ./frontend'
+                    // sh 'docker build -t ptpt-dev-frontend:latest ./frontend'
+                }
+            }
+        }
+
+        stage('Depoly') {
+            steps {
+                dir('frontend') {
+                    sh 'docker-compose up -d'
+                }
+            }
+        }
+
+        stage('Remove old image') {
+            steps {
+                script {
+                    sh 'docker image prune -f'
+                }
+            }
+        }
+    }
+    post {
+        success {
+            script {
+                def Author_ID = sh(script: "git show -s --pretty=%an", returnStdout: true).trim()
+                def Author_Name = sh(script: "git show -s --pretty=%ae", returnStdout: true).trim()
+                mattermostSend (color: 'good',
+                message: "**빌드 성공** \n _Frontend_ \n ${env.JOB_NAME} #${env.BUILD_NUMBER} by ${Author_ID}(${Author_Name})\n(<${env.BUILD_URL}|Details>)\n :white_check_mark: ",
+                endpoint: 'https://meeting.ssafy.com/hooks/stt1fc57q7rdubgcy9ursfrxbo',
+                channel: 'B307_Build'
+                )
+            }
+        }
+        failure {
+            script {
+                def Author_ID = sh(script: "git show -s --pretty=%an", returnStdout: true).trim()
+                def Author_Name = sh(script: "git show -s --pretty=%ae", returnStdout: true).trim()
+                mattermostSend (color: 'danger',
+                message: "**빌드 실패** \n _Frontend_ \n ${env.JOB_NAME} #${env.BUILD_NUMBER} by ${Author_ID}(${Author_Name})\n(<${env.BUILD_URL}|Details>)\n :no_entry_sign: ",
+                endpoint: 'https://meeting.ssafy.com/hooks/stt1fc57q7rdubgcy9ursfrxbo',
+                channel: 'B307_Build'
+                )
+            }
+        }
+    }
+}
+```
+
+### 3. DB
+
+**redis**
+* docker-compose.yml
+```
+services:
+  redis:
+    image: redis:7.4.1-alpine
+    container_name: redis
+    restart: unless-stopped
+    command: redis-server /usr/local/etc/redis/redis.conf
+    volumes:
+      - ./data:/data
+      - ./config/redis.conf:/usr/local/etc/redis/redis.conf
+    networks:
+      - backend-network
+
+    expose:
+      - "6379"
+
+ #redis-insight:
+    #image: redis/redisinsight:latest
+    #container_name: redis-insight
+    #environment:
+      #- RI_PROXY_PATH=/redis
+    #volumes:
+      #- ./insight_data:/data
+    #networks:
+      #- backend-network
+    #expose:
+      #- "5540"
+
+networks:
+  backend-network:
+    external: true
+```
+
+**MySQL**
+* docker-compose.yml
+```
+services:
+  dev_mysql:
+    image: mysql:8.0.37
+    container_name: dev_mysql
+    restart: always
+    networks:
+      - backend-network
+    environment:
+      MYSQL_ROOT_PASSWORD: clofit_b307_dev!
+      MYSQL_DATABASE: 'clofit'
+    volumes:
+      # 컨테이너가 삭제되어도 데이터 유지하도록 마운트      
+      - ./shared:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    expose:
+      - "3306"
+networks:
+  backend-network:
+    external: true
+```
+
+
+
+
+

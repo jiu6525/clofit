@@ -59,11 +59,12 @@ class ClothesFinder:
         original = self.s3.get(url) if httpIdx != -1 else cv2.imread(url)
 
         # 최대 크기 설정
-        max_width = 760
-        max_height = 1200
+        max_width = 600
+        max_height = 600
 
         # 크기 조정
-        original = self.resize_by_step(original, max_width, max_height)
+        # original = self.resize_by_step(original, max_width, max_height)
+        original = original.resize((max_width, max_height), Image.Resampling.LANCZOS)
 
         pred = self.predict(original)
 

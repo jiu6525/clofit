@@ -87,7 +87,7 @@ public class ClothesController {
 
     @PutMapping("/{clothesId}")
     @Operation(summary = "의류 정보 수정")
-    public ResponseEntity<Void> updateClothes(@PathVariable Long clothesId, @RequestBody ClothesUpdateRequest clothesUpdateRequest) {
+    public ResponseEntity<Void> updateClothes(@PathVariable("clothesId") Long clothesId, @RequestBody ClothesUpdateRequest clothesUpdateRequest) {
         clothesService.updateClothes(clothesId, clothesUpdateRequest);
         return ResponseEntity.ok().build();
     }
