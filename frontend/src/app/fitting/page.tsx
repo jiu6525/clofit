@@ -185,29 +185,34 @@ export default function FittingPage() {
             </div>
           ) : error.saved ? (
             <p className='text-red-500 text-sm'>{error.saved}</p>
-          ) : savedImages.length === 0 ? (
-            <p className='text-gray-500 text-sm'>저장된 피팅이 없습니다!</p>
           ) : (
             <div className='grid grid-cols-3 gap-4 w-full'>
+              {/* 피팅 추가 버튼은 항상 렌더링 */}
               <div
                 className='flex items-center justify-center border border-dashed border-gray-300 rounded-lg aspect-square cursor-pointer hover:bg-gray-100'
                 onClick={handleStartFitting}
               >
                 <IoAddCircleOutline size={48} className='text-gray-400' />
               </div>
-              {savedImages.map((item) => (
-                <div
-                  key={item.id}
-                  className='relative w-24 h-24 bg-gray-100 rounded-md overflow-hidden flex-shrink-0 cursor-pointer'
-                  onClick={() => handleFittingClick(item.id)} // 스냅 상세 페이지로 이동
-                >
-                  <img
-                    src={item.imgPath}
-                    alt={item.fittingName || `저장된 피팅 이미지`}
-                    className='object-cover w-full h-full'
-                  />
-                </div>
-              ))}
+              {savedImages.length > 0 ? (
+                savedImages.map((item) => (
+                  <div
+                    key={item.id}
+                    className='relative w-24 h-24 bg-gray-100 rounded-md overflow-hidden flex-shrink-0 cursor-pointer'
+                    onClick={() => handleFittingClick(item.id)} // 스냅 상세 페이지로 이동
+                  >
+                    <img
+                      src={item.imgPath}
+                      alt={item.fittingName || `저장된 피팅 이미지`}
+                      className='object-cover w-full h-full'
+                    />
+                  </div>
+                ))
+              ) : (
+                <p className='text-gray-500 text-sm col-span-3'>
+                  저장된 피팅이 없습니다!
+                </p>
+              )}
             </div>
           )}
         </div>
