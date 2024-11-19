@@ -25,33 +25,9 @@ export default function RecentFittingModal({
     setIsPublic((prev) => !prev);
   };
 
-  const handleSave = async () => {
-    const publicYn = isPublic ? 'Y' : 'N'; // 공개 여부를 대문자 'Y' 또는 'N'으로 변환
-
-    if (!uuid) {
-      console.error('UUID가 제공되지 않았습니다.');
-      return;
-    }
-
-    const payload = {
-      redisId: uuid,
-      publicYn: publicYn,
-    };
-
-    // 요청 데이터를 콘솔에 출력
-    console.log('저장 요청 데이터:', payload);
-
-    setLoading(true);
-    try {
-      const response = await axiosInstance.put('/fitting', payload);
-
-      console.log('저장 성공:', response.data);
-      onConfirm('save', publicYn); // 부모 컴포넌트에 저장 상태 전달
-    } catch (error) {
-      console.error('저장 요청 실패:', error);
-    } finally {
-      setLoading(false);
-    }
+  const handleSave = () => {
+    const publicYn = isPublic ? 'Y' : 'N';
+    onConfirm('save', publicYn); // 부모 컴포넌트에만 상태 전달
   };
 
   const handleDelete = () => {
