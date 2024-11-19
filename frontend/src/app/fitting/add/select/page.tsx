@@ -2,6 +2,11 @@
 
 import { useRouter } from 'next/navigation';
 import { IoShirtOutline, IoBodyOutline, IoBagOutline } from 'react-icons/io5';
+import {
+  PiTShirtLight,
+  PiPantsLight,
+  PiPersonArmsSpread,
+} from 'react-icons/pi';
 import { useState } from 'react';
 
 // 합성 방식 타입
@@ -13,9 +18,9 @@ const fittingOptions: {
   label: string;
   Icon: React.ComponentType<{ size: number; className?: string }>;
 }[] = [
-  { type: 'top', label: '상의 합성', Icon: IoShirtOutline },
-  { type: 'bottom', label: '하의 합성', Icon: IoBagOutline },
-  { type: 'fullbody', label: '전신 합성', Icon: IoBodyOutline },
+  { type: 'top', label: '상의 합성', Icon: PiTShirtLight },
+  { type: 'bottom', label: '하의 합성', Icon: PiPantsLight },
+  { type: 'fullbody', label: '전신 합성', Icon: PiPersonArmsSpread },
 ];
 
 export default function SelectFittingType() {
