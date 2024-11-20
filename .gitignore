@@ -11,3 +11,6 @@ __pycache__/
 application.yml
 application.yaml
 application.properties
+
+# node_modules
+node_modules/
