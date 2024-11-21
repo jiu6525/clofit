@@ -3,7 +3,6 @@ package com.clofit.api.clothes.controller;
 import com.clofit.api.clothes.entity.Clothes;
 import com.clofit.api.clothes.request.ClothesRegisterRequest;
 import com.clofit.api.clothes.request.ClothesUpdateRequest;
-import com.clofit.api.clothes.request.ClothesUploadRequest;
 import com.clofit.api.clothes.response.ClothesUploadResponse;
 import com.clofit.api.clothes.service.ClothesService;
 import com.clofit.api.gpu.service.GPUService;
@@ -69,10 +68,9 @@ public class ClothesController {
     public ResponseEntity<ClothesUploadResponse> uploadClothes(
             @AuthenticationPrincipal CustomOAuth2User customOAuth2User,
             @RequestParam("file") MultipartFile file
-//            @RequestBody ClothesUploadRequest clothesUploadRequest
     ) {
         Long memberId = customOAuth2User.getmemberId();
-//        Long memberId = 1L;
+//        Long memberId = 3L;
 
         String uuid = UUID.randomUUID().toString();
         String imgPath = BASEPATH + memberId + "/" + uuid;

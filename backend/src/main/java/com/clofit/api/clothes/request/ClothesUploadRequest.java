@@ -7,5 +7,6 @@ import org.springframework.web.multipart.MultipartFile;
 @Getter
 @Setter
 public class ClothesUploadRequest {
-    MultipartFile file;
+    MultipartFile image;
+    Long memberId;
 }
