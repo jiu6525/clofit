@@ -275,15 +275,24 @@
             <img src="https://github.com/user-attachments/assets/9244bfd2-8f59-4b96-960e-a6d7c740dbd6" width="140px" /> <br><br> 👑 강현후<br>(팀장/Front-End) </a> <br> 피팅, 상품, <br>
 옷장 페이지</td>
         <td height="140px" align="center"> <a href="https://github.com/yjjj1612">
-            <img src="https://github.com/user-attachments/assets/aaf3be42-4628-4dac-b8ef-9e5bc6cb0201" width="140px" /> <br><br> 🎀 손유진<br>(Front-End) </a> <br></td>
+            <img src="https://github.com/user-attachments/assets/aaf3be42-4628-4dac-b8ef-9e5bc6cb0201" width="140px" /> <br><br> 🎀 손유진<br>(Front-End) </a> <br> 메인, 마이, <br>
+피드 페이지</td>
         <td height="140px" align="center"> <a href="https://github.com/jiu6525">
-            <img src="https://github.com/user-attachments/assets/506c294d-750c-41cd-8f54-474e1774c55d" width="140px" /> <br><br> 🐲 강지우<br>(Back-End) </a> <br></td>
+            <img src="https://github.com/user-attachments/assets/506c294d-750c-41cd-8f54-474e1774c55d" width="140px" /> <br><br> 🐲 강지우<br>(Back-End) </a> <br> 피팅AI <br>
+피팅 API <br>
+시큐리티</td>
         <td height="140px" align="center"> <a href="https://github.com/kinterlocked">
-            <img src="https://github.com/user-attachments/assets/67ce3b54-8f22-4435-a43d-7faf220ffd52" width="140px" /> <br><br> 🌳 김연동<br>(Back-End) </a> <br></td>
+            <img src="https://github.com/user-attachments/assets/67ce3b54-8f22-4435-a43d-7faf220ffd52" width="140px" /> <br><br> 🌳 김연동<br>(Back-End) </a> <br> 유저 API <br>
+모델 API <br>
+데이터 크롤링 <br>
+시큐리티</td>
         <td height="140px" align="center"> <a href="https://github.com/Al17OTON">
-            <img src="https://github.com/user-attachments/assets/d1b3e393-1753-4763-91ee-b35996aec8d3" width="140px" /> <br><br> 🧸 임 권<br>(Back-End) </a> <br></td>
+            <img src="https://github.com/user-attachments/assets/d1b3e393-1753-4763-91ee-b35996aec8d3" width="140px" /> <br><br> 🧸 임 권<br>(Back-End) </a> <br>  INFRA <br>
+피드 API <br>
+ YOLO AI</td>
         <td height="140px" align="center"> <a href="https://github.com/hyungorithm">
-            <img src="https://github.com/user-attachments/assets/beb7be4a-b265-4530-8059-3bb3c7990eb7" width="140px" /> <br><br> 🦦 김성현<br>(Back-End) </a> <br></td>
+            <img src="https://github.com/user-attachments/assets/beb7be4a-b265-4530-8059-3bb3c7990eb7" width="140px" /> <br><br> 🦦 김성현<br>(Back-End) </a> <br> 옷장 API <br>
+의류 API</td>
     </tr>
 </table>
 
