@@ -1,5 +1,3 @@
-# ReadMe
-
 ## 소개
 
 ### 📖 개요  
@@ -33,16 +31,16 @@
 
 ### 🎯 주요 페이지 및 기능
 
-#### 메인화면  
+## 메인화면  
 <img src="https://github.com/user-attachments/assets/79d6eff8-f460-4bbe-b248-4a6eb6b02a40" width="300" height="500">
 
-#### 개인의류 등록  
+## 개인의류 등록  
 <div style="display: flex;">
     <img src="https://github.com/user-attachments/assets/040a6993-1fe7-4ab4-957e-45cfb2a20bcd" width="300" height="500">
     <img src="https://github.com/user-attachments/assets/163da62a-6556-4247-950f-94f37914deec" width="300" height="500">
 </div>
 
-#### 상품 상세보기  
+## 상품 상세보기  
 <img src="https://github.com/user-attachments/assets/b32eceec-5e3c-4378-a373-8c9e79d70a01" width="300" height="500">
 
 # 색상 필터링 및 색상 기반 추천
@@ -51,9 +49,7 @@
 
 ---
 
-# 옷장 개인 의류 추가
-
-### 개인 의류 추가 전 후
+## 옷장 개인 의류 추가 (개인 의류 추가 전 후)
 <div style="display: flex;">
     <img src="https://github.com/user-attachments/assets/d9284649-6e30-49f2-92d5-50e9c9765b98" width="300" height="500">
     <img src="https://github.com/user-attachments/assets/1b456b37-6541-4a70-bdb6-fc744ec137fc" width="300" height="500">
@@ -61,17 +57,17 @@
 
 ---
 
-# 좋아요한 피팅
+## 좋아요한 피팅
 <img src="https://github.com/user-attachments/assets/2b6406da-c8ed-4be7-ad37-edd4a8747913" width="300" height="500">
 
 ---
 
-# 피드
+## 피드
 <img src="https://github.com/user-attachments/assets/71e74cc1-3f81-46b0-9a73-c4b83a8d3925" width="300" height="500">
 
 ---
 
-# 피팅 (합성, 결과 상세보기, 결과) 화면
+## 피팅 (합성, 결과 상세보기, 결과) 화면
  
 <div style="display: flex;">
     <img src="https://github.com/user-attachments/assets/5a880585-6667-4fe5-ba14-4d86a31b63c8" width="300" height="500">
@@ -239,9 +235,6 @@
 
 👦 팀원
 
-(웹 페이지 등록)
-
-### 팀원 역할 상세
 
 ### 📣 소감
 
