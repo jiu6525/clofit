@@ -80,13 +80,11 @@
 # 피팅
 
 ### 피팅 합성 화면  
-<img src="https://github.com/user-attachments/assets/5a880585-6667-4fe5-ba14-4d86a31b63c8" width="300" height="500">
-
-### 피팅 결과 상세보기  
-<img src="https://github.com/user-attachments/assets/f9734246-3d39-4733-99a0-7051cf230acc" width="300" height="500">
-
-### 피팅 결과 화면  
-<img src="https://github.com/user-attachments/assets/990c2dc0-39e8-4f3f-819b-8648635b1abc" width="300" height="500">
+<div style="display: flex;">
+    <img src="https://github.com/user-attachments/assets/5a880585-6667-4fe5-ba14-4d86a31b63c8" width="300" height="500">
+    <img src="https://github.com/user-attachments/assets/f9734246-3d39-4733-99a0-7051cf230acc" width="300" height="500">
+    <img src="https://github.com/user-attachments/assets/990c2dc0-39e8-4f3f-819b-8648635b1abc" width="300" height="500">
+</div>
 
 ---
 
