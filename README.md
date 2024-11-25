@@ -49,51 +49,48 @@
 </div>
 
 #### 상품 상세보기  
-![상품 상세보기](%25EC%2583%2581%25ED%2592%2588_%25EC%2583%2581%25EC%2584%25B8%25EB%25B3%25B4%25EA%25B8%25B0.png)
+![상품 상세보기](https://github.com/user-attachments/assets/b32eceec-5e3c-4378-a373-8c9e79d70a01)
 
   
 # 색상 필터링 및 색상 기반 추천
 
-![색상 필터링](%EC%83%89%EC%83%81_%ED%95%84%ED%84%B0%EB%A7%81.png)  
-![색상 추천](%EC%83%89%EC%83%81%ED%95%84%ED%84%B0%EB%A7%81_%EC%B6%94%EC%B2%9C.png)
+![색상 필터링 및 기반 추천1](https://github.com/user-attachments/assets/ac9d2289-0bd4-4db7-9c74-e07cdb7a3ec7)
+![색상 필터링 및 기반 추천2](https://github.com/user-attachments/assets/edbc92a7-2536-4caf-b34e-52a63be7b9d8)
 
 ---
 
 # 옷장 개인 의류 추가
 
-### 상의만 추가 화면  
-![상의만 추가](%EC%98%B7%EC%9E%A5_%EC%83%81%EC%9D%98%EB%A7%8C.png)  
-
 ### 개인 의류 추가 전  
-![추가 전](%EC%98%B7%EC%9E%A5_%EA%B0%9C%EC%9D%B8%EC%9D%98%EB%A5%98%EC%B6%94%EA%B0%80%EC%A0%84.png)  
+![옷장 개인 의류 추가1](https://github.com/user-attachments/assets/d9284649-6e30-49f2-92d5-50e9c9765b98)
 
 ### 개인 의류 추가 후  
-![상의만 추가 후](%EC%98%B7%EC%9E%A5_%EC%83%81%EC%9D%98%EB%A7%8C%201.png)  
+![옷장 개인 의류 추가2](https://github.com/user-attachments/assets/1b456b37-6541-4a70-bdb6-fc744ec137fc)
 
 ---
 
 # 좋아요한 피팅
 
-![좋아요한 피팅](%EC%A2%8B%EC%95%84%EC%9A%94%ED%95%9C%ED%94%BC%ED%8C%85.png)
+![좋아요한 피팅](https://github.com/user-attachments/assets/2b6406da-c8ed-4be7-ad37-edd4a8747913)
 
 ---
 
 # 피드
 
-![피드](%ED%94%BC%EB%93%9C.png)
+![피드](https://github.com/user-attachments/assets/71e74cc1-3f81-46b0-9a73-c4b83a8d3925)
 
 ---
 
 # 피팅
 
 ### 피팅 합성 화면  
-![피팅 합성](%ED%94%BC%ED%8C%85_%ED%95%A9%EC%84%B1.png)
+![피팅 합성](https://github.com/user-attachments/assets/5a880585-6667-4fe5-ba14-4d86a31b63c8)
 
 ### 피팅 결과 상세보기  
-![결과 상세](%ED%94%BC%ED%8C%85%EA%B2%B0%EA%B3%BC%EC%83%81%EC%84%B8%EB%B3%B4%EA%B8%B0.png)
+![결과 상세](https://github.com/user-attachments/assets/f9734246-3d39-4733-99a0-7051cf230acc)
 
 ### 피팅 결과 화면  
-![결과 화면](%ED%94%BC%ED%8C%85%EA%B2%B0%EA%B3%BC%ED%99%94%EB%A9%B4.png)
+![결과 화면](https://github.com/user-attachments/assets/990c2dc0-39e8-4f3f-819b-8648635b1abc)
 
 ---
 
@@ -107,18 +104,18 @@
 ### API 명세서
 - API 명세서(세부)
 
-![이미지1](image.png)
-![이미지2](image%201.png)
+![API명세1](https://github.com/user-attachments/assets/b52d462c-7d8a-4abf-98af-5b984128dccf)
+![API명세2](https://github.com/user-attachments/assets/1689e9be-2e43-4ced-a5f7-039438f0c481)
 
 ---
 
 ### ERD
-![ERD](5971cfa6-9e85-4bf2-92ff-b77b3b24744b.png)
+![erd](https://github.com/user-attachments/assets/fb581247-0d29-4533-ab7c-428e60bd394f)
 
 ---
 
 ### 시스템 구조도
-![시스템 구조도](image%202.png)
+![시스템 구조도](https://github.com/user-attachments/assets/5616e06c-c850-4163-8fe1-b11781cc107a)
 
 ---
 
@@ -127,16 +124,16 @@
 | -------------- | -------------- | -------------- |
 |                |                |                |
 
-![번다운 차트1](image%203.png)
-![번다운 차트2](image%204.png)
-![번다운 차트3](image%205.png)
+![번다운 차트1](https://github.com/user-attachments/assets/635865b2-63f5-4fce-8e4d-1260f168d481)
+![번다운 차트2](https://github.com/user-attachments/assets/448df425-81bf-4d10-affc-c9839067255e)
+![번다운 차트3](https://github.com/user-attachments/assets/b50c76f7-cc55-4a4d-b569-64c1aeaae0ca)
 
 | 4주차 스프린트 | 5주차 스프린트 | 6주차 스프린트 |
 | -------------- | -------------- | -------------- |
 |                |                |                |
 
-![번다운 차트4](image%206.png)
-![번다운 차트5](image%207.png)
+![번다운 차트4](https://github.com/user-attachments/assets/65b7ec37-5982-4fc9-9589-171a55c59c81)
+![번다운 차트5](https://github.com/user-attachments/assets/c154df6e-b446-4539-8105-dbe3e1d726ea)
 
 ---
 
