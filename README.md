@@ -231,17 +231,17 @@
     <tr>
         <td align="center">
             <a href="https://github.com/kkkhhh4930"><img src="https://github.com/user-attachments/assets/9244bfd2-8f59-4b96-960e-a6d7c740dbd6" width="200px;" height="200px;" alt=""/><br />
-                <sub><b> 강현후 </b></sub>
+                <sub><b> <h2> 강현후 </h2> </b></sub>
             </a><br />
         </td>
         <td align="center">
             <a href="https://github.com/yjjj1612"><img src="https://github.com/user-attachments/assets/aaf3be42-4628-4dac-b8ef-9e5bc6cb0201" width="200px;" height="200px;" alt=""/><br />
-                <sub><b> 손유진 </b></sub>
+                <sub><b> <h3> 손유진 </h3> </b></sub>
             </a><br />
         </td>
         <td align="center">
             <a href="https://github.com/jiu6525"><img src="https://github.com/user-attachments/assets/506c294d-750c-41cd-8f54-474e1774c55d" width="200px;" height="200px;" alt=""/><br />
-                <sub><b> 강지우 </b></sub>
+                <sub><b> <h4> 강지우 </h4> </b></sub>
             </a><br />
         </td>
         <td align="center">
