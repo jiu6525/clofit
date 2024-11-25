@@ -12,7 +12,7 @@
 
 ### 📖 개요  
 👏 SSAFY 11기 2학기 자율 프로젝트 👏  
->2024.10.14 ~ 2024.11.19 (6주)**
+>2024.10.14 ~ 2024.11.19 (6주)
 
 <br/>
 
@@ -113,24 +113,28 @@
 
 ---
 
-## 시스템 구조도
-<img src="https://github.com/user-attachments/assets/5616e06c-c850-4163-8fe1-b11781cc107a" width="700" height="500">
+|                   시스템 구조도                   |
+| :-----------------------------------------------: |
+| ![시스템구조도](https://github.com/user-attachments/assets/5616e06c-c850-4163-8fe1-b11781cc107a) |
 
 ---
 
 ## 지라 번다운 차트
-| 1주차 스프린트 | 2주차 스프린트 | 3주차 스프린트 | <br>
-<img src="https://github.com/user-attachments/assets/635865b2-63f5-4fce-8e4d-1260f168d481" width="500" height="500">
-<img src="https://github.com/user-attachments/assets/448df425-81bf-4d10-affc-c9839067255e" width="500" height="500">
-<img src="https://github.com/user-attachments/assets/b50c76f7-cc55-4a4d-b569-64c1aeaae0ca" width="500" height="500">
+|                 1주차 스프린트                  |                 2주차 스프린트                  |                 3주차 스프린트                  |
+| :---------------------------------------------: | :---------------------------------------------: | :---------------------------------------------: |
+| ![번다운차트2](https://github.com/user-attachments/assets/635865b2-63f5-4fce-8e4d-1260f168d481) | ![번다운차트3](https://github.com/user-attachments/assets/448df425-81bf-4d10-affc-c9839067255e) | ![번다운차트4](https://github.com/user-attachments/assets/b50c76f7-cc55-4a4d-b569-64c1aeaae0ca) |
 
-| 4주차 스프린트 | 5주차 스프린트 | <br>
-<img src="https://github.com/user-attachments/assets/65b7ec37-5982-4fc9-9589-171a55c59c81" width="500" height="500">
-<img src="https://github.com/user-attachments/assets/c154df6e-b446-4539-8105-dbe3e1d726ea" width="500" height="500">
+|                  4주차 스프린트                  |                  5주차 스프린트                  |                  6주차 스프린트                  |
+| :----------------------------------------------: | :----------------------------------------------: | :----------------------------------------------: |
+| ![번다운차트2](https://github.com/user-attachments/assets/65b7ec37-5982-4fc9-9589-171a55c59c81) | ![번다운차트3](/image/Jira_번다운차트_5주차.PNG) | ![번다운차트4](https://github.com/user-attachments/assets/c154df6e-b446-4539-8105-dbe3e1d726ea) |
 
+<br>
 
+[🔼 목차로 돌아가기](#목차)
+
+<br/>
 ---
-    
+
 # 📚 파일 구조도
 
 ## FrontEnd
@@ -246,7 +250,12 @@
                 - 📂 repository
                 - 📂 service
             - 📂 resources
+            - 
+<br>
 
+[🔼 목차로 돌아가기](#목차)
+
+<br/>
 
 ### 마치며
 
