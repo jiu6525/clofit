@@ -44,8 +44,8 @@
 
 #### 개인의류 등록  
 <div style="display: flex;">
-    <img src="%25EA%25B0%259C%25EC%259D%25B8%25EC%259D%2598%25EB%25A5%2598%25EB%2593%25B1%25EB%25A1%259D.png" width="50%">
-    <img src="%25EC%2583%2581%25ED%2592%2588%25EC%2583%2581%25EC%2584%25B8%25EB%25B3%25B4%25EA%25B8%25B0.png" width="50%">
+    <img src="https://github.com/user-attachments/assets/040a6993-1fe7-4ab4-957e-45cfb2a20bcd" width="50%">
+    <img src="https://github.com/user-attachments/assets/163da62a-6556-4247-950f-94f37914deec" width="50%">
 </div>
 
 #### 상품 상세보기  
