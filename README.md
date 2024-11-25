@@ -228,7 +228,18 @@
 ### 마치며
 
 👦 팀원
-
+<table>
+  <tbody>
+    <tr>
+        <td align="center"><a href="깃허브 주소"><img src="이미지주소" width="100px;" alt=""/><br /><sub><b> 강현후 </b></sub></a><br /></td>
+        <td align="center"><a href="깃허브 주소"><img src="이미지주소" width="100px;" alt=""/><br /><sub><b> 손유진 </b></sub></a><br /></td>
+        <td align="center"><a href="(https://github.com/jiu6525)"><img src="이미지주소" width="100px;" alt=""/><br /><sub><b> 강지우 </b></sub></a><br /></td>
+        <td align="center"><a href="깃허브 주소"><img src="이미지주소" width="100px;" alt=""/><br /><sub><b> 김연동 </b></sub></a><br /></td>
+        <td align="center"><a href="깃허브 주소"><img src="이미지주소" width="100px;" alt=""/><br /><sub><b> 임 권 </b></sub></a><br /></td>
+        <td align="center"><a href="깃허브 주소"><img src="이미지주소" width="100px;" alt=""/><br /><sub><b> 김성현 </b></sub></a><br /></td>
+    </tr>
+  </tbody>
+</table>
 
 ### 📣 소감
 
