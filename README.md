@@ -102,7 +102,8 @@
 
 |                                      API 명세서                                         |
 | :--------------------------------------: | :------------------------------------------: |
-| ![API명세서](https://github.com/user-attachments/assets/b52d462c-7d8a-4abf-98af-5b984128dccf) | ![API 상세](https://github.com/user-attachments/assets/1689e9be-2e43-4ced-a5f7-039438f0c481)) |
+| ![API명세서](https://github.com/user-attachments/assets/b52d462c-7d8a-4abf-98af-5b984128dccf) | ![API 상세](https://github.com/user-attachments/assets/1689e9be-2e43-4ced-a5f7-039438f0c481) |
+
 
 
 ---
@@ -124,9 +125,9 @@
 | :---------------------------------------------: | :---------------------------------------------: | :---------------------------------------------: |
 | ![번다운차트2](https://github.com/user-attachments/assets/635865b2-63f5-4fce-8e4d-1260f168d481) | ![번다운차트3](https://github.com/user-attachments/assets/448df425-81bf-4d10-affc-c9839067255e) | ![번다운차트4](https://github.com/user-attachments/assets/b50c76f7-cc55-4a4d-b569-64c1aeaae0ca) |
 
-|                  4주차 스프린트                  |                  5주차 스프린트                  |                  6주차 스프린트                  |
-| :----------------------------------------------: | :----------------------------------------------: | :----------------------------------------------: |
-| ![번다운차트2](https://github.com/user-attachments/assets/65b7ec37-5982-4fc9-9589-171a55c59c81) | ![번다운차트3](/image/Jira_번다운차트_5주차.PNG) | ![번다운차트4](https://github.com/user-attachments/assets/c154df6e-b446-4539-8105-dbe3e1d726ea) |
+|                  4주차 스프린트                  |                  5주차 스프린트                  |
+| :----------------------------------------------: | :----------------------------------------------: |
+| ![번다운차트2](https://github.com/user-attachments/assets/65b7ec37-5982-4fc9-9589-171a55c59c81) | ![번다운차트3](https://github.com/user-attachments/assets/c154df6e-b446-4539-8105-dbe3e1d726ea) |
 
 <br>
 
@@ -250,7 +251,7 @@
                 - 📂 repository
                 - 📂 service
             - 📂 resources
-            - 
+       
 <br>
 
 [🔼 목차로 돌아가기](#목차)
