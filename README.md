@@ -240,9 +240,11 @@
             </a><br />
         </td>
         <td align="center">
-            <a href="https://github.com/jiu6525"><img src="https://github.com/user-attachments/assets/506c294d-750c-41cd-8f54-474e1774c55d" width="200px;" height="200px;" alt=""/><br />
-                <sub><b> <h4> 강지우 </h4> </b></sub>
-            </a><br />
+            <h4>
+               <a href="https://github.com/jiu6525"><img src="https://github.com/user-attachments/assets/506c294d-750c-41cd-8f54-474e1774c55d" width="200px;" height="200px;" alt=""/><br />
+                   <sub><b>  강지우  </b></sub>
+               </a><br />
+            </h4>         
         </td>
         <td align="center">
             <a href="https://github.com/kinterlocked"><img src="https://github.com/user-attachments/assets/67ce3b54-8f22-4435-a43d-7faf220ffd52" width="200px;" height="200px;" alt=""/><br />
