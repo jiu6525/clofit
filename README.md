@@ -230,34 +230,32 @@
   <tbody>
     <tr>
         <td align="center">
-            <a href="https://github.com/kkkhhh4930"><img src="https://github.com/user-attachments/assets/9244bfd2-8f59-4b96-960e-a6d7c740dbd6" width="200px;" height="200px;" alt=""/><br />
-                <sub><b> <h2> 강현후 </h2> </b></sub>
+            <a href="https://github.com/kkkhhh4930"><img src="https://github.com/user-attachments/assets/9244bfd2-8f59-4b96-960e-a6d7c740dbd6" width="200px;" height="100px;" alt=""/><br />
+                <sub><b> 강현후 </b></sub>
             </a><br />
         </td>
         <td align="center">
-            <a href="https://github.com/yjjj1612"><img src="https://github.com/user-attachments/assets/aaf3be42-4628-4dac-b8ef-9e5bc6cb0201" width="200px;" height="200px;" alt=""/><br />
-                <sub><b> <h3> 손유진 </h3> </b></sub>
+            <a href="https://github.com/yjjj1612"><img src="https://github.com/user-attachments/assets/aaf3be42-4628-4dac-b8ef-9e5bc6cb0201" width="200px;" height="100px;" alt=""/><br />
+                <sub><b> 손유진  </b></sub>
             </a><br />
         </td>
         <td align="center">
-            <h4>
-               <a href="https://github.com/jiu6525"><img src="https://github.com/user-attachments/assets/506c294d-750c-41cd-8f54-474e1774c55d" width="200px;" height="200px;" alt=""/><br />
+               <a href="https://github.com/jiu6525"><img src="https://github.com/user-attachments/assets/506c294d-750c-41cd-8f54-474e1774c55d" width="200px;" height="100px;" alt=""/><br />
                    <sub><b>  강지우  </b></sub>
                </a><br />
-            </h4>         
         </td>
         <td align="center">
-            <a href="https://github.com/kinterlocked"><img src="https://github.com/user-attachments/assets/67ce3b54-8f22-4435-a43d-7faf220ffd52" width="200px;" height="200px;" alt=""/><br />
+            <a href="https://github.com/kinterlocked"><img src="https://github.com/user-attachments/assets/67ce3b54-8f22-4435-a43d-7faf220ffd52" width="200px;" height="100px;" alt=""/><br />
                 <sub><b> 김연동 </b></sub>
             </a><br />
         </td>
         <td align="center">
-            <a href="https://github.com/Al17OTON"><img src="https://github.com/user-attachments/assets/d1b3e393-1753-4763-91ee-b35996aec8d3" width="200px;" height="200px;" alt=""/><br />
+            <a href="https://github.com/Al17OTON"><img src="https://github.com/user-attachments/assets/d1b3e393-1753-4763-91ee-b35996aec8d3" width="200px;" height="100px;" alt=""/><br />
                 <sub><b> 임 권 </b></sub>
             </a><br />
         </td>
         <td align="center">
-            <a href="https://github.com/hyungorithm"><img src="https://github.com/user-attachments/assets/beb7be4a-b265-4530-8059-3bb3c7990eb7" width="200px;" height="200px;" alt=""/><br />
+            <a href="https://github.com/hyungorithm"><img src="https://github.com/user-attachments/assets/beb7be4a-b265-4530-8059-3bb3c7990eb7" width="200px;" height="100px;" alt=""/><br />
                 <sub><b> 김성현 </b></sub>
             </a><br />
         </td>
