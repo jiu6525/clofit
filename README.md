@@ -1,11 +1,33 @@
+### 목차
+
+| [소개](#소개)                               | [구현](#구현)                                           | [마치며](#마치며)                           |
+| :------------------------------------------ | :------------------------------------------------------ | :------------------------------------------ |
+| [:book: 개요](#book-개요)                   | [:dart: 주요 페이지 및 기능](#dart-주요-페이지-및-기능) | [:boy: 팀원](#boy-팀원)                     |
+| [:bulb: 프로젝트 기획](#bulb-프로젝트-기획) | [:rocket: 기능시연](#rocket-기능시연)                   | [:mega: 소감](#mega-소감)                   |
+| [:cactus: 빌드 환경](#cactus-빌드-환경)     | [:eyes: 산출물](#eyes-산출물)                           | [:seedling: 회고 기록](#seedling-회고-기록) |
+|                                             | [:books: 파일 구조도](#books-파일-구조도)               |                                             |
+
+
 ## 소개
 
 ### 📖 개요  
 👏 SSAFY 11기 2학기 자율 프로젝트 👏  
-    **2024.10.14 ~ 2024.11.19 (6주)**  
+>2024.10.14 ~ 2024.11.19 (6주)**
+
+<br/>
+
+[🔼 목차로 돌아가기](#목차)
+
+<br/>
 
 ### 💡 프로젝트 기획
 현대의 소비자들은 자신의 스타일과 취향에 맞는 의류를 선택하는 데 많은 시간을 투자하고 있으며, 다양한 패션 아이템을 쉽게 찾고, 적합한 스타일을 추천받고자 하는 욕구가 커지고 있습니다. 특히, 온라인 쇼핑에서는 다양한 상품을 선택할 수 있는 장점이 있지만, 실제 착용감을 확인할 수 없다는 단점이 존재합니다. 이러한 문제를 해결하기 위해, 우리는 AI 딥러닝 모델을 사용한 가상 피팅을 통해 의류의 착용감을 시각적으로 확인하여 소비자에게 차별화된 가치를 제공하는 웹애플리케이션 프로젝트를 진행하였습니다.
+
+<br/>
+
+[🔼 목차로 돌아가기](#목차)
+
+<br/>
 
 ## 🌵 빌드 환경
 
@@ -22,6 +44,11 @@
 |                     | fastAPI 0.115.4                  |                    |                         |                          |
 |                     | selenium                         |                    |                         |                          |
 
+<br/>
+
+[🔼 목차로 돌아가기](#목차)
+
+<br/>
 
 ---
 
@@ -45,25 +72,17 @@
 <img src="https://github.com/user-attachments/assets/ac9d2289-0bd4-4db7-9c74-e07cdb7a3ec7" width="300" height="500">
 <img src="https://github.com/user-attachments/assets/edbc92a7-2536-4caf-b34e-52a63be7b9d8" width="300" height="500">
 
----
-
 ### 옷장 개인 의류 추가 (개인 의류 추가 전 후)
 <div style="display: flex;">
     <img src="https://github.com/user-attachments/assets/d9284649-6e30-49f2-92d5-50e9c9765b98" width="300" height="500">
     <img src="https://github.com/user-attachments/assets/1b456b37-6541-4a70-bdb6-fc744ec137fc" width="300" height="500">
 </div>
 
----
-
 ### 좋아요한 피팅
 <img src="https://github.com/user-attachments/assets/2b6406da-c8ed-4be7-ad37-edd4a8747913" width="300" height="500">
 
----
-
 ### 피드
 <img src="https://github.com/user-attachments/assets/71e74cc1-3f81-46b0-9a73-c4b83a8d3925" width="300" height="500">
-
----
 
 ### 피팅 (합성, 결과 상세보기, 결과) 화면
  
@@ -73,18 +92,24 @@
     <img src="https://github.com/user-attachments/assets/990c2dc0-39e8-4f3f-819b-8648635b1abc" width="300" height="500">
 </div>
 
----
+<br/>
+
+[🔼 목차로 돌아가기](#목차)
+
+<br/>
 
 # 👀 산출물
 
-## API 명세서
-<img src="https://github.com/user-attachments/assets/b52d462c-7d8a-4abf-98af-5b984128dccf" width="500" height="500">
-<img src="https://github.com/user-attachments/assets/1689e9be-2e43-4ced-a5f7-039438f0c481" width="500" height="500">
+|                                      API 명세서                                         |
+| :--------------------------------------: | :------------------------------------------: |
+| ![API명세서](https://github.com/user-attachments/assets/b52d462c-7d8a-4abf-98af-5b984128dccf) | ![API 상세](https://github.com/user-attachments/assets/1689e9be-2e43-4ced-a5f7-039438f0c481)) |
+
 
 ---
 
-## ERD
-<img src="https://github.com/user-attachments/assets/fb581247-0d29-4533-ab7c-428e60bd394f" width="500" height="500">
+|             ERD              |
+| :--------------------------: |
+| ![ERD](https://github.com/user-attachments/assets/fb581247-0d29-4533-ab7c-428e60bd394f) |
 
 ---
 
@@ -227,40 +252,20 @@
 
 👦 팀원
 <table>
-  <tbody>
     <tr>
-        <td align="center">
-            <a href="https://github.com/kkkhhh4930"><img src="https://github.com/user-attachments/assets/9244bfd2-8f59-4b96-960e-a6d7c740dbd6" width="200px;" height="100px;" alt=""/><br />
-                <sub><b> 강현후 </b></sub>
-            </a><br />
-        </td>
-        <td align="center">
-            <a href="https://github.com/yjjj1612"><img src="https://github.com/user-attachments/assets/aaf3be42-4628-4dac-b8ef-9e5bc6cb0201" width="200px;" height="100px;" alt=""/><br />
-                <sub><b> 손유진  </b></sub>
-            </a><br />
-        </td>
-        <td align="center">
-               <a href="https://github.com/jiu6525"><img src="https://github.com/user-attachments/assets/506c294d-750c-41cd-8f54-474e1774c55d" width="200px;" height="100px;" alt=""/><br />
-                   <sub><b>  강지우  </b></sub>
-               </a><br />
-        </td>
-        <td align="center">
-            <a href="https://github.com/kinterlocked"><img src="https://github.com/user-attachments/assets/67ce3b54-8f22-4435-a43d-7faf220ffd52" width="200px;" height="100px;" alt=""/><br />
-                <sub><b> 김연동 </b></sub>
-            </a><br />
-        </td>
-        <td align="center">
-            <a href="https://github.com/Al17OTON"><img src="https://github.com/user-attachments/assets/d1b3e393-1753-4763-91ee-b35996aec8d3" width="200px;" height="100px;" alt=""/><br />
-                <sub><b> 임 권 </b></sub>
-            </a><br />
-        </td>
-        <td align="center">
-            <a href="https://github.com/hyungorithm"><img src="https://github.com/user-attachments/assets/beb7be4a-b265-4530-8059-3bb3c7990eb7" width="200px;" height="100px;" alt=""/><br />
-                <sub><b> 김성현 </b></sub>
-            </a><br />
-        </td>
+        <td height="140px" align="center"> <a href="https://github.com/kkkhhh4930">
+            <img src="https://github.com/user-attachments/assets/9244bfd2-8f59-4b96-960e-a6d7c740dbd6" width="140px" /> <br><br> 👑 강현후<br>(팀장/Front-End) </a> <br></td>
+        <td height="140px" align="center"> <a href="https://github.com/yjjj1612">
+            <img src="https://github.com/user-attachments/assets/aaf3be42-4628-4dac-b8ef-9e5bc6cb0201" width="140px" /> <br><br> 🎀 손유진<br>(Front-End) </a> <br></td>
+        <td height="140px" align="center"> <a href="https://github.com/jiu6525">
+            <img src="https://github.com/user-attachments/assets/506c294d-750c-41cd-8f54-474e1774c55d" width="140px" /> <br><br> 🐲 강지우<br>(Back-End) </a> <br></td>
+        <td height="140px" align="center"> <a href="https://github.com/kinterlocked">
+            <img src="https://github.com/user-attachments/assets/67ce3b54-8f22-4435-a43d-7faf220ffd52" width="140px" /> <br><br> 🌳 김연동<br>(Back-End) </a> <br></td>
+        <td height="140px" align="center"> <a href="https://github.com/Al17OTON">
+            <img src="https://github.com/user-attachments/assets/d1b3e393-1753-4763-91ee-b35996aec8d3" width="140px" /> <br><br> 🧸 임 권<br>(Back-End) </a> <br></td>
+        <td height="140px" align="center"> <a href="https://github.com/hyungorithm">
+            <img src="https://github.com/user-attachments/assets/beb7be4a-b265-4530-8059-3bb3c7990eb7" width="140px" /> <br><br> 🦦 김성현<br>(Back-End) </a> <br></td>
     </tr>
-  </tbody>
 </table>
 
 ### 📣 소감
