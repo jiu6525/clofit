@@ -282,8 +282,8 @@
 피팅 API <br>
 시큐리티</td>
         <td height="140px" align="center"> <a href="https://github.com/kinterlocked">
-            <img src="https://github.com/user-attachments/assets/67ce3b54-8f22-4435-a43d-7faf220ffd52" width="140px" /> <br><br> 🌳 김연동<br>(Back-End) </a> <br> 유저 API,
-모델 API <br>
+            <img src="https://github.com/user-attachments/assets/67ce3b54-8f22-4435-a43d-7faf220ffd52" width="140px" /> <br><br> 🌳 김연동<br>(Back-End) </a> <br> 유저,
+모델 API <br> 
 크롤링,
 시큐리티</td>
         <td height="140px" align="center"> <a href="https://github.com/Al17OTON">
@@ -291,8 +291,8 @@
 피드 API <br>
  YOLO AI</td>
         <td height="140px" align="center"> <a href="https://github.com/hyungorithm">
-            <img src="https://github.com/user-attachments/assets/beb7be4a-b265-4530-8059-3bb3c7990eb7" width="140px" /> <br><br> 🦦 김성현<br>(Back-End) </a> <br> 옷장 API <br>
-의류 API</td>
+            <img src="https://github.com/user-attachments/assets/beb7be4a-b265-4530-8059-3bb3c7990eb7" width="140px" /> <br><br> 🦦 김성현<br>(Back-End) </a> <br> 옷장,
+의류<br> API</td>
     </tr>
 </table>
 
