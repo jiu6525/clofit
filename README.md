@@ -6,7 +6,7 @@
 
 ### 💡 프로젝트 기획
 
-#### 배경  
+### 배경  
 ---
 
 ## 🌵 빌드 환경
@@ -102,12 +102,12 @@
 ---
 
 ## 지라 번다운 차트
-| 1주차 스프린트 | 2주차 스프린트 | 3주차 스프린트 |
+| 1주차 스프린트 | 2주차 스프린트 | 3주차 스프린트 | <br>
 <img src="https://github.com/user-attachments/assets/635865b2-63f5-4fce-8e4d-1260f168d481" width="500" height="500">
 <img src="https://github.com/user-attachments/assets/448df425-81bf-4d10-affc-c9839067255e" width="500" height="500">
 <img src="https://github.com/user-attachments/assets/b50c76f7-cc55-4a4d-b569-64c1aeaae0ca" width="500" height="500">
 
-| 4주차 스프린트 | 5주차 스프린트 |
+| 4주차 스프린트 | 5주차 스프린트 | <br>
 <img src="https://github.com/user-attachments/assets/65b7ec37-5982-4fc9-9589-171a55c59c81" width="500" height="500">
 <img src="https://github.com/user-attachments/assets/c154df6e-b446-4539-8105-dbe3e1d726ea" width="500" height="500">
 
