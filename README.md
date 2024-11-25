@@ -6,14 +6,9 @@
 👏 SSAFY 11기 2학기 자율 프로젝트 👏  
 **2024.10.14 ~ 2024.11.19 (6주)**  
 
-**(깃허브 메인 이동 버튼 추가)**  
-
 ### 💡 프로젝트 기획
 
 #### 배경  
----  
-**(깃허브 메인 이동 버튼 추가)**  
-
 ---
 
 ## 🌵 빌드 환경
@@ -31,7 +26,6 @@
 |                     | fastAPI 0.115.4                  |                    |                         |                          |
 |                     | selenium                         |                    |                         |                          |
 
-**(깃허브 메인 이동 버튼 추가)**  
 
 ---
 
@@ -85,18 +79,15 @@
     <img src="https://github.com/user-attachments/assets/990c2dc0-39e8-4f3f-819b-8648635b1abc" width="300" height="500">
 </div>
 
+---
 
+### 👀 산출물
 
+## 요구사항명세서
 
 ---
 
-## 👀 산출물
-
-### 요구사항명세서
-
----
-
-### API 명세서
+## API 명세서
 - API 명세서(세부)
 
 <img src="https://github.com/user-attachments/assets/b52d462c-7d8a-4abf-98af-5b984128dccf" width="500" height="500">
@@ -104,40 +95,30 @@
 
 ---
 
-### ERD
+## ERD
 <img src="https://github.com/user-attachments/assets/fb581247-0d29-4533-ab7c-428e60bd394f" width="500" height="500">
 
 ---
 
-### 시스템 구조도
-<img src="https://github.com/user-attachments/assets/5616e06c-c850-4163-8fe1-b11781cc107a" width="500" height="500">
+## 시스템 구조도
+<img src="https://github.com/user-attachments/assets/5616e06c-c850-4163-8fe1-b11781cc107a" width="700" height="500">
 
 ---
 
-### 지라 번다운 차트
+## 지라 번다운 차트
 | 1주차 스프린트 | 2주차 스프린트 | 3주차 스프린트 |
-| -------------- | -------------- | -------------- |
-|                |                |                |
-
 <img src="https://github.com/user-attachments/assets/635865b2-63f5-4fce-8e4d-1260f168d481" width="500" height="500">
 <img src="https://github.com/user-attachments/assets/448df425-81bf-4d10-affc-c9839067255e" width="500" height="500">
 <img src="https://github.com/user-attachments/assets/b50c76f7-cc55-4a4d-b569-64c1aeaae0ca" width="500" height="500">
 
-| 4주차 스프린트 | 5주차 스프린트 | 6주차 스프린트 |
-| -------------- | -------------- | -------------- |
-|                |                |                |
-
+| 4주차 스프린트 | 5주차 스프린트 |
 <img src="https://github.com/user-attachments/assets/65b7ec37-5982-4fc9-9589-171a55c59c81" width="500" height="500">
 <img src="https://github.com/user-attachments/assets/c154df6e-b446-4539-8105-dbe3e1d726ea" width="500" height="500">
 
 
 ---
-
-### 최종발표 PPT
     
-### (깃허브 메인 이동 버튼 추가)
-
-📚 파일 구조도
+### 📚 파일 구조도
 
 ## FrontEnd
 
@@ -254,8 +235,6 @@
             - 📂 resources
 
 
-## (깃허브 메인 이동 버튼 추가)
-
 ### 마치며
 
 👦 팀원
@@ -263,8 +242,6 @@
 (웹 페이지 등록)
 
 ### 팀원 역할 상세
-
-(깃허브 메인 이동 버튼 추가)
 
 ### 📣 소감
 
