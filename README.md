@@ -2,7 +2,7 @@
 
 ### 📖 개요  
 👏 SSAFY 11기 2학기 자율 프로젝트 👏  
-**2024.10.14 ~ 2024.11.19 (6주)**  
+    **2024.10.14 ~ 2024.11.19 (6주)**  
 
 ### 💡 프로젝트 기획
 현대의 소비자들은 자신의 스타일과 취향에 맞는 의류를 선택하는 데 많은 시간을 투자하고 있으며, 다양한 패션 아이템을 쉽게 찾고, 적합한 스타일을 추천받고자 하는 욕구가 커지고 있습니다. 특히, 온라인 쇼핑에서는 다양한 상품을 선택할 수 있는 장점이 있지만, 실제 착용감을 확인할 수 없다는 단점이 존재합니다. 이러한 문제를 해결하기 위해, 우리는 AI 딥러닝 모델을 사용한 가상 피팅을 통해 의류의 착용감을 시각적으로 확인하여 소비자에게 차별화된 가치를 제공하는 웹애플리케이션 프로젝트를 진행하였습니다.
@@ -229,12 +229,36 @@
 <table>
   <tbody>
     <tr>
-        <td align="center"><a href="깃허브 주소"><img src="이미지주소" width="100px;" alt=""/><br /><sub><b> 강현후 </b></sub></a><br /></td>
-        <td align="center"><a href="깃허브 주소"><img src="이미지주소" width="100px;" alt=""/><br /><sub><b> 손유진 </b></sub></a><br /></td>
-        <td align="center"><a href="(https://github.com/jiu6525)"><img src="이미지주소" width="100px;" alt=""/><br /><sub><b> 강지우 </b></sub></a><br /></td>
-        <td align="center"><a href="깃허브 주소"><img src="이미지주소" width="100px;" alt=""/><br /><sub><b> 김연동 </b></sub></a><br /></td>
-        <td align="center"><a href="깃허브 주소"><img src="이미지주소" width="100px;" alt=""/><br /><sub><b> 임 권 </b></sub></a><br /></td>
-        <td align="center"><a href="깃허브 주소"><img src="이미지주소" width="100px;" alt=""/><br /><sub><b> 김성현 </b></sub></a><br /></td>
+        <td align="center">
+            <a href="https://github.com/kkkhhh4930"><img src="https://github.com/user-attachments/assets/9244bfd2-8f59-4b96-960e-a6d7c740dbd6" width="200px;" height="200px;" alt=""/><br />
+                <sub><b> 강현후 </b></sub>
+            </a><br />
+        </td>
+        <td align="center">
+            <a href="https://github.com/yjjj1612"><img src="https://github.com/user-attachments/assets/aaf3be42-4628-4dac-b8ef-9e5bc6cb0201" width="200px;" height="200px;" alt=""/><br />
+                <sub><b> 손유진 </b></sub>
+            </a><br />
+        </td>
+        <td align="center">
+            <a href="https://github.com/jiu6525"><img src="https://github.com/user-attachments/assets/506c294d-750c-41cd-8f54-474e1774c55d" width="200px;" height="200px;" alt=""/><br />
+                <sub><b> 강지우 </b></sub>
+            </a><br />
+        </td>
+        <td align="center">
+            <a href="https://github.com/kinterlocked"><img src="https://github.com/user-attachments/assets/67ce3b54-8f22-4435-a43d-7faf220ffd52" width="200px;" height="200px;" alt=""/><br />
+                <sub><b> 김연동 </b></sub>
+            </a><br />
+        </td>
+        <td align="center">
+            <a href="https://github.com/Al17OTON"><img src="https://github.com/user-attachments/assets/d1b3e393-1753-4763-91ee-b35996aec8d3" width="200px;" height="200px;" alt=""/><br />
+                <sub><b> 임 권 </b></sub>
+            </a><br />
+        </td>
+        <td align="center">
+            <a href="https://github.com/hyungorithm"><img src="https://github.com/user-attachments/assets/beb7be4a-b265-4530-8059-3bb3c7990eb7" width="200px;" height="200px;" alt=""/><br />
+                <sub><b> 김성현 </b></sub>
+            </a><br />
+        </td>
     </tr>
   </tbody>
 </table>
