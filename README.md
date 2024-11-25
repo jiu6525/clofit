@@ -272,7 +272,7 @@
 <table>
     <tr>
         <td height="140px" align="center"> <a href="https://github.com/kkkhhh4930">
-            <img src="https://github.com/user-attachments/assets/9244bfd2-8f59-4b96-960e-a6d7c740dbd6" width="140px" /> <br><br> 👑 강현후<br>(팀장/Front-End) </a> <br> 피팅, 상품,
+            <img src="https://github.com/user-attachments/assets/9244bfd2-8f59-4b96-960e-a6d7c740dbd6" width="140px" /> <br><br> 👑 강현후<br>(팀장/Front-End) </a> <br> 피팅, 상품, <br>
 옷장 페이지</td>
         <td height="140px" align="center"> <a href="https://github.com/yjjj1612">
             <img src="https://github.com/user-attachments/assets/aaf3be42-4628-4dac-b8ef-9e5bc6cb0201" width="140px" /> <br><br> 🎀 손유진<br>(Front-End) </a> <br></td>
