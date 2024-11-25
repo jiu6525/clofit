@@ -99,18 +99,18 @@
 ### API 명세서
 - API 명세서(세부)
 
-<img src="https://github.com/user-attachments/assets/b52d462c-7d8a-4abf-98af-5b984128dccf" width="300" height="500">
-<img src="https://github.com/user-attachments/assets/1689e9be-2e43-4ced-a5f7-039438f0c481" width="300" height="500">
+<img src="https://github.com/user-attachments/assets/b52d462c-7d8a-4abf-98af-5b984128dccf" width="500" height="500">
+<img src="https://github.com/user-attachments/assets/1689e9be-2e43-4ced-a5f7-039438f0c481" width="500" height="500">
 
 ---
 
 ### ERD
-<img src="https://github.com/user-attachments/assets/fb581247-0d29-4533-ab7c-428e60bd394f" width="300" height="500">
+<img src="https://github.com/user-attachments/assets/fb581247-0d29-4533-ab7c-428e60bd394f" width="500" height="500">
 
 ---
 
 ### 시스템 구조도
-<img src="https://github.com/user-attachments/assets/5616e06c-c850-4163-8fe1-b11781cc107a" width="300" height="500">
+<img src="https://github.com/user-attachments/assets/5616e06c-c850-4163-8fe1-b11781cc107a" width="500" height="500">
 
 ---
 
@@ -119,16 +119,16 @@
 | -------------- | -------------- | -------------- |
 |                |                |                |
 
-<img src="https://github.com/user-attachments/assets/635865b2-63f5-4fce-8e4d-1260f168d481" width="300" height="500">
-<img src="https://github.com/user-attachments/assets/448df425-81bf-4d10-affc-c9839067255e" width="300" height="500">
-<img src="https://github.com/user-attachments/assets/b50c76f7-cc55-4a4d-b569-64c1aeaae0ca" width="300" height="500">
+<img src="https://github.com/user-attachments/assets/635865b2-63f5-4fce-8e4d-1260f168d481" width="500" height="500">
+<img src="https://github.com/user-attachments/assets/448df425-81bf-4d10-affc-c9839067255e" width="500" height="500">
+<img src="https://github.com/user-attachments/assets/b50c76f7-cc55-4a4d-b569-64c1aeaae0ca" width="500" height="500">
 
 | 4주차 스프린트 | 5주차 스프린트 | 6주차 스프린트 |
 | -------------- | -------------- | -------------- |
 |                |                |                |
 
-<img src="https://github.com/user-attachments/assets/65b7ec37-5982-4fc9-9589-171a55c59c81" width="300" height="500">
-<img src="https://github.com/user-attachments/assets/c154df6e-b446-4539-8105-dbe3e1d726ea" width="300" height="500">
+<img src="https://github.com/user-attachments/assets/65b7ec37-5982-4fc9-9589-171a55c59c81" width="500" height="500">
+<img src="https://github.com/user-attachments/assets/c154df6e-b446-4539-8105-dbe3e1d726ea" width="500" height="500">
 
 
 ---
