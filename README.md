@@ -1,4 +1,6 @@
-<img src="https://github.com/user-attachments/assets/61486427-9e8e-4731-9e3d-766b3ed24511" alt="서비스 로고">
+| :-----------------------------------------------: |
+| ![logo](https://github.com/user-attachments/assets/61486427-9e8e-4731-9e3d-766b3ed24511) |
+
 
 ### 목차
 
