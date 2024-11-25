@@ -40,7 +40,7 @@
 ### 🎯 주요 페이지 및 기능
 
 #### 메인화면  
-![메인](https://github.com/user-attachments/assets/79d6eff8-f460-4bbe-b248-4a6eb6b02a40)
+![메인](https://github.com/user-attachments/assets/79d6eff8-f460-4bbe-b248-4a6eb6b02a40){: width="500px" height="500px"}
 
 #### 개인의류 등록  
 <div style="display: flex;">
