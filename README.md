@@ -284,7 +284,7 @@
         <td height="140px" align="center"> <a href="https://github.com/kinterlocked">
             <img src="https://github.com/user-attachments/assets/67ce3b54-8f22-4435-a43d-7faf220ffd52" width="140px" /> <br><br> 🌳 김연동<br>(Back-End) </a> <br> 유저 API,
 모델 API <br>
-데이터 크롤링,
+데이터 수집,
 시큐리티</td>
         <td height="140px" align="center"> <a href="https://github.com/Al17OTON">
             <img src="https://github.com/user-attachments/assets/d1b3e393-1753-4763-91ee-b35996aec8d3" width="140px" /> <br><br> 🧸 임 권<br>(Back-End) </a> <br>  INFRA, 
