@@ -59,11 +59,11 @@
 
 # 옷장 개인 의류 추가
 
-### 개인 의류 추가 전  
-<img src="https://github.com/user-attachments/assets/d9284649-6e30-49f2-92d5-50e9c9765b98" width="300" height="500">
-
-### 개인 의류 추가 후  
-<img src="https://github.com/user-attachments/assets/1b456b37-6541-4a70-bdb6-fc744ec137fc" width="300" height="500">
+### 개인 의류 추가 전 후
+<div style="display: flex;">
+    <img src="https://github.com/user-attachments/assets/d9284649-6e30-49f2-92d5-50e9c9765b98" width="300" height="500">
+    <img src="https://github.com/user-attachments/assets/1b456b37-6541-4a70-bdb6-fc744ec137fc" width="300" height="500">
+</div>
 
 ---
 
