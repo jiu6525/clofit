@@ -44,57 +44,52 @@
 
 #### 개인의류 등록  
 <div style="display: flex;">
-    <img src="https://github.com/user-attachments/assets/040a6993-1fe7-4ab4-957e-45cfb2a20bcd" width="50%">
-    <img src="https://github.com/user-attachments/assets/163da62a-6556-4247-950f-94f37914deec" width="50%">
+    <img src="https://github.com/user-attachments/assets/040a6993-1fe7-4ab4-957e-45cfb2a20bcd" width="300" height="500">
+    <img src="https://github.com/user-attachments/assets/163da62a-6556-4247-950f-94f37914deec" width="300" height="500">
 </div>
 
 #### 상품 상세보기  
-![상품 상세보기](https://github.com/user-attachments/assets/b32eceec-5e3c-4378-a373-8c9e79d70a01)
+<img src="https://github.com/user-attachments/assets/b32eceec-5e3c-4378-a373-8c9e79d70a01" width="300" height="500">
 
-  
 # 색상 필터링 및 색상 기반 추천
-
-![색상 필터링 및 기반 추천1](https://github.com/user-attachments/assets/ac9d2289-0bd4-4db7-9c74-e07cdb7a3ec7)
-![색상 필터링 및 기반 추천2](https://github.com/user-attachments/assets/edbc92a7-2536-4caf-b34e-52a63be7b9d8)
+<img src="https://github.com/user-attachments/assets/ac9d2289-0bd4-4db7-9c74-e07cdb7a3ec7" width="300" height="500">
+<img src="https://github.com/user-attachments/assets/edbc92a7-2536-4caf-b34e-52a63be7b9d8" width="300" height="500">
 
 ---
 
 # 옷장 개인 의류 추가
 
 ### 개인 의류 추가 전  
-![옷장 개인 의류 추가1](https://github.com/user-attachments/assets/d9284649-6e30-49f2-92d5-50e9c9765b98)
+<img src="https://github.com/user-attachments/assets/d9284649-6e30-49f2-92d5-50e9c9765b98" width="300" height="500">
 
 ### 개인 의류 추가 후  
-![옷장 개인 의류 추가2](https://github.com/user-attachments/assets/1b456b37-6541-4a70-bdb6-fc744ec137fc)
+<img src="https://github.com/user-attachments/assets/1b456b37-6541-4a70-bdb6-fc744ec137fc" width="300" height="500">
 
 ---
 
 # 좋아요한 피팅
-
-![좋아요한 피팅](https://github.com/user-attachments/assets/2b6406da-c8ed-4be7-ad37-edd4a8747913)
+<img src="https://github.com/user-attachments/assets/2b6406da-c8ed-4be7-ad37-edd4a8747913" width="300" height="500">
 
 ---
 
 # 피드
-
-![피드](https://github.com/user-attachments/assets/71e74cc1-3f81-46b0-9a73-c4b83a8d3925)
+<img src="https://github.com/user-attachments/assets/71e74cc1-3f81-46b0-9a73-c4b83a8d3925" width="300" height="500">
 
 ---
 
 # 피팅
 
 ### 피팅 합성 화면  
-![피팅 합성](https://github.com/user-attachments/assets/5a880585-6667-4fe5-ba14-4d86a31b63c8)
+<img src="https://github.com/user-attachments/assets/5a880585-6667-4fe5-ba14-4d86a31b63c8" width="300" height="500">
 
 ### 피팅 결과 상세보기  
-![결과 상세](https://github.com/user-attachments/assets/f9734246-3d39-4733-99a0-7051cf230acc)
+<img src="https://github.com/user-attachments/assets/f9734246-3d39-4733-99a0-7051cf230acc" width="300" height="500">
 
 ### 피팅 결과 화면  
-![결과 화면](https://github.com/user-attachments/assets/990c2dc0-39e8-4f3f-819b-8648635b1abc)
+<img src="https://github.com/user-attachments/assets/990c2dc0-39e8-4f3f-819b-8648635b1abc" width="300" height="500">
 
 ---
 
-  
 ## 👀 산출물
 
 ### 요구사항명세서
@@ -104,18 +99,18 @@
 ### API 명세서
 - API 명세서(세부)
 
-![API명세1](https://github.com/user-attachments/assets/b52d462c-7d8a-4abf-98af-5b984128dccf)
-![API명세2](https://github.com/user-attachments/assets/1689e9be-2e43-4ced-a5f7-039438f0c481)
+<img src="https://github.com/user-attachments/assets/b52d462c-7d8a-4abf-98af-5b984128dccf" width="300" height="500">
+<img src="https://github.com/user-attachments/assets/1689e9be-2e43-4ced-a5f7-039438f0c481" width="300" height="500">
 
 ---
 
 ### ERD
-![erd](https://github.com/user-attachments/assets/fb581247-0d29-4533-ab7c-428e60bd394f)
+<img src="https://github.com/user-attachments/assets/fb581247-0d29-4533-ab7c-428e60bd394f" width="300" height="500">
 
 ---
 
 ### 시스템 구조도
-![시스템 구조도](https://github.com/user-attachments/assets/5616e06c-c850-4163-8fe1-b11781cc107a)
+<img src="https://github.com/user-attachments/assets/5616e06c-c850-4163-8fe1-b11781cc107a" width="300" height="500">
 
 ---
 
@@ -124,16 +119,17 @@
 | -------------- | -------------- | -------------- |
 |                |                |                |
 
-![번다운 차트1](https://github.com/user-attachments/assets/635865b2-63f5-4fce-8e4d-1260f168d481)
-![번다운 차트2](https://github.com/user-attachments/assets/448df425-81bf-4d10-affc-c9839067255e)
-![번다운 차트3](https://github.com/user-attachments/assets/b50c76f7-cc55-4a4d-b569-64c1aeaae0ca)
+<img src="https://github.com/user-attachments/assets/635865b2-63f5-4fce-8e4d-1260f168d481" width="300" height="500">
+<img src="https://github.com/user-attachments/assets/448df425-81bf-4d10-affc-c9839067255e" width="300" height="500">
+<img src="https://github.com/user-attachments/assets/b50c76f7-cc55-4a4d-b569-64c1aeaae0ca" width="300" height="500">
 
 | 4주차 스프린트 | 5주차 스프린트 | 6주차 스프린트 |
 | -------------- | -------------- | -------------- |
 |                |                |                |
 
-![번다운 차트4](https://github.com/user-attachments/assets/65b7ec37-5982-4fc9-9589-171a55c59c81)
-![번다운 차트5](https://github.com/user-attachments/assets/c154df6e-b446-4539-8105-dbe3e1d726ea)
+<img src="https://github.com/user-attachments/assets/65b7ec37-5982-4fc9-9589-171a55c59c81" width="300" height="500">
+<img src="https://github.com/user-attachments/assets/c154df6e-b446-4539-8105-dbe3e1d726ea" width="300" height="500">
+
 
 ---
 
