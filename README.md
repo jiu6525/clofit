@@ -25,29 +25,29 @@
 
 ---
 
-## 구현
+# 구현
 
-### 🎯 주요 페이지 및 기능
+## 🎯 주요 페이지 및 기능
 
-## 메인화면  
+### 메인화면  
 <img src="https://github.com/user-attachments/assets/79d6eff8-f460-4bbe-b248-4a6eb6b02a40" width="300" height="500">
 
-## 개인의류 등록  
+### 개인의류 등록  
 <div style="display: flex;">
     <img src="https://github.com/user-attachments/assets/040a6993-1fe7-4ab4-957e-45cfb2a20bcd" width="300" height="500">
     <img src="https://github.com/user-attachments/assets/163da62a-6556-4247-950f-94f37914deec" width="300" height="500">
 </div>
 
-## 상품 상세보기  
+### 상품 상세보기  
 <img src="https://github.com/user-attachments/assets/b32eceec-5e3c-4378-a373-8c9e79d70a01" width="300" height="500">
 
-# 색상 필터링 및 색상 기반 추천
+### 색상 필터링 및 색상 기반 추천
 <img src="https://github.com/user-attachments/assets/ac9d2289-0bd4-4db7-9c74-e07cdb7a3ec7" width="300" height="500">
 <img src="https://github.com/user-attachments/assets/edbc92a7-2536-4caf-b34e-52a63be7b9d8" width="300" height="500">
 
 ---
 
-## 옷장 개인 의류 추가 (개인 의류 추가 전 후)
+### 옷장 개인 의류 추가 (개인 의류 추가 전 후)
 <div style="display: flex;">
     <img src="https://github.com/user-attachments/assets/d9284649-6e30-49f2-92d5-50e9c9765b98" width="300" height="500">
     <img src="https://github.com/user-attachments/assets/1b456b37-6541-4a70-bdb6-fc744ec137fc" width="300" height="500">
@@ -55,17 +55,17 @@
 
 ---
 
-## 좋아요한 피팅
+### 좋아요한 피팅
 <img src="https://github.com/user-attachments/assets/2b6406da-c8ed-4be7-ad37-edd4a8747913" width="300" height="500">
 
 ---
 
-## 피드
+### 피드
 <img src="https://github.com/user-attachments/assets/71e74cc1-3f81-46b0-9a73-c4b83a8d3925" width="300" height="500">
 
 ---
 
-## 피팅 (합성, 결과 상세보기, 결과) 화면
+### 피팅 (합성, 결과 상세보기, 결과) 화면
  
 <div style="display: flex;">
     <img src="https://github.com/user-attachments/assets/5a880585-6667-4fe5-ba14-4d86a31b63c8" width="300" height="500">
@@ -75,11 +75,9 @@
 
 ---
 
-### 👀 산출물
+# 👀 산출물
 
 ## API 명세서
-- API 명세서(세부)
-
 <img src="https://github.com/user-attachments/assets/b52d462c-7d8a-4abf-98af-5b984128dccf" width="500" height="500">
 <img src="https://github.com/user-attachments/assets/1689e9be-2e43-4ced-a5f7-039438f0c481" width="500" height="500">
 
@@ -108,7 +106,7 @@
 
 ---
     
-### 📚 파일 구조도
+# 📚 파일 구조도
 
 ## FrontEnd
 
