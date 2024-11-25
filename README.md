@@ -278,8 +278,7 @@
             <img src="https://github.com/user-attachments/assets/aaf3be42-4628-4dac-b8ef-9e5bc6cb0201" width="140px" /> <br><br> 🎀 손유진<br>(Front-End) </a> <br> 메인, 마이, <br>
 피드 페이지</td>
         <td height="140px" align="center"> <a href="https://github.com/jiu6525">
-            <img src="https://github.com/user-attachments/assets/506c294d-750c-41cd-8f54-474e1774c55d" width="140px" /> <br><br> 🐲 강지우<br>(Back-End) </a> <br> 피팅AI,
-피팅 API <br>
+            <img src="https://github.com/user-attachments/assets/506c294d-750c-41cd-8f54-474e1774c55d" width="140px" /> <br><br> 🐲 강지우<br>(Back-End) </a> <br> 피팅AI, API <br>
 시큐리티</td>
         <td height="140px" align="center"> <a href="https://github.com/kinterlocked">
             <img src="https://github.com/user-attachments/assets/67ce3b54-8f22-4435-a43d-7faf220ffd52" width="140px" /> <br><br> 🌳 김연동<br>(Back-End) </a> <br> 유저,
