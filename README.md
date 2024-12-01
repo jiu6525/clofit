@@ -68,26 +68,31 @@
     <img src="https://github.com/user-attachments/assets/040a6993-1fe7-4ab4-957e-45cfb2a20bcd" width="300" height="500">
     <img src="https://github.com/user-attachments/assets/163da62a-6556-4247-950f-94f37914deec" width="300" height="500">
 </div>
-사용자가 선택한 의류에 대해 의류의 카테고리와 색상을 분류해서 사용자의 옷장에 추가해 줍니다
+사용자가 선택한 의류에 대해 의류의 카테고리와 색상을 분류해서 사용자의 옷장에 추가해 줍니다.
 
 ### 상품 상세보기  
 <img src="https://github.com/user-attachments/assets/b32eceec-5e3c-4378-a373-8c9e79d70a01" width="300" height="500">
+수집한 의류 데이터의 사진과 정보를 볼 수 있으며 가상피팅을 진행하기 위해 필요한 옷장에 의류를 등록할 수 있습니다.
 
 ### 색상 필터링 및 색상 기반 추천
 <img src="https://github.com/user-attachments/assets/ac9d2289-0bd4-4db7-9c74-e07cdb7a3ec7" width="300" height="500">
 <img src="https://github.com/user-attachments/assets/edbc92a7-2536-4caf-b34e-52a63be7b9d8" width="300" height="500">
+사용자가 선택한 색상을 기반으로 의류를 추천 받을 수 있습니다.
 
 ### 옷장 개인 의류 추가 (개인 의류 추가 전 후)
 <div style="display: flex;">
     <img src="https://github.com/user-attachments/assets/d9284649-6e30-49f2-92d5-50e9c9765b98" width="300" height="500">
     <img src="https://github.com/user-attachments/assets/1b456b37-6541-4a70-bdb6-fc744ec137fc" width="300" height="500">
 </div>
+사용자가 등록한 의류의 목록을 확인 할 수 있습니다.
 
 ### 좋아요한 피팅
 <img src="https://github.com/user-attachments/assets/2b6406da-c8ed-4be7-ad37-edd4a8747913" width="300" height="500">
+마이페이지에서 사용자가 좋아요를 등록한 가상피팅 사진을 확인 할 수 있습니다.
 
 ### 피드
 <img src="https://github.com/user-attachments/assets/71e74cc1-3f81-46b0-9a73-c4b83a8d3925" width="300" height="500">
+상품정보와 공개설정을 진행한 다른 사용자의 가상 피팅의 정보를 확인 할 수 있습니다.
 
 ### 피팅 (합성, 결과 상세보기, 결과) 화면
  
@@ -96,6 +101,8 @@
     <img src="https://github.com/user-attachments/assets/f9734246-3d39-4733-99a0-7051cf230acc" width="300" height="500">
     <img src="https://github.com/user-attachments/assets/990c2dc0-39e8-4f3f-819b-8648635b1abc" width="300" height="500">
 </div>
+사용자의 전신사진과 옷장에 등록한 의류사진을 기반으로 가상피팅을 진행하는 화면입니다.
+최근 완성된 피팅에서 완료여부를 확인할 수 있으며 저장한 피팅 목록에 등록 할 수 있습니다.
 
 <br/>
 
