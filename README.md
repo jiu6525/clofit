@@ -68,6 +68,7 @@
     <img src="https://github.com/user-attachments/assets/040a6993-1fe7-4ab4-957e-45cfb2a20bcd" width="300" height="500">
     <img src="https://github.com/user-attachments/assets/163da62a-6556-4247-950f-94f37914deec" width="300" height="500">
 </div>
+사용자가 선택한 의류에 대해 의류의 카테고리와 색상을 분류해서 사용자의 옷장에 추가해 줍니다
 
 ### 상품 상세보기  
 <img src="https://github.com/user-attachments/assets/b32eceec-5e3c-4378-a373-8c9e79d70a01" width="300" height="500">
